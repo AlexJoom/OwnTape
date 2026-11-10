@@ -16,6 +16,7 @@ import {
   VIDEO_BITS_PER_SECOND,
 } from './constants.js';
 import { fixWebmDuration } from './webm-duration.js';
+import { classifyMicError, micErrorDetail, micPermissionState } from './mic-errors.js';
 
 let session = null; // the active recording, see startRecording()
 const blobUrls = new Map(); // opfsName -> object URL waiting for download
@@ -73,14 +74,17 @@ async function getTabStream(streamId) {
   });
 }
 
+/** @returns {Promise<{stream: MediaStream|null, error: {kind, detail}|null}>} */
 async function getMicStream() {
   try {
-    return await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
     });
+    return { stream, error: null };
   } catch (err) {
     console.warn('Microphone not available:', err);
-    return null;
+    const kind = classifyMicError(err, await micPermissionState());
+    return { stream: null, error: { kind, detail: micErrorDetail(err) } };
   }
 }
 
@@ -93,11 +97,12 @@ async function startRecording({ streamId, includeMic, opfsName }) {
 
   const tabStream = await getTabStream(streamId);
   let micStream = null;
+  let micError = null;
   let audioCtx = null;
   try {
-    micStream = includeMic ? await getMicStream() : null;
+    if (includeMic) ({ stream: micStream, error: micError } = await getMicStream());
     audioCtx = new AudioContext();
-    return await beginSession({ tabStream, micStream, audioCtx, opfsName });
+    return { ...(await beginSession({ tabStream, micStream, audioCtx, opfsName })), micError };
   } catch (err) {
     // Release the capture, or the next start fails with "active stream".
     for (const stream of [tabStream, micStream]) stream?.getTracks().forEach((t) => t.stop());

@@ -1,6 +1,7 @@
 // Popup. Shows one of the design states (see design/popup/states.html) and
 // sends commands to the service worker. It keeps no recording state itself.
 
+import { MIC_TEXTS, micPermissionState } from './mic-errors.js';
 import { CRASH_ERROR, NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
 
 const $ = (id) => document.getElementById(id);
@@ -39,13 +40,6 @@ function formatSize(bytes) {
   return `${Math.round(bytes / 1e6)} MB`;
 }
 
-async function micPermission() {
-  try {
-    return (await navigator.permissions.query({ name: 'microphone' })).state;
-  } catch {
-    return 'prompt';
-  }
-}
 
 function openMicPage() {
   return chrome.tabs.create({ url: chrome.runtime.getURL(MIC_PAGE) });
@@ -96,8 +90,8 @@ function showError(error) {
 
 const ERRORS = {
   micBlocked: () => ({
-    title: 'Microphone access is blocked',
-    text: 'Chrome does not let the extension use your microphone. Allow it once, then try again. Or record only the call audio.',
+    title: MIC_TEXTS.blocked.title,
+    text: MIC_TEXTS.blocked.text,
     primary: { label: 'Allow microphone', action: openMicPage },
     secondary: { label: 'Record without my microphone', action: () => start(false) },
   }),
@@ -160,6 +154,14 @@ function renderRecording(rec, bytes) {
   tick();
   timer = setInterval(tick, 1000);
   $('mic-chip-text').textContent = rec.micActive ? 'Mic on' : 'Mic off';
+  const micFailed = Boolean(rec.includeMic && !rec.micActive);
+  $('mic-warning').hidden = !micFailed;
+  if (micFailed) {
+    const kind = rec.micError?.kind || 'unreadable';
+    $('mic-warning-title').textContent = `${MIC_TEXTS[kind].title}.`;
+    $('mic-warning-detail').textContent = rec.micError?.detail || '';
+    $('mic-warning-detail').hidden = !rec.micError?.detail;
+  }
   $('mic-chip').querySelector('svg').innerHTML = rec.micActive ? ICON_MIC_ON : ICON_MIC_OFF;
   $('size-chip-text').textContent = formatSize(bytes);
   for (const block of document.querySelectorAll('[data-notice]')) {
@@ -241,7 +243,7 @@ async function run(action) {
 async function start(includeMic) {
   localError = null;
   if (includeMic) {
-    const perm = await micPermission();
+    const perm = await micPermissionState();
     if (perm !== 'granted') {
       localError = perm === 'denied' ? ERRORS.micBlocked() : ERRORS.micNeeded();
       return render();

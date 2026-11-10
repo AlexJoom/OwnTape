@@ -6,7 +6,7 @@
     stop the tracks at once, then show ONE status panel:
       [data-status="waiting"] while Chrome shows its prompt
       [data-status="granted"] on success
-      [data-status="denied"]  on NotAllowedError
+      [data-status="error"]   on any error (text from mic-errors.js)
     Also check navigator.permissions.query({name:'microphone'}) on load:
     "granted" → show granted panel directly; "denied" → show denied panel.
   - #btn-close → window.close().
@@ -61,17 +61,24 @@
         </div>
       </div>
 
-      <div class="status status--error" data-status="denied" hidden>
+      <!-- One error panel; mic-permission.js fills it from mic-errors.js
+           (blocked, dismissed, no-device, unreadable). -->
+      <div class="status status--error" data-status="error" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
-          <h2>The microphone is blocked</h2>
-          <p>Chrome remembers a “Block” choice. To change it:</p>
-          <ol class="how">
-            <li>Click the <strong>site settings icon</strong> at the left of the address bar.</li>
-            <li>Set <strong>Microphone</strong> to <strong>Allow</strong>.</li>
-            <li>Reload this page and click <strong>Allow microphone</strong> again.</li>
+          <h2 id="err-title">The microphone is blocked</h2>
+          <p id="err-text"></p>
+          <ol class="how" id="err-steps" hidden>
+            <li>Click <strong>Open microphone settings</strong> below.</li>
+            <li>Under <strong>Not allowed to use your microphone</strong>, find <strong class="js-app-name">OwnTape</strong> and click it.</li>
+            <li>Set <strong>Microphone</strong> to <strong>Allow</strong>, then come back and click <strong>Try again</strong>.</li>
           </ol>
-          <p class="note">Also make sure that your operating system lets Chrome use the microphone.</p>
+          <p class="note" id="err-os-note" hidden>On macOS and Windows, also check that the operating system lets Chrome use the microphone (System Settings › Privacy).</p>
+          <p class="detail" id="err-detail" hidden></p>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="btn-retry" type="button">Try again</button>
+            <button class="btn btn--secondary" id="btn-settings" type="button" hidden>Open microphone settings</button>
+          </div>
         </div>
       </div>
     </div>

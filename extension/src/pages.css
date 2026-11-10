@@ -93,3 +93,6 @@ kbd { font: 600 13px/1 ui-monospace, Menlo, Consolas, monospace; padding: 2px 6p
 .note { font-size: 14px; color: var(--muted); }
 .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .footer a { color: var(--muted); }
+
+/* Technical error line (developer addition; same idea as #error-detail in the popup). */
+.detail { margin-top: 10px; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .85; overflow-wrap: anywhere; }

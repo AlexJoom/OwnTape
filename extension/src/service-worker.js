@@ -20,7 +20,7 @@ const STARTING_TIMEOUT_MS = 30_000;
 
 // chrome.storage.session  { rec: RecState }
 //   RecState = { state, tabId, meetingCode, opfsName, downloadName, startedAt, includeMic,
-//                micActive, mimeType, noticeText, notice, noticeStep, changedAt }
+//                micActive, micError: {kind, detail}|null, mimeType, noticeText, notice, noticeStep, changedAt }
 // chrome.storage.session  { downloads: { [downloadId]: opfsName } }
 // chrome.storage.local    { pending: { [opfsName]: PendingRecord } }
 //   PendingRecord = { opfsName, downloadName, meetingCode, startedAt, durationMs, bytes, status }
@@ -133,7 +133,7 @@ async function startRecording({ tabId, includeMic, notice }) {
     await ensureOffscreen();
     await updatePending(opfsName, { downloadName, meetingCode, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
     const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName });
-    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, mimeType: res.mimeType });
+    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, mimeType: res.mimeType });
   } catch (err) {
     await updatePending(opfsName, null);
     await setRec(IDLE_STATE);

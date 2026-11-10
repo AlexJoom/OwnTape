@@ -1,7 +1,7 @@
 // Popup. Shows one of the design states (see design/popup/states.html) and
 // sends commands to the service worker. It keeps no recording state itself.
 
-import { NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
+import { CRASH_ERROR, NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
 
 const $ = (id) => document.getElementById(id);
 const MIC_PAGE = 'src/mic-permission.html';
@@ -79,6 +79,8 @@ function show(view) {
 function showError(error) {
   $('error-title').textContent = error.title;
   $('error-text').textContent = error.text;
+  $('error-detail').hidden = !error.detail;
+  $('error-detail').textContent = error.detail || '';
   const primary = $('btn-error-primary');
   const secondary = $('btn-error-secondary');
   primary.textContent = error.primary.label;
@@ -113,12 +115,19 @@ const ERRORS = {
   }),
   capture: (message) => ({
     title: 'Cannot record this tab',
-    text: `Another extension or app possibly records this tab now. Stop it, reload the Meet tab, then try again. (${message})`,
+    text: 'Another extension or app possibly records this tab now. Stop it, reload the Meet tab, then try again.',
+    detail: message,
     primary: { label: 'Try again', action: () => start($('mic-toggle').checked) },
+  }),
+  crashed: () => ({
+    title: 'The recording stopped unexpectedly',
+    text: 'The part that was recorded is safe. Save it with the button above.',
+    primary: { label: 'OK', action: recordAgain },
   }),
   generic: (message) => ({
     title: 'Something went wrong',
-    text: message,
+    text: `${PRODUCT_NAME} could not finish this action. Try again. If it happens again, report it on GitHub with the detail below.`,
+    detail: message,
     primary: { label: 'OK', action: recordAgain },
   }),
 };
@@ -133,7 +142,8 @@ function render() {
   else if (localError) showError(localError);
   else if (lastResult?.kind === 'saved' && lastResult.reason === 'tab-ended') showError(ERRORS.tabClosed(lastResult));
   else if (lastResult?.kind === 'saved') renderSaved(lastResult);
-  else if (lastError) showError(ERRORS.generic(lastError));
+  else if (lastError === CRASH_ERROR && recoverable.length > 0) showError(ERRORS.crashed());
+  else if (lastError && lastError !== CRASH_ERROR) showError(ERRORS.generic(lastError));
   else if (meetingCodeFromUrl(activeTab?.url)) renderReady();
   else show('not-meet');
 
@@ -166,29 +176,47 @@ function renderSaved(result) {
   show('saved');
 }
 
+const DELETE_CONFIRM_MS = 4000;
+
+function recoveryLabel(item) {
+  const when = new Date(item.startedAt).toLocaleString(undefined, {
+    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+  });
+  return `${item.meetingCode || 'Tab'} · ${when}`;
+}
+
 function renderRecovery(items) {
   $('recovery').hidden = items.length === 0;
+  $('t-recovery').textContent =
+    items.length === 1 ? 'A recording was not saved' : `${items.length} recordings were not saved`;
+  const template = $('recovery-item');
   $('recovery-list').replaceChildren(
     ...items.map((item) => {
-      const li = document.createElement('li');
-      li.className = 'mr-recovery__item';
-      const name = document.createElement('span');
-      name.className = 'mr-recovery__name';
-      name.textContent = `${item.downloadName}${item.bytes ? ` · ${formatSize(item.bytes)}` : ''}`;
-      const actions = document.createElement('div');
-      actions.className = 'mr-recovery__actions';
-      const save = document.createElement('button');
-      save.type = 'button';
-      save.className = 'mr-btn mr-btn--primary';
-      save.textContent = 'Save file';
-      save.addEventListener('click', () => run(() => send('recover', { opfsName: item.opfsName })));
-      const del = document.createElement('button');
-      del.type = 'button';
-      del.className = 'mr-btn mr-btn--secondary';
-      del.textContent = 'Delete';
-      del.addEventListener('click', () => run(() => send('discard', { opfsName: item.opfsName })));
-      actions.append(save, del);
-      li.append(name, actions);
+      const li = template.content.firstElementChild.cloneNode(true);
+      const name = li.querySelector('.mr-recovery__name');
+      name.textContent = recoveryLabel(item);
+      name.title = item.downloadName;
+      const meta = [item.durationMs ? formatMinutes(item.durationMs) : null, item.bytes ? formatSize(item.bytes) : null];
+      li.querySelector('.mr-recovery__meta').textContent = [...meta.filter(Boolean), 'kept on this computer'].join(' · ');
+      li.querySelector('.mr-recovery__save').addEventListener('click', () => run(() => send('recover', { opfsName: item.opfsName })));
+      const del = li.querySelector('.mr-recovery__delete');
+      let confirmTimer = 0;
+      del.addEventListener('click', () => {
+        if (!del.classList.contains('is-confirming')) {
+          del.classList.add('is-confirming');
+          del.textContent = 'Delete for good?';
+          confirmTimer = setTimeout(() => {
+            del.classList.remove('is-confirming');
+            del.textContent = 'Delete';
+          }, DELETE_CONFIRM_MS);
+          return;
+        }
+        clearTimeout(confirmTimer);
+        run(() => send('discard', { opfsName: item.opfsName })).then(() => {
+          // After the refresh, so the view change does not overwrite it.
+          $('sr-status').textContent = 'The unsaved recording was deleted.';
+        });
+      });
       return li;
     }),
   );

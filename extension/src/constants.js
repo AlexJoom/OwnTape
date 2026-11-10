@@ -8,6 +8,10 @@ export const REPO_URL = 'https://github.com/AlexJoom/OwnTape';
 export const NOTICE_DEFAULT_TEXT = `I am recording this call with ${PRODUCT_NAME}. Tell me if you do not agree.`;
 export const NOTICE_MAX_LENGTH = 500;
 
+// lastError text when a recording ended without a save (crash, browser closed).
+// The popup shows the "stopped unexpectedly" view (7e) for it.
+export const CRASH_ERROR = 'The recording stopped unexpectedly. You can save the partial file.';
+
 // Recording quality. 2 Mbit/s video + 128 kbit/s audio is about 1 GB per hour.
 export const VIDEO_BITS_PER_SECOND = 2_000_000;
 export const AUDIO_BITS_PER_SECOND = 128_000;

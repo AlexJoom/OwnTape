@@ -18,7 +18,6 @@
   <meta name="viewport" content="width=340">
   <title>OwnTape</title>
   <link rel="stylesheet" href="popup.css">
-  <link rel="stylesheet" href="popup-extra.css">
   <script src="popup.js" type="module"></script>
 </head>
 <body class="mr-body">
@@ -42,6 +41,36 @@
   <p id="sr-status" class="mr-visually-hidden" role="status" aria-live="polite"></p>
 
   <main>
+    <!-- 0. RECOVERY (not a state) =================================== -->
+    <!-- Shown ABOVE the idle states (not-meet, ready, saved, error) when a
+         recording stopped before it was saved. JS: clone #recovery-item for
+         each item, fill name + meta, remove `hidden` from #recovery.
+         Title: "A recording was not saved" / "2 recordings were not saved".
+         .mr-recovery__name shows "<meeting code> · <local date, time>"
+         (e.g. "abc-defg-hij · 10 Nov, 14:03"); put the full file name in its `title`.
+         Delete = 2 clicks in the button (no confirm() dialog):
+           1st click → add class "is-confirming", label "Delete for good?";
+           2nd click within 4 s → delete; else restore the label. -->
+    <section class="mr-recovery" id="recovery" aria-labelledby="t-recovery" hidden>
+      <div class="mr-recovery__head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <h2 class="mr-recovery__title" id="t-recovery">A recording was not saved</h2>
+      </div>
+      <ul class="mr-recovery__list" id="recovery-list"></ul>
+      <template id="recovery-item">
+        <li class="mr-recovery__item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
+          <div class="mr-recovery__info">
+            <span class="mr-recovery__name" title="meet-abc-defg-hij-2026-11-10-1403.webm">abc-defg-hij · 10 Nov, 14:03</span>
+            <span class="mr-recovery__meta">23 min · 140 MB · kept on this computer</span>
+          </div>
+          <div class="mr-recovery__actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm mr-recovery__save" type="button">Save file</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm mr-btn--danger mr-recovery__delete" type="button">Delete</button>
+          </div>
+        </li>
+      </template>
+    </section>
     <!-- 1. NOT ON A MEET TAB ======================================= -->
     <section class="mr-state" data-state="not-meet" aria-labelledby="t-not-meet" hidden>
       <div class="mr-hero">
@@ -193,7 +222,7 @@
       </div>
       <div class="mr-file">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
-        <span class="mr-file__name" id="file-name">meet-2026-11-10_14-03.webm</span>
+        <span class="mr-file__name" id="file-name">meet-abc-defg-hij-2026-11-10-1403.webm</span>
         <span class="mr-file__meta" id="file-meta">48 min · 312 MB · Downloads folder</span>
       </div>
       <div class="mr-actions">
@@ -215,18 +244,13 @@
         </div>
         <h2 class="mr-title" id="error-title">Microphone access is blocked</h2>
         <p class="mr-text" id="error-text">Chrome does not let the extension use your microphone. Allow it once, then try again. Or record only the call audio.</p>
+        <!-- Technical reason (optional). Fill and unhide; keep it out of #error-text. -->
+        <p class="mr-error-detail" id="error-detail" hidden></p>
       </div>
       <div class="mr-actions">
         <button class="mr-btn mr-btn--primary" id="btn-error-primary" type="button">Allow microphone</button>
         <button class="mr-btn mr-btn--secondary" id="btn-error-secondary" type="button">Record without my microphone</button>
       </div>
-    </section>
-    <!-- Extension addition (not in the design spec yet): recordings left
-         on disk after a crash. popup.js fills #recovery-list. -->
-    <section class="mr-recovery" id="recovery" aria-labelledby="t-recovery" hidden>
-      <h2 class="mr-recovery__title" id="t-recovery">Unsaved recording</h2>
-      <p class="mr-text">A recording stopped before it was saved. You can save the part that was recorded.</p>
-      <ul class="mr-recovery__list" id="recovery-list"></ul>
     </section>
   </main>
 

@@ -4,6 +4,7 @@
 // (crash-recovery records).
 
 import {
+  CRASH_ERROR,
   ICONS_IDLE,
   ICONS_RECORDING,
   PRODUCT_NAME,
@@ -22,7 +23,7 @@ const STARTING_TIMEOUT_MS = 30_000;
 //                micActive, mimeType, noticeText, notice, noticeStep, changedAt }
 // chrome.storage.session  { downloads: { [downloadId]: opfsName } }
 // chrome.storage.local    { pending: { [opfsName]: PendingRecord } }
-//   PendingRecord = { opfsName, downloadName, startedAt, durationMs, bytes, status }
+//   PendingRecord = { opfsName, downloadName, meetingCode, startedAt, durationMs, bytes, status }
 //   status: 'recording' | 'saving' | 'saved-failed' | 'interrupted'
 // chrome.storage.session  { lastResult: { kind: 'saved', downloadId, fileName,
 //                           durationMs, bytes, reason } | null }
@@ -130,7 +131,7 @@ async function startRecording({ tabId, includeMic, notice }) {
     // The popup was opened by the user on this tab, which grants the capture.
     const streamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: tabId });
     await ensureOffscreen();
-    await updatePending(opfsName, { downloadName, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
+    await updatePending(opfsName, { downloadName, meetingCode, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
     const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName });
     await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, mimeType: res.mimeType });
   } catch (err) {
@@ -227,7 +228,7 @@ async function reconcile() {
     if (dead) {
       await markInterrupted(rec.opfsName);
       await setRec(IDLE_STATE);
-      await setLastError('The recording stopped unexpectedly. You can save the partial file.');
+      await setLastError(CRASH_ERROR);
     }
   }
   // Records left in "recording"/"saving" state with no live session are from a crash.

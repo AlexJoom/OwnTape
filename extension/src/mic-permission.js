@@ -1,10 +1,18 @@
 // Microphone permission page. getUserMedia needs a visible extension page for
 // the first grant; the offscreen recorder then uses the same permission.
 import { PRODUCT_NAME } from './constants.js';
-import { MIC_SETTINGS_URL, MIC_TEXTS, classifyMicError, micErrorDetail, micPermissionState } from './mic-errors.js';
+import {
+  MIC_SETTINGS_URL,
+  MIC_TEXTS,
+  classifyMicError,
+  extensionSiteSettingsUrl,
+  micErrorDetail,
+  micPermissionState,
+} from './mic-errors.js';
 
 const $ = (id) => document.getElementById(id);
 const panels = document.querySelectorAll('[data-status]');
+let currentKind = null; // the error kind on screen, or null
 
 function showPanel(name) {
   for (const panel of panels) panel.hidden = panel.dataset.status !== name;
@@ -14,12 +22,14 @@ function showError(kind, err) {
   const texts = MIC_TEXTS[kind];
   $('err-title').textContent = texts.title;
   $('err-text').textContent = texts.text;
+  currentKind = kind;
   const blocked = kind === 'blocked';
+  const needsSettings = blocked || kind === 'not-asked';
   $('err-steps').hidden = !blocked;
-  $('btn-settings').hidden = !blocked;
-  // For "blocked" the next step is the settings page; otherwise "Try again".
-  $('btn-retry').classList.toggle('btn--primary', !blocked);
-  $('btn-retry').classList.toggle('btn--secondary', blocked);
+  $('btn-settings').hidden = !needsSettings;
+  // When only the settings can help, they are the next step; otherwise "Try again".
+  $('btn-retry').classList.toggle('btn--primary', !needsSettings);
+  $('btn-retry').classList.toggle('btn--secondary', needsSettings);
   $('err-os-note').hidden = kind !== 'unreadable' && kind !== 'blocked';
   $('err-detail').hidden = !err;
   $('err-detail').textContent = micErrorDetail(err);
@@ -29,6 +39,8 @@ function showError(kind, err) {
 /** Asks for the microphone and shows the real result. Never claims "granted" without a working stream. */
 async function requestMic() {
   showPanel('waiting');
+  currentKind = null;
+  const t0 = performance.now();
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const live = stream.getAudioTracks().some((t) => t.readyState === 'live');
@@ -36,13 +48,27 @@ async function requestMic() {
     if (!live) return showError('unreadable', { name: 'TrackNotLive', message: 'The microphone track ended at once.' });
     showPanel('granted');
   } catch (err) {
-    showError(classifyMicError(err, await micPermissionState()), err);
+    const elapsed = performance.now() - t0;
+    showError(classifyMicError(err, await micPermissionState(), elapsed), err);
   }
 }
 
 $('btn-allow').addEventListener('click', requestMic);
 $('btn-retry').addEventListener('click', requestMic);
-$('btn-settings').addEventListener('click', () => chrome.tabs.create({ url: MIC_SETTINGS_URL }));
+$('btn-settings').addEventListener('click', () =>
+  chrome.tabs.create({
+    // "not-asked": the site page of this extension; "blocked": the list, as the steps say.
+    url: currentKind === 'not-asked' ? extensionSiteSettingsUrl(chrome.runtime.id) : MIC_SETTINGS_URL,
+  }),
+);
+
+// When the user comes back from the settings, retry by itself if Chrome now allows it.
+async function recheckOnReturn() {
+  if (document.visibilityState !== 'visible' || !currentKind) return;
+  if ((await micPermissionState()) === 'granted') requestMic();
+}
+document.addEventListener('visibilitychange', recheckOnReturn);
+window.addEventListener('focus', recheckOnReturn);
 $('btn-close').addEventListener('click', () => window.close());
 
 for (const el of document.querySelectorAll('.js-app-name')) el.textContent = PRODUCT_NAME;

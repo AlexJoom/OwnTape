@@ -3,11 +3,23 @@
 //
 // kind:
 //   'blocked'    Chrome blocks the microphone for the extension (state 'denied').
-//   'dismissed'  The prompt closed without an answer (NotAllowedError, state 'prompt').
+//   'dismissed'  The prompt closed without an answer (NotAllowedError, state 'prompt',
+//                slow rejection: the user saw the prompt).
+//   'not-asked'  Chrome did not show the prompt at all (NotAllowedError, state 'prompt',
+//                rejected at once). Chrome does this after repeated dismissals
+//                ("automatic blocking"); only the site settings help.
 //   'no-device'  No microphone found.
 //   'unreadable' A microphone exists but cannot be read (busy, OS privacy, driver).
 
 export const MIC_SETTINGS_URL = 'chrome://settings/content/microphone';
+
+// A rejection faster than this means Chrome showed no prompt.
+export const NO_PROMPT_THRESHOLD_MS = 500;
+
+/** Chrome's site-settings page for this extension's own origin. */
+export function extensionSiteSettingsUrl(extensionId) {
+  return `chrome://settings/content/siteDetails?site=${encodeURIComponent(`chrome-extension://${extensionId}`)}`;
+}
 
 /** @returns {Promise<'granted'|'denied'|'prompt'>} */
 export async function micPermissionState() {
@@ -21,12 +33,17 @@ export async function micPermissionState() {
 /**
  * @param {{name?: string, message?: string}} err  DOMException from getUserMedia.
  * @param {'granted'|'denied'|'prompt'} state  Permission state after the error.
+ * @param {number} [elapsedMs]  Time from the getUserMedia call to the rejection.
+ *   Only a visible page that can show a prompt passes it.
  */
-export function classifyMicError(err, state) {
+export function classifyMicError(err, state, elapsedMs) {
   const name = err?.name || 'Error';
   if (name === 'NotAllowedError' || name === 'SecurityError' || name === 'PermissionDeniedError') {
     if (state === 'denied') return 'blocked';
-    if (state === 'prompt') return 'dismissed';
+    if (state === 'prompt') {
+      if (elapsedMs === undefined) return 'not-asked'; // no prompt possible here (offscreen)
+      return elapsedMs < NO_PROMPT_THRESHOLD_MS ? 'not-asked' : 'dismissed';
+    }
     return 'unreadable'; // permission granted in Chrome, but the operating system refused
   }
   if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || name === 'OverconstrainedError') {
@@ -49,6 +66,10 @@ export const MIC_TEXTS = {
   dismissed: {
     title: 'Chrome did not get an answer',
     text: 'The question about the microphone closed before you answered. Click Try again and select Allow.',
+  },
+  'not-asked': {
+    title: 'Chrome does not ask for the microphone',
+    text: 'Chrome does not show the question for OwnTape now. This can happen after the question was closed several times. Set Microphone to Allow in the site settings of OwnTape, then come back to this page.',
   },
   'no-device': {
     title: 'No microphone found',

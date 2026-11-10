@@ -74,14 +74,33 @@
       <div class="mr-switch-row">
         <div class="mr-switch-row__text">
           <label class="mr-switch-row__label" for="mic-toggle">Include my microphone</label>
-          <span class="mr-switch-row__hint" id="mic-hint">The tab gives the other voices. Turn this on to also record your voice.</span>
+          <span class="mr-switch-row__hint" id="mic-hint">Adds your voice. The tab gives the other voices.</span>
         </div>
         <input class="mr-switch" type="checkbox" role="switch" id="mic-toggle" aria-describedby="mic-hint" checked>
       </div>
 
+      <!-- Consent aid. CSS (:has) hides the editor and switches the reminder
+           text when the toggle is off, so no JS is needed for that. -->
+      <div class="mr-notice">
+        <div class="mr-switch-row">
+          <div class="mr-switch-row__text">
+            <label class="mr-switch-row__label" for="notice-toggle">Post a notice in the call chat</label>
+            <span class="mr-switch-row__hint" id="notice-hint">OwnTape posts your message when the recording starts.</span>
+          </div>
+          <input class="mr-switch js-notice-toggle" type="checkbox" role="switch" id="notice-toggle" aria-describedby="notice-hint" checked>
+        </div>
+        <details class="mr-disclosure" id="notice-details">
+          <summary>Edit the message</summary>
+          <label class="mr-visually-hidden" for="notice-text">Message for the call chat</label>
+          <textarea class="mr-textarea" id="notice-text" rows="3" maxlength="500" spellcheck="true">I am recording this call with OwnTape. Tell me if you do not agree.</textarea>
+          <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-reset" type="button">Reset to the default text</button>
+        </details>
+      </div>
+
       <div class="mr-callout" id="consent-reminder">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>
-        <p><strong>Tell the participants that you record.</strong> In many countries, the law requires their consent.</p>
+        <p class="mr-consent-on"><strong>Also say it aloud.</strong> Not everyone reads the chat.</p>
+        <p class="mr-consent-off"><strong>Tell the participants that you record.</strong> In many countries, the law requires their consent.</p>
       </div>
 
       <div class="mr-actions">
@@ -123,6 +142,28 @@
             <span id="size-chip-text">86 MB</span>
           </li>
         </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry" type="button">Try again</button>
+          </div>
+        </div>
       </div>
 
       <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>

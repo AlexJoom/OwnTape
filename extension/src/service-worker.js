@@ -12,13 +12,14 @@ import {
   buildDownloadName,
   meetingCodeFromUrl,
 } from './constants.js';
+import { postChatNotice } from './meet-chat.js';
 
 const OFFSCREEN_URL = 'src/offscreen.html';
 const STARTING_TIMEOUT_MS = 30_000;
 
 // chrome.storage.session  { rec: RecState }
 //   RecState = { state, tabId, meetingCode, opfsName, downloadName, startedAt, includeMic,
-//                micActive, mimeType, changedAt }
+//                micActive, mimeType, noticeText, notice, noticeStep, changedAt }
 // chrome.storage.session  { downloads: { [downloadId]: opfsName } }
 // chrome.storage.local    { pending: { [opfsName]: PendingRecord } }
 //   PendingRecord = { opfsName, downloadName, startedAt, durationMs, bytes, status }
@@ -110,7 +111,7 @@ async function sendToOffscreen(message) {
 
 // ---------- Commands ----------
 
-async function startRecording({ tabId, includeMic }) {
+async function startRecording({ tabId, includeMic, notice }) {
   const rec = await getRec();
   if (rec.state !== STATE.IDLE) throw new Error(`Cannot start while ${rec.state}`);
 
@@ -119,7 +120,8 @@ async function startRecording({ tabId, includeMic }) {
   const opfsName = `rec-${startedAt}.webm`;
   const meetingCode = meetingCodeFromUrl(tab.url);
   const downloadName = buildDownloadName(meetingCode, new Date(startedAt));
-  const base = { tabId, meetingCode, opfsName, downloadName, startedAt, includeMic };
+  const noticeText = notice?.enabled && meetingCode ? String(notice.text || '').slice(0, 500) : null;
+  const base = { tabId, meetingCode, opfsName, downloadName, startedAt, includeMic, noticeText };
 
   await setRec({ state: STATE.STARTING, ...base });
   await setLastError(null);
@@ -131,15 +133,41 @@ async function startRecording({ tabId, includeMic }) {
     await updatePending(opfsName, { downloadName, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
     const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName });
     await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, mimeType: res.mimeType });
-    if (includeMic && !res.micActive) {
-      await setLastError('Microphone not available. Recording the tab audio only.');
-    }
   } catch (err) {
     await updatePending(opfsName, null);
     await setRec(IDLE_STATE);
     await closeOffscreenIfUnused();
     throw err;
   }
+  // Consent aid: only after the capture runs, and only when the user turned it on.
+  if (noticeText) await postNotice();
+}
+
+/**
+ * Posts the notice in the Meet chat of the recorded tab. Triggered only by
+ * the user's Start click or "Post the notice again". The result in rec.notice
+ * is 'pending' | 'posted' | 'failed'; 'posted' means the script saw the
+ * message in the chat.
+ */
+async function postNotice() {
+  const rec = await getRec();
+  if (rec.state !== STATE.RECORDING || !rec.noticeText) throw new Error('No notice to post');
+  await setRec({ ...rec, notice: 'pending', noticeStep: null });
+  let result;
+  try {
+    const [injection] = await chrome.scripting.executeScript({
+      target: { tabId: rec.tabId },
+      func: postChatNotice,
+      args: [rec.noticeText],
+    });
+    result = injection?.result || { ok: false, step: 'no-result' };
+  } catch (err) {
+    console.warn('Notice injection failed:', err);
+    result = { ok: false, step: 'injection-failed' };
+  }
+  const latest = await getRec();
+  if (latest.opfsName !== rec.opfsName || latest.state !== STATE.RECORDING) return;
+  await setRec({ ...latest, notice: result.ok ? 'posted' : 'failed', noticeStep: String(result.step) });
 }
 
 async function stopRecording() {
@@ -269,6 +297,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     getStatus: () => getStatus(),
     start: () => startRecording(msg),
     stop: () => stopRecording(),
+    postNotice: () => postNotice(),
     recover: () => recoverRecording(msg.opfsName),
     discard: () => discardRecording(msg.opfsName),
     clearError: () => setLastError(null),

@@ -1,7 +1,7 @@
 // Popup. Shows one of the design states (see design/popup/states.html) and
 // sends commands to the service worker. It keeps no recording state itself.
 
-import { PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
+import { NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
 
 const $ = (id) => document.getElementById(id);
 const MIC_PAGE = 'src/mic-permission.html';
@@ -152,6 +152,9 @@ function renderRecording(rec, bytes) {
   $('mic-chip-text').textContent = rec.micActive ? 'Mic on' : 'Mic off';
   $('mic-chip').querySelector('svg').innerHTML = rec.micActive ? ICON_MIC_ON : ICON_MIC_OFF;
   $('size-chip-text').textContent = formatSize(bytes);
+  for (const block of document.querySelectorAll('[data-notice]')) {
+    block.hidden = !rec.noticeText || block.dataset.notice !== (rec.notice || 'pending');
+  }
   const otherTab = activeTab && rec.tabId !== activeTab.id;
   $('btn-stop').title = otherTab ? 'Stops the recording in the other tab' : '';
   show('recording');
@@ -218,7 +221,8 @@ async function start(includeMic) {
   }
   show('starting');
   try {
-    await send('start', { tabId: activeTab.id, includeMic });
+    const notice = { enabled: $('notice-toggle').checked, text: noticeText() };
+    await send('start', { tabId: activeTab.id, includeMic, notice });
   } catch (err) {
     localError = ERRORS.capture(err.message);
   }
@@ -231,6 +235,26 @@ async function recordAgain() {
   await refresh();
 }
 
+function noticeText() {
+  return $('notice-text').value.trim().slice(0, NOTICE_MAX_LENGTH) || NOTICE_DEFAULT_TEXT;
+}
+
+async function saveSettings(patch) {
+  const { settings = {} } = await chrome.storage.local.get('settings');
+  await chrome.storage.local.set({ settings: { ...settings, ...patch } });
+}
+
+async function copyNotice() {
+  const button = $('btn-notice-copy');
+  try {
+    await navigator.clipboard.writeText(status.rec.noticeText || noticeText());
+    button.textContent = 'Copied';
+    setTimeout(() => (button.textContent = 'Copy the text'), 2000);
+  } catch {
+    button.textContent = 'Copy failed';
+  }
+}
+
 // ---------- init ----------
 
 async function init() {
@@ -238,12 +262,24 @@ async function init() {
   [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   const toggle = $('mic-toggle');
+  const noticeToggle = $('notice-toggle');
+  const noticeField = $('notice-text');
   const { settings = {} } = await chrome.storage.local.get('settings');
   toggle.checked = settings.includeMic ?? true;
-  toggle.addEventListener('change', async () => {
-    const { settings: current = {} } = await chrome.storage.local.get('settings');
-    await chrome.storage.local.set({ settings: { ...current, includeMic: toggle.checked } });
+  noticeToggle.checked = settings.noticeEnabled ?? true;
+  noticeField.maxLength = NOTICE_MAX_LENGTH;
+  noticeField.value = settings.noticeText || NOTICE_DEFAULT_TEXT;
+  toggle.addEventListener('change', () => saveSettings({ includeMic: toggle.checked }));
+  noticeToggle.addEventListener('change', () => saveSettings({ noticeEnabled: noticeToggle.checked }));
+  noticeField.addEventListener('input', () => saveSettings({ noticeText: noticeField.value }));
+  $('btn-notice-reset').addEventListener('click', () => {
+    noticeField.value = NOTICE_DEFAULT_TEXT;
+    saveSettings({ noticeText: NOTICE_DEFAULT_TEXT });
   });
+  const repost = () => run(() => send('postNotice'));
+  $('btn-notice-repost').addEventListener('click', repost);
+  $('btn-notice-retry').addEventListener('click', repost);
+  $('btn-notice-copy').addEventListener('click', copyNotice);
 
   $('btn-start').addEventListener('click', () => start(toggle.checked));
   $('btn-stop').addEventListener('click', () => run(() => send('stop')));

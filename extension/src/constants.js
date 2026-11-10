@@ -4,6 +4,10 @@
 export const PRODUCT_NAME = 'OwnTape';
 export const REPO_URL = 'https://github.com/AlexJoom/OwnTape';
 
+// Consent aid: default chat notice. The user can edit it (max 500 characters).
+export const NOTICE_DEFAULT_TEXT = `I am recording this call with ${PRODUCT_NAME}. Tell me if you do not agree.`;
+export const NOTICE_MAX_LENGTH = 500;
+
 // Recording quality. 2 Mbit/s video + 128 kbit/s audio is about 1 GB per hour.
 export const VIDEO_BITS_PER_SECOND = 2_000_000;
 export const AUDIO_BITS_PER_SECOND = 128_000;
@@ -37,7 +41,7 @@ export const STATE = Object.freeze({
 // Message targets.
 export const TARGET = Object.freeze({ SW: 'sw', OFFSCREEN: 'offscreen' });
 
-const MEET_CODE_RE = /^https:\/\/meet\.google\.com\/([a-z]{3,4}-[a-z]{3,4}-[a-z]{3,4})(?:[/?#]|$)/;
+const MEET_CODE_RE = /^https:\/\/meet\.google\.com\/(?:meet\/)?([a-z]{3,4}-[a-z]{3,4}-[a-z]{3,4})(?:[/?#]|$)/;
 
 /** Returns the Meet code (e.g. "abc-defg-hij") or null. */
 export function meetingCodeFromUrl(url) {

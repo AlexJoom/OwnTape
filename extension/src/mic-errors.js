@@ -9,6 +9,8 @@
 //                rejected at once). Chrome does this after repeated dismissals
 //                ("automatic blocking"); only the site settings help.
 //   'no-device'  No microphone found.
+//   'refused'    Chrome refused it although the state is 'granted' (seen after
+//                repeated prompts, or with an extension loaded through DevTools).
 //   'unreadable' A microphone exists but cannot be read (busy, OS privacy, driver).
 
 // A rejection faster than this means Chrome showed no prompt.
@@ -42,7 +44,8 @@ export function classifyMicError(err, state, elapsedMs) {
       if (elapsedMs === undefined) return 'not-asked'; // no prompt possible here (offscreen)
       return elapsedMs < NO_PROMPT_THRESHOLD_MS ? 'not-asked' : 'dismissed';
     }
-    return 'unreadable'; // permission granted in Chrome, but the operating system refused
+    // State 'granted': macOS reports an OS refusal as "Permission denied by system".
+    return /system/i.test(err?.message || '') ? 'unreadable' : 'refused';
   }
   if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || name === 'OverconstrainedError') {
     return 'no-device';
@@ -68,6 +71,10 @@ export const MIC_TEXTS = {
   'not-asked': {
     title: 'Chrome stopped asking for the microphone',
     text: 'The question was closed several times, so Chrome now blocks it automatically. Allow the microphone in the settings of OwnTape, then come back to this tab.',
+  },
+  refused: {
+    title: 'Chrome refused the microphone for OwnTape',
+    text: 'Chrome says that the microphone is allowed, but it did not give it to OwnTape. Open the settings of OwnTape and click Reset permissions. Then reload OwnTape on the chrome://extensions page, come back here and allow the microphone again.',
   },
   'no-device': {
     title: 'No microphone found',

@@ -22,8 +22,9 @@ function showError(kind, err) {
   $('err-title').textContent = texts.title;
   $('err-text').textContent = texts.text;
   currentKind = kind;
-  const needsSettings = kind === 'blocked' || kind === 'not-asked';
-  $('err-steps').hidden = !needsSettings;
+  const needsSettings = kind === 'blocked' || kind === 'not-asked' || kind === 'refused';
+  // The shared steps say "select Allow"; for 'refused' the steps are in the text.
+  $('err-steps').hidden = !(kind === 'blocked' || kind === 'not-asked');
   $('btn-settings').hidden = !needsSettings;
   // When only the settings can help, they are the next step; otherwise "Try again".
   $('btn-retry').classList.toggle('btn--primary', !needsSettings);

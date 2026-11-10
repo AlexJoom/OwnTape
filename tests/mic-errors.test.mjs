@@ -13,6 +13,8 @@ test('NotAllowedError depends on the permission state', () => {
   assert.equal(classifyMicError(e('NotAllowedError'), 'prompt'), 'not-asked');
   // Chrome allows it, but the operating system refuses: not "blocked in Chrome".
   assert.equal(classifyMicError(e('NotAllowedError', 'Permission denied by system'), 'granted'), 'unreadable');
+  // State 'granted' but Chrome itself refused: not the OS, not another program.
+  assert.equal(classifyMicError(e('NotAllowedError', 'Permission denied'), 'granted'), 'refused');
 });
 
 test('device problems are never reported as blocked or granted', () => {
@@ -25,7 +27,7 @@ test('device problems are never reported as blocked or granted', () => {
 });
 
 test('every kind has texts, and the detail line names the error', () => {
-  for (const kind of ['blocked', 'dismissed', 'not-asked', 'no-device', 'unreadable']) {
+  for (const kind of ['blocked', 'dismissed', 'not-asked', 'refused', 'no-device', 'unreadable']) {
     assert.ok(MIC_TEXTS[kind].title && MIC_TEXTS[kind].text);
   }
   assert.equal(micErrorDetail(e('NotReadableError', 'Could not start audio source')), 'NotReadableError: Could not start audio source');

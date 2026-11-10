@@ -110,6 +110,12 @@ npm test          # unit tests
 npm run package   # store ZIP: dist/owntape-<version>.zip (extension/ only)
 ```
 
+### Testing notes
+
+- **Microphone:** test it only with an extension that you load by hand (`chrome://extensions` → **Load unpacked**). An extension loaded through the DevTools protocol (`Extensions.loadUnpacked`, used by automation) does not get the microphone: `getUserMedia` fails with `NotAllowedError` at once, even when the site settings say "Allow".
+- **Tab capture in automation:** `--allowlisted-extension-id=<id>` lets an automated test start a capture without the toolbar click. It does not test the real click path.
+- **Many dismissed prompts:** after a microphone prompt was closed several times, Chrome stops asking (automatic blocking). Reset it on the extension's site-settings page (**Reset permissions**), or use a fresh profile.
+
 The product name is in `extension/manifest.json` and `extension/src/constants.js` (and in the `<title>` of the HTML pages).
 
 ## Licence

@@ -1,0 +1,7 @@
+/* Extension-only additions to the design popup.css. Uses its tokens. */
+.mr-recovery { display: grid; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--mr-border); }
+.mr-recovery__title { font-size: 14px; margin: 0; }
+.mr-recovery__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.mr-recovery__item { display: grid; gap: 6px; }
+.mr-recovery__name { font-size: 12px; overflow-wrap: anywhere; }
+.mr-recovery__actions { display: flex; gap: 8px; }

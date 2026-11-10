@@ -1,0 +1,15 @@
+# Internal drafts (competitor scan, launch plan). Not public yet.
+marketing/
+
+# Build output and local files
+dist/
+node_modules/
+*.zip
+*.crx
+*.pem
+.DS_Store
+
+# Never commit recordings
+*.webm
+*.mp4
+*.mkv

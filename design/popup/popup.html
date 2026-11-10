@@ -1,0 +1,231 @@
+<!doctype html>
+<!--
+  OwnTape — production popup template.
+  ------------------------------------------------------------------
+  Copy this file to the extension as popup.html (with popup.css).
+  - Every state is a <section data-state="…" hidden>. popup.js shows
+    exactly one: remove `hidden` from it, add `hidden` to the others.
+  - Elements that popup.js fills or listens to have an id (js hooks).
+  - The product name occurs ONLY in elements with class "js-app-name"
+    and in <title>. Replace it there (or fill it from
+    chrome.i18n.getMessage("appName")).
+  - No inline scripts, no inline handlers, no inline style attributes.
+  - Visual reference for every state: design/popup/states.html
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=340">
+  <title>OwnTape</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" type="module"></script>
+</head>
+<body class="mr-body">
+<div class="mr-popup" id="app">
+
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+
+  <!-- Screen-reader announcements for state changes. popup.js writes a
+       short sentence here on every state change ("Recording started"). -->
+  <p id="sr-status" class="mr-visually-hidden" role="status" aria-live="polite"></p>
+
+  <main>
+    <!-- 1. NOT ON A MEET TAB ======================================= -->
+    <section class="mr-state" data-state="not-meet" aria-labelledby="t-not-meet" hidden>
+      <div class="mr-hero">
+        <div class="mr-hero__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
+        </div>
+        <h2 class="mr-title" id="t-not-meet">Open a Google Meet call</h2>
+        <p class="mr-text">You can record only in a tab on <strong>meet.google.com</strong>. Join the call, then click this icon again.</p>
+      </div>
+      <div class="mr-actions">
+        <a class="mr-btn mr-btn--secondary" id="btn-open-meet" href="https://meet.google.com/" target="_blank" rel="noopener">
+          Go to meet.google.com
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. READY =================================================== -->
+    <section class="mr-state" data-state="ready" aria-labelledby="t-ready" hidden>
+      <h2 class="mr-title" id="t-ready">Ready to record this call</h2>
+
+      <div class="mr-target">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
+        <div class="mr-target__text">
+          <span class="mr-target__label">Tab to record</span>
+          <span class="mr-target__value" id="target-name">meet.google.com/abc-defg-hij</span>
+        </div>
+      </div>
+
+      <div class="mr-switch-row">
+        <div class="mr-switch-row__text">
+          <label class="mr-switch-row__label" for="mic-toggle">Include my microphone</label>
+          <span class="mr-switch-row__hint" id="mic-hint">Adds your voice. The tab gives the other voices.</span>
+        </div>
+        <input class="mr-switch" type="checkbox" role="switch" id="mic-toggle" aria-describedby="mic-hint" checked>
+      </div>
+
+      <!-- Consent aid. CSS (:has) hides the editor and switches the reminder
+           text when the toggle is off, so no JS is needed for that. -->
+      <div class="mr-notice">
+        <div class="mr-switch-row">
+          <div class="mr-switch-row__text">
+            <label class="mr-switch-row__label" for="notice-toggle">Post a notice in the call chat</label>
+            <span class="mr-switch-row__hint" id="notice-hint">OwnTape posts your message when the recording starts.</span>
+          </div>
+          <input class="mr-switch js-notice-toggle" type="checkbox" role="switch" id="notice-toggle" aria-describedby="notice-hint" checked>
+        </div>
+        <details class="mr-disclosure" id="notice-details">
+          <summary>Edit the message</summary>
+          <label class="mr-visually-hidden" for="notice-text">Message for the call chat</label>
+          <textarea class="mr-textarea" id="notice-text" rows="3" maxlength="500" spellcheck="true">I am recording this call with OwnTape. Tell me if you do not agree.</textarea>
+          <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-reset" type="button">Reset to the default text</button>
+        </details>
+      </div>
+
+      <div class="mr-callout" id="consent-reminder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>
+        <p class="mr-consent-on"><strong>Also say it aloud.</strong> Not everyone reads the chat.</p>
+        <p class="mr-consent-off"><strong>Tell the participants that you record.</strong> In many countries, the law requires their consent.</p>
+      </div>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--primary mr-btn--lg" id="btn-start" type="button">
+          <span class="mr-recdot" aria-hidden="true"></span>
+          Start recording
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. STARTING ================================================ -->
+    <section class="mr-state" data-state="starting" aria-labelledby="t-starting" hidden>
+      <h2 class="mr-title" id="t-starting">Starting…</h2>
+      <p class="mr-text">Connecting to the tab audio and video. This takes one or two seconds.</p>
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--primary mr-btn--lg" type="button" disabled>
+          <span class="mr-spinner" aria-hidden="true"></span>
+          Starting…
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. RECORDING =============================================== -->
+    <section class="mr-state" data-state="recording" aria-labelledby="t-recording" hidden>
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <span id="mic-chip-text">Mic on</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. SAVING ================================================== -->
+    <section class="mr-state" data-state="saving" aria-labelledby="t-saving" hidden>
+      <h2 class="mr-title" id="t-saving">Saving the recording…</h2>
+      <div class="mr-progress" role="progressbar" aria-label="Saving"><div class="mr-progress__bar"></div></div>
+      <p class="mr-text">Writing the video file to your computer. Long calls can take some seconds.</p>
+    </section>
+
+    <!-- 6. SAVED =================================================== -->
+    <section class="mr-state" data-state="saved" aria-labelledby="t-saved" hidden>
+      <div class="mr-hero">
+        <div class="mr-hero__icon mr-hero__icon--ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </div>
+        <h2 class="mr-title" id="t-saved">Recording saved</h2>
+      </div>
+      <div class="mr-file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
+        <span class="mr-file__name" id="file-name">meet-2026-11-10_14-03.webm</span>
+        <span class="mr-file__meta" id="file-meta">48 min · 312 MB · Downloads folder</span>
+      </div>
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--primary" id="btn-show-folder" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Show in folder
+        </button>
+        <button class="mr-btn mr-btn--secondary" id="btn-record-again" type="button">Record again</button>
+      </div>
+    </section>
+
+    <!-- 7. ERROR =================================================== -->
+    <!-- popup.js fills #error-title, #error-text and the button labels.
+         See states.html for the texts of each error. -->
+    <section class="mr-state" data-state="error" aria-labelledby="error-title" hidden>
+      <div class="mr-hero">
+        <div class="mr-hero__icon mr-hero__icon--error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        </div>
+        <h2 class="mr-title" id="error-title">Microphone access is blocked</h2>
+        <p class="mr-text" id="error-text">Chrome does not let the extension use your microphone. Allow it once, then try again. Or record only the call audio.</p>
+      </div>
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--primary" id="btn-error-primary" type="button">Allow microphone</button>
+        <button class="mr-btn mr-btn--secondary" id="btn-error-secondary" type="button">Record without my microphone</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div>
+</body>
+</html>

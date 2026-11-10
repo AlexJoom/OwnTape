@@ -1,0 +1,417 @@
+/* =====================================================================
+   OwnTape — popup styles
+   ---------------------------------------------------------------------
+   - Width: 340px. Height grows with content.
+   - Theme: follows the OS (prefers-color-scheme). You can force a theme
+     with data-theme="light" | "dark" on .mr-popup (used by the preview).
+   - No inline scripts / handlers needed. Show one state at a time by
+     removing the `hidden` attribute from one [data-state] section.
+   - All text/background pairs meet WCAG 2.2 AA (see design/README.md).
+   ===================================================================== */
+
+/* ---------- Tokens: light (default) ---------- */
+.mr-popup {
+  --mr-bg: #ffffff;
+  --mr-surface: #f5f6f8;
+  --mr-surface-2: #eceef2;
+  --mr-text: #16181d;
+  --mr-text-muted: #525a66;
+  --mr-border: #d9dde3;
+  --mr-control-border: #858c97;     /* 3.4:1 on bg — non-text contrast */
+
+  --mr-brand: #4338ca;              /* indigo 700 — 7.9:1 on white */
+  --mr-brand-hover: #3730a3;
+  --mr-on-brand: #ffffff;
+  --mr-brand-soft: #eef0ff;
+  --mr-brand-soft-text: #312a8f;
+
+  --mr-rec: #c81e1e;                /* 5.9:1 on white */
+  --mr-rec-hover: #a51818;
+  --mr-on-rec: #ffffff;
+  --mr-rec-soft: #fdeeee;
+  --mr-rec-soft-text: #8f1515;
+
+  --mr-ok: #157f3c;                 /* 5.1:1 on white */
+  --mr-ok-soft: #e8f6ee;
+
+  --mr-warn-soft: #fff6e0;
+  --mr-warn-text: #6b4a00;
+  --mr-warn-border: #e9c46a;
+
+  --mr-focus: #4338ca;
+  --mr-shadow: 0 1px 2px rgb(16 24 40 / 0.06);
+
+  --mr-radius: 10px;
+  --mr-radius-sm: 6px;
+  --mr-font: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif;
+  --mr-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+
+  color-scheme: light;
+}
+
+/* ---------- Tokens: dark ---------- */
+@media (prefers-color-scheme: dark) {
+  .mr-popup:not([data-theme="light"]) {
+    --mr-bg: #16171b;
+    --mr-surface: #1f2126;
+    --mr-surface-2: #292c33;
+    --mr-text: #eceef1;
+    --mr-text-muted: #a4abb6;
+    --mr-border: #343842;
+    --mr-control-border: #7d8592;
+    --mr-brand: #a5b0ff;
+    --mr-brand-hover: #c0c8ff;
+    --mr-on-brand: #11123a;
+    --mr-brand-soft: #23264a;
+    --mr-brand-soft-text: #d4d9ff;
+    --mr-rec: #ff6b6b;
+    --mr-rec-hover: #ff8a8a;
+    --mr-on-rec: #2a0606;
+    --mr-rec-soft: #3a1c1f;
+    --mr-rec-soft-text: #ffc9c9;
+    --mr-ok: #5fd38d;
+    --mr-ok-soft: #173326;
+    --mr-warn-soft: #33290f;
+    --mr-warn-text: #f5d98c;
+    --mr-warn-border: #6b5520;
+    --mr-focus: #a5b0ff;
+    --mr-shadow: none;
+    color-scheme: dark;
+  }
+}
+.mr-popup[data-theme="dark"] {
+  --mr-bg: #16171b;
+  --mr-surface: #1f2126;
+  --mr-surface-2: #292c33;
+  --mr-text: #eceef1;
+  --mr-text-muted: #a4abb6;
+  --mr-border: #343842;
+  --mr-control-border: #7d8592;
+  --mr-brand: #a5b0ff;
+  --mr-brand-hover: #c0c8ff;
+  --mr-on-brand: #11123a;
+  --mr-brand-soft: #23264a;
+  --mr-brand-soft-text: #d4d9ff;
+  --mr-rec: #ff6b6b;
+  --mr-rec-hover: #ff8a8a;
+  --mr-on-rec: #2a0606;
+  --mr-rec-soft: #3a1c1f;
+  --mr-rec-soft-text: #ffc9c9;
+  --mr-ok: #5fd38d;
+  --mr-ok-soft: #173326;
+  --mr-warn-soft: #33290f;
+  --mr-warn-text: #f5d98c;
+  --mr-warn-border: #6b5520;
+  --mr-focus: #a5b0ff;
+  --mr-shadow: none;
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+html, body { margin: 0; padding: 0; }
+body.mr-body { width: 340px; background: var(--mr-bg); }
+
+.mr-popup {
+  box-sizing: border-box;
+  width: 340px;
+  background: var(--mr-bg);
+  color: var(--mr-text);
+  font: 14px/1.45 var(--mr-font);
+  -webkit-font-smoothing: antialiased;
+}
+.mr-popup *, .mr-popup *::before, .mr-popup *::after { box-sizing: inherit; }
+.mr-popup [hidden] { display: none !important; }
+
+.mr-popup :focus-visible {
+  outline: 2px solid var(--mr-focus);
+  outline-offset: 2px;
+  border-radius: var(--mr-radius-sm);
+}
+
+.mr-visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Header ---------- */
+.mr-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mr-border);
+}
+.mr-header__logo { width: 20px; height: 20px; flex: none; display: block; }
+.mr-header__name { font-size: 14px; font-weight: 650; letter-spacing: -0.005em; margin: 0; }
+.mr-pill {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px;
+  font-size: 12px; font-weight: 500;
+  color: var(--mr-text-muted);
+  background: var(--mr-surface);
+  border: 1px solid var(--mr-border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.mr-pill svg { width: 12px; height: 12px; }
+
+/* ---------- Body / sections ---------- */
+.mr-state { padding: 16px; display: grid; gap: 14px; }
+
+.mr-title { margin: 0; font-size: 16px; line-height: 1.3; font-weight: 650; }
+.mr-text { margin: 0; color: var(--mr-text-muted); }
+.mr-text strong { color: var(--mr-text); font-weight: 600; }
+
+.mr-hero { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 8px 0 4px; }
+.mr-hero__icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--mr-surface-2); color: var(--mr-text-muted);
+}
+.mr-hero__icon svg { width: 22px; height: 22px; }
+.mr-hero__icon--ok { background: var(--mr-ok-soft); color: var(--mr-ok); }
+.mr-hero__icon--error { background: var(--mr-rec-soft); color: var(--mr-rec); }
+
+/* Target tab card */
+.mr-target {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--mr-surface);
+  border: 1px solid var(--mr-border);
+  border-radius: var(--mr-radius);
+  min-width: 0;
+}
+.mr-target svg { width: 18px; height: 18px; flex: none; color: var(--mr-text-muted); }
+.mr-target__text { min-width: 0; display: grid; }
+.mr-target__label { font-size: 12px; color: var(--mr-text-muted); }
+.mr-target__value {
+  font-weight: 550; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---------- Switch (native checkbox, role="switch") ---------- */
+.mr-switch-row {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.mr-switch-row__text { display: grid; gap: 2px; }
+.mr-switch-row__label { font-weight: 550; cursor: pointer; }
+.mr-switch-row__hint { font-size: 12.5px; color: var(--mr-text-muted); }
+
+.mr-switch {
+  appearance: none; -webkit-appearance: none;
+  flex: none; margin: 2px 0 0;
+  position: relative;
+  width: 40px; height: 24px;
+  border-radius: 999px;
+  background: var(--mr-bg);
+  border: 1.5px solid var(--mr-control-border);
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.mr-switch::before {
+  content: ""; position: absolute; top: 2.5px; left: 2.5px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--mr-control-border);
+  transition: transform .15s ease, background-color .15s ease;
+}
+.mr-switch:checked { background: var(--mr-brand); border-color: var(--mr-brand); }
+.mr-switch:checked::before { transform: translateX(16px); background: var(--mr-on-brand); }
+.mr-switch:focus-visible { outline: 2px solid var(--mr-focus); outline-offset: 2px; border-radius: 999px; }
+.mr-switch:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- Callouts ---------- */
+.mr-callout {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--mr-radius);
+  font-size: 13px; line-height: 1.45;
+  background: var(--mr-warn-soft);
+  color: var(--mr-warn-text);
+  border: 1px solid var(--mr-warn-border);
+}
+.mr-callout svg { width: 16px; height: 16px; flex: none; margin-top: 1px; }
+.mr-callout p { margin: 0; }
+.mr-callout strong { font-weight: 650; }
+.mr-callout--info { background: var(--mr-brand-soft); color: var(--mr-brand-soft-text); border-color: transparent; }
+.mr-callout--error { background: var(--mr-rec-soft); color: var(--mr-rec-soft-text); border-color: transparent; }
+
+/* ---------- Buttons ---------- */
+.mr-actions { display: grid; gap: 8px; }
+.mr-actions--row { grid-template-columns: 1fr 1fr; }
+
+.mr-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 40px; padding: 8px 14px;
+  font: inherit; font-weight: 600; font-size: 14px;
+  border-radius: var(--mr-radius);
+  border: 1px solid transparent;
+  cursor: pointer; text-decoration: none;
+  transition: background-color .12s ease, border-color .12s ease, transform .06s ease;
+}
+.mr-btn:active:not(:disabled) { transform: translateY(1px); }
+.mr-btn:disabled, .mr-btn[aria-disabled="true"] { cursor: progress; opacity: .75; }
+.mr-btn svg { width: 16px; height: 16px; flex: none; }
+.mr-btn--lg { min-height: 44px; font-size: 15px; }
+
+.mr-btn--primary { background: var(--mr-brand); color: var(--mr-on-brand); }
+.mr-btn--primary:hover:not(:disabled) { background: var(--mr-brand-hover); }
+
+.mr-btn--stop { background: var(--mr-rec); color: var(--mr-on-rec); }
+.mr-btn--stop:hover:not(:disabled) { background: var(--mr-rec-hover); }
+
+.mr-btn--secondary { background: var(--mr-bg); color: var(--mr-text); border-color: var(--mr-control-border); }
+.mr-btn--secondary:hover:not(:disabled) { background: var(--mr-surface); }
+
+.mr-btn--ghost { background: transparent; color: var(--mr-brand); min-height: 36px; }
+.mr-btn--ghost:hover:not(:disabled) { background: var(--mr-brand-soft); }
+
+/* "Record" dot inside the Start button */
+.mr-recdot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 2px var(--mr-brand), 0 0 0 3.5px currentColor;
+  margin-right: 2px;
+}
+
+/* ---------- Spinner / progress ---------- */
+.mr-spinner {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid currentColor; border-right-color: transparent;
+  animation: mr-spin .8s linear infinite;
+}
+.mr-progress {
+  height: 4px; border-radius: 999px; overflow: hidden;
+  background: var(--mr-surface-2);
+}
+.mr-progress__bar {
+  height: 100%; width: 40%; border-radius: inherit;
+  background: var(--mr-brand);
+  animation: mr-indeterminate 1.3s ease-in-out infinite;
+}
+
+/* ---------- Recording ---------- */
+.mr-rec {
+  display: grid; justify-items: center; gap: 6px;
+  padding: 16px 12px 14px;
+  background: var(--mr-rec-soft);
+  border-radius: var(--mr-radius);
+  text-align: center;
+}
+.mr-rec__status {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--mr-rec-soft-text);
+  margin: 0;
+}
+.mr-rec__dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--mr-rec);
+  animation: mr-pulse 1.6s ease-in-out infinite;
+}
+.mr-rec__timer {
+  font: 600 34px/1.1 var(--mr-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--mr-text);
+}
+.mr-meta {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+  margin: 2px 0 0; padding: 0; list-style: none;
+}
+.mr-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px;
+  font-size: 12px; font-weight: 500;
+  color: var(--mr-text);
+  background: var(--mr-bg);
+  border: 1px solid var(--mr-border);
+  border-radius: 999px;
+}
+.mr-chip svg { width: 12px; height: 12px; }
+
+/* ---------- Saved file ---------- */
+.mr-file {
+  display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center;
+  padding: 10px 12px;
+  background: var(--mr-surface);
+  border: 1px solid var(--mr-border);
+  border-radius: var(--mr-radius);
+}
+.mr-file svg { grid-row: span 2; width: 22px; height: 22px; color: var(--mr-text-muted); }
+.mr-file__name {
+  font: 550 13px/1.35 var(--mr-mono);
+  overflow-wrap: anywhere;
+}
+.mr-file__meta { font-size: 12px; color: var(--mr-text-muted); }
+
+/* ---------- Consent aid ---------- */
+.mr-notice { display: grid; gap: 6px; }
+.mr-disclosure { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.mr-disclosure > summary {
+  justify-self: start;
+  cursor: pointer; list-style: none;
+  font-size: 13px; font-weight: 600; color: var(--mr-brand);
+  padding: 2px 0; border-radius: var(--mr-radius-sm);
+}
+.mr-disclosure > summary::-webkit-details-marker { display: none; }
+.mr-disclosure > summary::before {
+  content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 7px 2px 1px;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform .15s ease;
+}
+.mr-disclosure[open] > summary::before { transform: rotate(45deg); margin-bottom: 4px; }
+.mr-disclosure > summary:hover { text-decoration: underline; text-underline-offset: 2px; }
+.mr-textarea {
+  width: 100%; min-width: 0; box-sizing: border-box; resize: vertical; min-height: 64px;
+  padding: 8px 10px;
+  font: 13px/1.45 var(--mr-font); color: var(--mr-text);
+  background: var(--mr-bg);
+  border: 1px solid var(--mr-control-border); border-radius: var(--mr-radius-sm);
+}
+.mr-textarea:focus-visible { outline: 2px solid var(--mr-focus); outline-offset: 1px; }
+.mr-disclosure .mr-btn--sm { justify-self: start; }
+
+/* Editor open → hide the target card, so the popup stays under Chrome's 600 px limit. */
+.mr-state:has(.mr-disclosure[open]) .mr-target { display: none; }
+
+/* Toggle off → hide the editor, show the long reminder. */
+.mr-consent-off { display: none; }
+.mr-state:has(.js-notice-toggle:not(:checked)) .mr-disclosure { display: none; }
+.mr-state:has(.js-notice-toggle:not(:checked)) .mr-consent-on { display: none; }
+.mr-state:has(.js-notice-toggle:not(:checked)) .mr-consent-off { display: block; }
+
+.mr-btn--sm { min-height: 32px; padding: 4px 10px; font-size: 13px; border-radius: var(--mr-radius-sm); }
+.mr-btn--ghost.mr-btn--sm { padding: 4px 6px; }
+.mr-spinner--sm { width: 14px; height: 14px; }
+
+.mr-notice-status {
+  display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 8px;
+  padding: 8px 12px;
+  font-size: 13px; color: var(--mr-text-muted);
+  background: var(--mr-surface); border: 1px solid var(--mr-border); border-radius: var(--mr-radius);
+}
+.mr-notice-status svg { width: 16px; height: 16px; flex: none; }
+.mr-notice-status--ok { color: var(--mr-text); }
+.mr-notice-status--ok > svg { color: var(--mr-ok); }
+.mr-notice-status .mr-btn { grid-column: 2; justify-self: start; margin-left: -6px; }
+.mr-inline-actions { display: flex; gap: 6px; margin-top: 8px; }
+.mr-notice-failed .mr-btn--ghost { color: var(--mr-warn-text); }
+
+/* ---------- Footer ---------- */
+.mr-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--mr-border);
+  font-size: 12px; color: var(--mr-text-muted);
+}
+.mr-footer a { color: var(--mr-text-muted); text-underline-offset: 2px; }
+.mr-footer a:hover { color: var(--mr-text); }
+
+/* ---------- Motion ---------- */
+@keyframes mr-spin { to { transform: rotate(360deg); } }
+@keyframes mr-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes mr-indeterminate { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mr-popup *, .mr-popup *::before { animation: none !important; transition: none !important; }
+  .mr-progress__bar { width: 100%; opacity: .6; }
+}

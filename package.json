@@ -1,0 +1,11 @@
+{
+  "name": "meet-recorder",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension that records a Google Meet tab to a local file.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "zip": "cd extension && zip -r ../dist/extension.zip . -x '*.DS_Store'"
+  }
+}

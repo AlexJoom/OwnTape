@@ -12,7 +12,7 @@
 <header class="pv-head">
   <h1>OwnTape — popup states</h1>
   <p>Visual spec. Width 340&nbsp;px. Each state shows the light and the dark theme. Copy markup from <code>popup.html</code>, styles from <code>popup.css</code>.</p>
-  <nav aria-label="States"><ul><li><a href="#not-meet">1 · Not on a Meet tab</a></li><li><a href="#ready">2 · Ready (chat notice on)</a></li><li><a href="#ready-edit">2b · Ready, “Edit the message” open</a></li><li><a href="#ready-nonotice">2c · Ready, chat notice off (long reminder comes back)</a></li><li><a href="#starting">3 · Starting</a></li><li><a href="#recording">4 · Recording, notice posted</a></li><li><a href="#recording-pending">4a · Recording, notice being posted</a></li><li><a href="#recording-failed">4c · Recording, notice NOT posted (warning, recording continues)</a></li><li><a href="#recording-nomic">4b · Recording, microphone off, chat notice off</a></li><li><a href="#saving">5 · Saving</a></li><li><a href="#saved">6 · Saved</a></li><li><a href="#error-mic">7a · Error: microphone blocked</a></li><li><a href="#error-tab-closed">7b · Error: Meet tab closed during recording</a></li><li><a href="#error-capture">7c · Error: cannot capture the tab (with technical detail)</a></li><li><a href="#error-mic-first">7d · Microphone not allowed yet (first use)</a></li><li><a href="#error-crash">7e · Recording stopped unexpectedly + recovery card</a></li><li><a href="#error-generic">7f · Error: something went wrong (generic)</a></li><li><a href="#recovery-ready">8 · Ready + recovery card (target card hides to save space)</a></li><li><a href="#recovery-two">8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click</a></li></ul></nav>
+  <nav aria-label="States"><ul><li><a href="#not-meet">1 · Not on a Meet tab</a></li><li><a href="#ready">2 · Ready (chat notice on)</a></li><li><a href="#ready-edit">2b · Ready, “Edit the message” open</a></li><li><a href="#ready-nonotice">2c · Ready, chat notice off (long reminder comes back)</a></li><li><a href="#starting">3 · Starting</a></li><li><a href="#recording">4 · Recording, notice posted</a></li><li><a href="#recording-pending">4a · Recording, notice being posted</a></li><li><a href="#recording-failed">4c · Recording, notice NOT posted (warning, recording continues)</a></li><li><a href="#recording-nomic">4b · Recording, microphone off, chat notice off</a></li><li><a href="#recording-micfail">4d · Recording, microphone failed (warning, recording continues)</a></li><li><a href="#recording-two-warnings">4e · Recording, microphone failed AND notice not posted (hint text hides)</a></li><li><a href="#saving">5 · Saving, percentage not known yet (moving bar)</a></li><li><a href="#saving-pct">5b · Saving, 45 %</a></li><li><a href="#saved">6 · Saved</a></li><li><a href="#error-mic">7a · Error: microphone blocked</a></li><li><a href="#error-tab-closed">7b · Error: Meet tab closed during recording</a></li><li><a href="#error-capture">7c · Error: cannot capture the tab (with technical detail)</a></li><li><a href="#error-mic-first">7d · Microphone not allowed yet (first use)</a></li><li><a href="#error-crash">7e · Recording stopped unexpectedly + recovery card</a></li><li><a href="#error-generic">7f · Error: something went wrong (generic)</a></li><li><a href="#recovery-ready">8 · Ready + recovery card (target card hides to save space)</a></li><li><a href="#recovery-two">8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click</a></li></ul></nav>
 </header>
 
 <section class="pv-row" id="not-meet" aria-labelledby="pv-not-meet">
@@ -644,7 +644,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-light" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-light"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-light" type="button">
@@ -714,7 +725,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-dark" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-dark"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-dark" type="button">
@@ -790,7 +812,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-pending-light" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-pending-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-pending-light"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-pending-light" type="button">
@@ -860,7 +893,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-pending-dark" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-pending-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-pending-dark"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-pending-dark" type="button">
@@ -936,7 +980,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-failed-light" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-failed-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-failed-light"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-failed-light" type="button">
@@ -1006,7 +1061,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-failed-dark" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-failed-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-failed-dark"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-failed-dark" type="button">
@@ -1082,7 +1148,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-nomic-light" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-nomic-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-nomic-light"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-nomic-light" type="button">
@@ -1152,7 +1229,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-nomic-dark" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-nomic-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-nomic-dark"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-nomic-dark" type="button">
@@ -1169,8 +1257,344 @@
   </div>
 </section>
 
+<section class="pv-row" id="recording-micfail" aria-labelledby="pv-recording-micfail">
+  <h2 class="pv-label" id="pv-recording-micfail">4d · Recording, microphone failed (warning, recording continues)</h2>
+  <div class="pv-pair">
+    <figure><figcaption>Light</figcaption>
+<div class="mr-popup mr-frame" data-theme="light">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-micfail-light">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-micfail-light">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-micfail-light" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-micfail-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+            <span id="mic-chip-text-recording-micfail-light">Mic off</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-micfail-light">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-micfail-light" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-micfail-light" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-micfail-light" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-micfail-light" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-micfail-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-micfail-light">NotReadableError: Could not start audio source</p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-micfail-light" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-micfail-light" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+    <figure><figcaption>Dark</figcaption>
+<div class="mr-popup mr-frame" data-theme="dark">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-micfail-dark">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-micfail-dark">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-micfail-dark" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-micfail-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+            <span id="mic-chip-text-recording-micfail-dark">Mic off</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-micfail-dark">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-micfail-dark" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-micfail-dark" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-micfail-dark" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-micfail-dark" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-micfail-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-micfail-dark">NotReadableError: Could not start audio source</p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-micfail-dark" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-micfail-dark" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+  </div>
+</section>
+
+<section class="pv-row" id="recording-two-warnings" aria-labelledby="pv-recording-two-warnings">
+  <h2 class="pv-label" id="pv-recording-two-warnings">4e · Recording, microphone failed AND notice not posted (hint text hides)</h2>
+  <div class="pv-pair">
+    <figure><figcaption>Light</figcaption>
+<div class="mr-popup mr-frame" data-theme="light">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-two-warnings-light">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-two-warnings-light">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-two-warnings-light" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-two-warnings-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+            <span id="mic-chip-text-recording-two-warnings-light">Mic off</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-two-warnings-light">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-two-warnings-light" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-two-warnings-light" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-two-warnings-light" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-two-warnings-light" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-two-warnings-light">No microphone found.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-two-warnings-light"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-two-warnings-light" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-two-warnings-light" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+    <figure><figcaption>Dark</figcaption>
+<div class="mr-popup mr-frame" data-theme="dark">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-two-warnings-dark">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-two-warnings-dark">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-two-warnings-dark" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-two-warnings-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+            <span id="mic-chip-text-recording-two-warnings-dark">Mic off</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-two-warnings-dark">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-two-warnings-dark" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-two-warnings-dark" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-two-warnings-dark" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-two-warnings-dark" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-two-warnings-dark">No microphone found.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-two-warnings-dark"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-two-warnings-dark" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-two-warnings-dark" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+  </div>
+</section>
+
 <section class="pv-row" id="saving" aria-labelledby="pv-saving">
-  <h2 class="pv-label" id="pv-saving">5 · Saving</h2>
+  <h2 class="pv-label" id="pv-saving">5 · Saving, percentage not known yet (moving bar)</h2>
   <div class="pv-pair">
     <figure><figcaption>Light</figcaption>
 <div class="mr-popup mr-frame" data-theme="light">
@@ -1188,8 +1612,14 @@
   </header>
   <main><section class="mr-state" data-state="saving" aria-labelledby="t-saving-saving-light">
       <h2 class="mr-title" id="t-saving-saving-light">Saving the recording…</h2>
-      <div class="mr-progress" role="progressbar" aria-label="Saving"><div class="mr-progress__bar"></div></div>
-      <p class="mr-text">Writing the video file to your computer. Long calls can take some seconds.</p>
+      <!-- Native <progress>: without a value attribute it is indeterminate (moving bar).
+           When the percentage is known: set value (0–100) and #saving-pct text ("45 %"). -->
+      <div class="mr-saving">
+        <span id="saving-label-saving-light">Writing the video file</span>
+        <span class="mr-saving__pct" id="saving-pct-saving-light" aria-hidden="true"></span>
+      </div>
+      <progress class="mr-meter" id="saving-progress-saving-light" max="100" aria-labelledby="saving-label-saving-light"></progress>
+      <p class="mr-text">Long calls can take some seconds. Do not close Chrome.</p>
     </section></main>
   <footer class="mr-footer">
     <span>Saves to your Downloads folder</span>
@@ -1212,12 +1642,84 @@
   </header>
   <main><section class="mr-state" data-state="saving" aria-labelledby="t-saving-saving-dark">
       <h2 class="mr-title" id="t-saving-saving-dark">Saving the recording…</h2>
-      <div class="mr-progress" role="progressbar" aria-label="Saving"><div class="mr-progress__bar"></div></div>
-      <p class="mr-text">Writing the video file to your computer. Long calls can take some seconds.</p>
+      <!-- Native <progress>: without a value attribute it is indeterminate (moving bar).
+           When the percentage is known: set value (0–100) and #saving-pct text ("45 %"). -->
+      <div class="mr-saving">
+        <span id="saving-label-saving-dark">Writing the video file</span>
+        <span class="mr-saving__pct" id="saving-pct-saving-dark" aria-hidden="true"></span>
+      </div>
+      <progress class="mr-meter" id="saving-progress-saving-dark" max="100" aria-labelledby="saving-label-saving-dark"></progress>
+      <p class="mr-text">Long calls can take some seconds. Do not close Chrome.</p>
     </section></main>
   <footer class="mr-footer">
     <span>Saves to your Downloads folder</span>
     <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-saving-dark" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+  </div>
+</section>
+
+<section class="pv-row" id="saving-pct" aria-labelledby="pv-saving-pct">
+  <h2 class="pv-label" id="pv-saving-pct">5b · Saving, 45 %</h2>
+  <div class="pv-pair">
+    <figure><figcaption>Light</figcaption>
+<div class="mr-popup mr-frame" data-theme="light">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+  <main><section class="mr-state" data-state="saving" aria-labelledby="t-saving-saving-pct-light">
+      <h2 class="mr-title" id="t-saving-saving-pct-light">Saving the recording…</h2>
+      <!-- Native <progress>: without a value attribute it is indeterminate (moving bar).
+           When the percentage is known: set value (0–100) and #saving-pct text ("45 %"). -->
+      <div class="mr-saving">
+        <span id="saving-label-saving-pct-light">Writing the video file</span>
+        <span class="mr-saving__pct" id="saving-pct-saving-pct-light" aria-hidden="true">45 %</span>
+      </div>
+      <progress class="mr-meter" id="saving-progress-saving-pct-light" max="100" value="45" aria-labelledby="saving-label-saving-pct-light"></progress>
+      <p class="mr-text">Long calls can take some seconds. Do not close Chrome.</p>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-saving-pct-light" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+    <figure><figcaption>Dark</figcaption>
+<div class="mr-popup mr-frame" data-theme="dark">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+  </header>
+  <main><section class="mr-state" data-state="saving" aria-labelledby="t-saving-saving-pct-dark">
+      <h2 class="mr-title" id="t-saving-saving-pct-dark">Saving the recording…</h2>
+      <!-- Native <progress>: without a value attribute it is indeterminate (moving bar).
+           When the percentage is known: set value (0–100) and #saving-pct text ("45 %"). -->
+      <div class="mr-saving">
+        <span id="saving-label-saving-pct-dark">Writing the video file</span>
+        <span class="mr-saving__pct" id="saving-pct-saving-pct-dark" aria-hidden="true">45 %</span>
+      </div>
+      <progress class="mr-meter" id="saving-progress-saving-pct-dark" max="100" value="45" aria-labelledby="saving-label-saving-pct-dark"></progress>
+      <p class="mr-text">Long calls can take some seconds. Do not close Chrome.</p>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-saving-pct-dark" target="_blank" rel="noopener">Help</a>
   </footer>
 </div></figure>
   </div>

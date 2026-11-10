@@ -439,6 +439,26 @@ body.mr-body { width: 340px; background: var(--mr-bg); }
   overflow-wrap: anywhere; text-align: left;
 }
 
+/* ---------- Warnings in the Recording state ---------- */
+.mr-state:has(.mr-notice-failed:not([hidden])) .mr-rec-hint { display: none; }
+.mr-notice-failed .mr-error-detail { margin-top: 6px; background: transparent; padding: 0; color: inherit; opacity: 1; }
+.mr-notice-failed .mr-error-detail:empty { display: none; }
+
+/* ---------- Saving progress (native <progress>) ---------- */
+.mr-saving { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--mr-text-muted); }
+.mr-saving__pct { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--mr-text); }
+.mr-meter {
+  appearance: none; -webkit-appearance: none;
+  display: block; width: 100%; height: 6px; border: 0; border-radius: 999px;
+  background: var(--mr-surface-2); overflow: hidden;
+}
+.mr-meter::-webkit-progress-bar { background: var(--mr-surface-2); border-radius: 999px; }
+.mr-meter::-webkit-progress-value { background: var(--mr-brand); border-radius: 999px; transition: width .3s ease; }
+.mr-meter:indeterminate { background: linear-gradient(90deg, transparent 0 30%, var(--mr-brand) 30% 70%, transparent 70%) no-repeat, var(--mr-surface-2); background-size: 40% 100%, auto; animation: mr-meter-ind 1.3s ease-in-out infinite; }
+.mr-meter:indeterminate::-webkit-progress-bar { background: transparent; }
+@keyframes mr-meter-ind { 0% { background-position: -60% 0, 0 0; } 100% { background-position: 160% 0, 0 0; } }
+@media (prefers-reduced-motion: reduce) { .mr-meter:indeterminate { animation: none; background-position: 50% 0, 0 0; } }
+
 /* ---------- Footer ---------- */
 .mr-footer {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;

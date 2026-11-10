@@ -76,6 +76,20 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 - 7f Generic: title "Something went wrong", text "OwnTape could not finish this action. Try again. If it happens again, report it on GitHub with the detail below.", button OK. Put the raw message in `#error-detail`, not in `#error-text`.
 - 7c: put the technical reason in `#error-detail` (small monospace line), not in brackets after the text.
 
+### Microphone problems (popup + permission page)
+- Popup, Recording state: `#mic-warning` (warning callout with crossed-mic icon, `role="alert"`). Title from `MIC_TEXTS[kind].title`, then "Your voice is not in the recording. The recording continues." Technical line in `#mic-warning-detail` (hidden when empty). Set the mic chip to "Mic off" too. Variants 4d, 4e.
+- When any warning shows in the Recording state, CSS hides the "You can close this window…" hint (`.mr-rec-hint`), so the popup stays under 600 px (4e = 507 px).
+- Permission page: one panel `[data-status="error"]`. For "blocked": `#btn-settings` is the primary button, `#btn-retry` becomes secondary. `#err-os-note` has one `.os-line[data-os]` per OS (mac, win, linux, cros). Show only the user's OS line (`chrome.runtime.getPlatformInfo().os`). A last line says how to record without the voice.
+- Texts (`MIC_TEXTS`):
+  - blocked — "The microphone is blocked" / "Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again."
+  - dismissed — "Chrome did not get an answer" / "The question about the microphone closed before you answered. Click Try again and select Allow."
+  - no-device — "No microphone found" / "Connect a microphone or turn it on, then try again."
+  - unreadable — "The microphone cannot be used" / "Another program possibly uses the microphone, or your operating system does not let Chrome use it. Close the other program or check the privacy settings below, then try again."
+  - The "Or record only the call audio" part moves out of the texts. The page has its own line for it, and the popup error has the "Record without my microphone" button.
+
+### Saving progress
+- Native `<progress id="saving-progress" class="mr-meter" max="100">`. No `value` attribute = moving bar (percentage not known yet). When known: `progress.value = 45` and `#saving-pct` = "45 %". Variants 5, 5b.
+
 ## Design decisions
 
 - **Tone:** calm and clear. Indigo for the brand and normal actions; red only for "recording" and "stop". No dark patterns, no alarm language.

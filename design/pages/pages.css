@@ -65,6 +65,14 @@ h1 { font-size: clamp(26px, 4vw, 32px); line-height: 1.2; letter-spacing: -0.015
 .status svg { width: 22px; height: 22px; flex: none; margin-top: 2px; }
 .status h2 { font-size: 16px; margin: 0 0 4px; }
 .status p { margin: 0; }
+.status p + p, .status .how + p, .status p + .btn-row, .status .btn-row + p { margin-top: 10px; }
+.status--error p, .status--error .note { color: inherit; }
+.status--error .how { color: inherit; }
+.status--error .how strong { color: inherit; }
+.os-line { display: block; }
+/* Technical error line */
+.detail { margin-top: 10px; padding: 6px 8px; border-radius: 6px; background: rgb(0 0 0 / .05); font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+@media (prefers-color-scheme: dark) { .detail { background: rgb(255 255 255 / .06); } }
 .status--ok { background: var(--ok-soft); }
 .status--ok svg, .status--ok h2 { color: var(--ok); }
 .status--error { background: var(--rec-soft); color: var(--rec-soft-text); }

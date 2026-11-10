@@ -6,7 +6,7 @@
     stop the tracks at once, then show ONE status panel:
       [data-status="waiting"] while Chrome shows its prompt
       [data-status="granted"] on success
-      [data-status="error"]   on any error (text from mic-errors.js)
+      [data-status="error"]   on any error (see the comment on the panel)
     Also check navigator.permissions.query({name:'microphone'}) on load:
     "granted" → show granted panel directly; "denied" → show denied panel.
   - #btn-close → window.close().
@@ -61,24 +61,36 @@
         </div>
       </div>
 
-      <!-- One error panel; mic-permission.js fills it from mic-errors.js
-           (blocked, dismissed, no-device, unreadable). -->
+      <!-- ONE error panel. mic-permission.js fills it from MIC_TEXTS (mic-errors.js):
+           kind = blocked | dismissed | no-device | unreadable.
+           - #err-steps and #btn-settings: only for "blocked".
+             For "blocked", #btn-settings is the primary button and #btn-retry
+             becomes secondary (toggle btn--primary / btn--secondary on #btn-retry).
+           - #err-os-note: for "unreadable" and "blocked".
+           - #err-detail: technical line, for example "NotReadableError: Could not start audio source". -->
       <div class="status status--error" data-status="error" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <h2 id="err-title">The microphone is blocked</h2>
-          <p id="err-text"></p>
-          <ol class="how" id="err-steps" hidden>
-            <li>Click <strong>Open microphone settings</strong> below.</li>
+          <p id="err-text">Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again.</p>
+          <ol class="how" id="err-steps">
+            <li>Click <strong>Open microphone settings</strong>.</li>
             <li>Under <strong>Not allowed to use your microphone</strong>, find <strong class="js-app-name">OwnTape</strong> and click it.</li>
-            <li>Set <strong>Microphone</strong> to <strong>Allow</strong>, then come back and click <strong>Try again</strong>.</li>
+            <li>Set <strong>Microphone</strong> to <strong>Allow</strong>. Come back to this tab and click <strong>Try again</strong>.</li>
           </ol>
-          <p class="note" id="err-os-note" hidden>On macOS and Windows, also check that the operating system lets Chrome use the microphone (System Settings › Privacy).</p>
+          <!-- One line per OS. JS: chrome.runtime.getPlatformInfo() → os ("mac" | "win" | "linux" | "cros");
+               hide the other lines. Without JS, all lines show. -->
+          <p class="note" id="err-os-note">Also check that your operating system lets Chrome use the microphone.
+            <span class="os-line" data-os="mac">macOS: System Settings › Privacy &amp; Security › Microphone.</span>
+            <span class="os-line" data-os="win">Windows: Settings › Privacy &amp; security › Microphone.</span>
+            <span class="os-line" data-os="linux">Linux: in your system sound settings (for example Settings › Sound › Input), select the correct input device and make sure that it is not muted.</span>
+            <span class="os-line" data-os="cros">ChromeOS: Settings › Privacy and security › Privacy controls › Microphone access.</span></p>
           <p class="detail" id="err-detail" hidden></p>
           <div class="btn-row">
-            <button class="btn btn--primary" id="btn-retry" type="button">Try again</button>
-            <button class="btn btn--secondary" id="btn-settings" type="button" hidden>Open microphone settings</button>
+            <button class="btn btn--primary" id="btn-settings" type="button">Open microphone settings</button>
+            <button class="btn btn--secondary" id="btn-retry" type="button">Try again</button>
           </div>
+          <p class="note">Or record without your voice: turn off <strong>Include my microphone</strong> in <span class="js-app-name">OwnTape</span>.</p>
         </div>
       </div>
     </div>

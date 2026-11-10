@@ -27,7 +27,7 @@ export function classifyMicError(err, state) {
   if (name === 'NotAllowedError' || name === 'SecurityError' || name === 'PermissionDeniedError') {
     if (state === 'denied') return 'blocked';
     if (state === 'prompt') return 'dismissed';
-    return 'unreadable'; // permission granted in Chrome, but the OS refused
+    return 'unreadable'; // permission granted in Chrome, but the operating system refused
   }
   if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || name === 'OverconstrainedError') {
     return 'no-device';
@@ -44,18 +44,18 @@ export function micErrorDetail(err) {
 export const MIC_TEXTS = {
   blocked: {
     title: 'The microphone is blocked',
-    text: 'Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again. Or record only the call audio.',
+    text: 'Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again.',
   },
   dismissed: {
     title: 'Chrome did not get an answer',
-    text: 'The question about the microphone closed without an answer. Press the button again and select Allow.',
+    text: 'The question about the microphone closed before you answered. Click Try again and select Allow.',
   },
   'no-device': {
     title: 'No microphone found',
-    text: 'Connect a microphone or turn it on, then try again. Or record only the call audio.',
+    text: 'Connect a microphone or turn it on, then try again.',
   },
   unreadable: {
     title: 'The microphone cannot be used',
-    text: 'A different program possibly uses the microphone, or your operating system does not let Chrome use it. Close the other program or check the privacy settings of your operating system, then try again.',
+    text: 'Another program possibly uses the microphone, or your operating system does not let Chrome use it. Close the other program or check the privacy settings below, then try again.',
   },
 };

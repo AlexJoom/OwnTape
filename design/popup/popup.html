@@ -195,7 +195,18 @@
         </div>
       </div>
 
-      <p class="mr-text">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed" id="mic-warning" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail"></p>
+        </div>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
 
       <div class="mr-actions">
         <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop" type="button">
@@ -208,8 +219,14 @@
     <!-- 5. SAVING ================================================== -->
     <section class="mr-state" data-state="saving" aria-labelledby="t-saving" hidden>
       <h2 class="mr-title" id="t-saving">Saving the recording…</h2>
-      <div class="mr-progress" role="progressbar" aria-label="Saving"><div class="mr-progress__bar"></div></div>
-      <p class="mr-text">Writing the video file to your computer. Long calls can take some seconds.</p>
+      <!-- Native <progress>: without a value attribute it is indeterminate (moving bar).
+           When the percentage is known: set value (0–100) and #saving-pct text ("45 %"). -->
+      <div class="mr-saving">
+        <span id="saving-label">Writing the video file</span>
+        <span class="mr-saving__pct" id="saving-pct" aria-hidden="true"></span>
+      </div>
+      <progress class="mr-meter" id="saving-progress" max="100" aria-labelledby="saving-label"></progress>
+      <p class="mr-text">Long calls can take some seconds. Do not close Chrome.</p>
     </section>
 
     <!-- 6. SAVED =================================================== -->

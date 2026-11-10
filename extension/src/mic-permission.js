@@ -14,8 +14,12 @@ function showError(kind, err) {
   const texts = MIC_TEXTS[kind];
   $('err-title').textContent = texts.title;
   $('err-text').textContent = texts.text;
-  $('err-steps').hidden = kind !== 'blocked';
-  $('btn-settings').hidden = kind !== 'blocked';
+  const blocked = kind === 'blocked';
+  $('err-steps').hidden = !blocked;
+  $('btn-settings').hidden = !blocked;
+  // For "blocked" the next step is the settings page; otherwise "Try again".
+  $('btn-retry').classList.toggle('btn--primary', !blocked);
+  $('btn-retry').classList.toggle('btn--secondary', blocked);
   $('err-os-note').hidden = kind !== 'unreadable' && kind !== 'blocked';
   $('err-detail').hidden = !err;
   $('err-detail').textContent = micErrorDetail(err);
@@ -42,6 +46,15 @@ $('btn-settings').addEventListener('click', () => chrome.tabs.create({ url: MIC_
 $('btn-close').addEventListener('click', () => window.close());
 
 for (const el of document.querySelectorAll('.js-app-name')) el.textContent = PRODUCT_NAME;
+
+// Show only the operating-system line for this computer (all if unknown).
+try {
+  const { os } = await chrome.runtime.getPlatformInfo();
+  const lines = [...document.querySelectorAll('.os-line')];
+  if (lines.some((l) => l.dataset.os === os)) for (const l of lines) l.hidden = l.dataset.os !== os;
+} catch {
+  // keep all lines
+}
 
 // On load, show only what the permission state alone proves. "granted" here
 // means Chrome allows it; a device problem shows when the user presses the button.

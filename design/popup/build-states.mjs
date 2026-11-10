@@ -63,7 +63,28 @@ const variants = [
       .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
                '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
   },
-  { id: 'saving', label: '5 · Saving', html: section('saving') },
+  {
+    id: 'recording-micfail', label: '4d · Recording, microphone failed (warning, recording continues)',
+    html: section('recording').replace('data-notice="posted" hidden', 'data-notice="posted"')
+      .replace('id="mic-warning" role="alert" hidden', 'id="mic-warning" role="alert"')
+      .replace(/(id="mic-warning-detail">)[^<]*/, '$1NotReadableError: Could not start audio source')
+      .replace('<span id="mic-chip-text">Mic on</span>', '<span id="mic-chip-text">Mic off</span>')
+      .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
+  },
+  {
+    id: 'recording-two-warnings', label: '4e · Recording, microphone failed AND notice not posted (hint text hides)',
+    html: section('recording').replace('data-notice="failed" role="alert" hidden', 'data-notice="failed" role="alert"')
+      .replace('id="mic-warning" role="alert" hidden', 'id="mic-warning" role="alert"')
+      .replace(/(id="mic-warning-title">)[^<]*/, '$1No microphone found.')
+      .replace('<span id="mic-chip-text">Mic on</span>', '<span id="mic-chip-text">Mic off</span>')
+      .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
+  },
+  { id: 'saving', label: '5 · Saving, percentage not known yet (moving bar)', html: section('saving') },
+  {
+    id: 'saving-pct', label: '5b · Saving, 45 %',
+    html: section('saving').replace('id="saving-pct" aria-hidden="true"></span>', 'id="saving-pct" aria-hidden="true">45 %</span>')
+      .replace('max="100" aria-labelledby', 'max="100" value="45" aria-labelledby'),
+  },
   { id: 'saved', label: '6 · Saved', html: section('saved') },
   { id: 'error-mic', label: '7a · Error: microphone blocked', html: section('error') },
   {

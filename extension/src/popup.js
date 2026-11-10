@@ -172,12 +172,17 @@ function renderRecording(rec, bytes) {
   show('recording');
 }
 
-const SAVING_TEXT = 'Writing the video file to your computer. Long calls can take some seconds.';
-
 function renderSaving(progress) {
-  const text = document.querySelector('[data-state="saving"] .mr-text');
-  // The file is read once to add the seek index; show how far it is.
-  text.textContent = progress ? `Writing the video file to your computer: ${progress.percent} %.` : SAVING_TEXT;
+  // The file is read once to add the seek index. Without a known value the
+  // <progress> element shows a moving bar.
+  const bar = $('saving-progress');
+  if (progress) {
+    bar.value = progress.percent;
+    $('saving-pct').textContent = `${progress.percent} %`;
+  } else {
+    bar.removeAttribute('value');
+    $('saving-pct').textContent = '';
+  }
   show('saving');
 }
 

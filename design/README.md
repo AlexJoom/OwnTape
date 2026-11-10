@@ -93,6 +93,17 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 ### Saving progress
 - Native `<progress id="saving-progress" class="mr-meter" max="100">`. No `value` attribute = moving bar (percentage not known yet). When known: `progress.value = 45` and `#saving-pct` = "45 %". Variants 5, 5b.
 
+### Settings view and video quality
+- Decision: one **Settings view inside the popup** (`section[data-state="settings"]`) for rarely changed things: video quality and the chat message text. The message editor moved out of the Ready state.
+- Open it with the header gear `#btn-open-settings` or with `#btn-change-settings` ("Change") in the Ready summary line. `#btn-settings-back` returns to the previous state. Hide the gear in starting / recording / saving: the quality cannot change during a recording.
+- Ready shows one summary line: "Video quality: <strong id="quality-summary">Standard</strong> · Change".
+- Quality: radio group `name="quality"`, values `small | standard | high`, default `standard`, stored in `chrome.storage.local`. Save at once on change (no Save button); announce "Saved" in `#sr-status`. Hide `label[data-option="small"]` if Small is not offered.
+- Size texts: `.js-size-small`, `.js-size-standard`, `.js-size-high`. Fill them with the measured numbers (placeholders now: about 0.5 / up to 1 / about 2 GB per hour).
+- Tip (info callout): "For a sharp shared screen: pin the presentation in Meet and make the window large. The recording shows what the tab shows."
+- Recording state: new chip `#quality-chip` / `#quality-chip-text` ("Small" | "Standard" | "High") between the mic chip and the size chip.
+- Heights: Settings 591 px (3 options), 531 px (2 options). Ready 536 px.
+- Visual spec: `states.html` variants 2, 4, 9, 9b.
+
 ## Design decisions
 
 - **Tone:** calm and clear. Indigo for the brand and normal actions; red only for "recording" and "stop". No dark patterns, no alarm language.

@@ -45,10 +45,6 @@ const variants = [
   { id: 'not-meet', label: '1 · Not on a Meet tab', html: section('not-meet') },
   { id: 'ready', label: '2 · Ready (chat notice on)', html: section('ready') },
   {
-    id: 'ready-edit', label: '2b · Ready, “Edit the message” open',
-    html: section('ready').replace('<details class="mr-disclosure" id="notice-details">', '<details class="mr-disclosure" id="notice-details" open>'),
-  },
-  {
     id: 'ready-nonotice', label: '2c · Ready, chat notice off (long reminder comes back)',
     html: section('ready').replace('id="notice-toggle" aria-describedby="notice-hint" checked>', 'id="notice-toggle" aria-describedby="notice-hint">'),
   },
@@ -79,6 +75,12 @@ const variants = [
       .replace(/(id="mic-warning-detail">)[^<]*/, '$1NotAllowedError: Permission denied (state: granted)')
       .replace('<span id="mic-chip-text">Mic on</span>', '<span id="mic-chip-text">Mic off</span>')
       .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
+  },
+  { id: 'settings', label: '9 · Settings view (from the gear or “Change”)', html: section('settings') },
+  {
+    id: 'settings-two', label: '9b · Settings view, only 2 quality options, High selected',
+    html: section('settings').replace('<label class="mr-option" data-option="small">', '<label class="mr-option" data-option="small" hidden>')
+      .replace('value="standard" checked>', 'value="standard">').replace('value="high">', 'value="high" checked>'),
   },
   { id: 'saving', label: '5 · Saving, percentage not known yet (moving bar)', html: section('saving') },
   {
@@ -127,7 +129,8 @@ const variants = [
 // Ids must be unique in one document: suffix them per instance.
 const uniq = (html, suffix) => html
   .replace(/\bid="([^"]+)"/g, `id="$1-${suffix}"`)
-  .replace(/\b(for|aria-labelledby|aria-describedby)="([^"]+)"/g, `$1="$2-${suffix}"`);
+  .replace(/\b(for|aria-labelledby|aria-describedby)="([^"]+)"/g, `$1="$2-${suffix}"`)
+  .replace(/\bname="([^"]+)"/g, `name="$1-${suffix}"`);
 
 const popup = (v, theme) => uniq(`
 <div class="mr-popup mr-frame" data-theme="${theme}">

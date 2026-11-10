@@ -159,8 +159,8 @@ function renderRecording(rec, bytes) {
   if (micFailed) {
     const kind = rec.micError?.kind || 'unreadable';
     $('mic-warning-title').textContent = `${MIC_TEXTS[kind].title}.`;
-    $('mic-warning-detail').textContent = rec.micError?.detail || '';
-    $('mic-warning-detail').hidden = !rec.micError?.detail;
+    $('mic-warning-detail').textContent = micDiagnosis(rec, false);
+    $('mic-warning-detail').hidden = false;
   }
   $('mic-chip').querySelector('svg').innerHTML = rec.micActive ? ICON_MIC_ON : ICON_MIC_OFF;
   $('size-chip-text').textContent = formatSize(bytes);
@@ -265,6 +265,31 @@ async function recordAgain() {
   await refresh();
 }
 
+/** Short line for the warning, or the full text for "Copy details". */
+function micDiagnosis(rec, full) {
+  const e = rec.micError;
+  const line = e ? `${e.detail || 'unknown error'} · permission: ${e.state || 'unknown'}` : 'no error details';
+  if (!full) return line;
+  return [
+    `${PRODUCT_NAME} ${chrome.runtime.getManifest().version} microphone problem`,
+    `kind: ${e?.kind || 'unknown'}`,
+    `permission state (recorder): ${e?.state || 'unknown'}`,
+    ...(e?.attempts || []).map((a) => `attempt ${a}`),
+    `browser: ${navigator.userAgent}`,
+  ].join('\n');
+}
+
+async function copyMicDetails() {
+  const button = $('btn-mic-copy');
+  try {
+    await navigator.clipboard.writeText(micDiagnosis(status.rec, true));
+    button.textContent = 'Copied';
+    setTimeout(() => (button.textContent = 'Copy details'), 2000);
+  } catch {
+    button.textContent = 'Copy failed';
+  }
+}
+
 function noticeText() {
   return $('notice-text').value.trim().slice(0, NOTICE_MAX_LENGTH) || NOTICE_DEFAULT_TEXT;
 }
@@ -310,6 +335,7 @@ async function init() {
   $('btn-notice-repost').addEventListener('click', repost);
   $('btn-notice-retry').addEventListener('click', repost);
   $('btn-notice-copy').addEventListener('click', copyNotice);
+  $('btn-mic-copy').addEventListener('click', copyMicDetails);
 
   $('btn-start').addEventListener('click', () => start(toggle.checked));
   $('btn-stop').addEventListener('click', () => run(() => send('stop')));

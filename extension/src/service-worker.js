@@ -133,7 +133,7 @@ async function startRecording({ tabId, includeMic, notice }) {
     await ensureOffscreen();
     await updatePending(opfsName, { downloadName, meetingCode, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
     const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName });
-    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, mimeType: res.mimeType });
+    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, micAttempt: res.micAttempt || null, mimeType: res.mimeType });
   } catch (err) {
     await updatePending(opfsName, null);
     await setRec(IDLE_STATE);

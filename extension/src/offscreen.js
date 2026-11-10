@@ -74,18 +74,37 @@ async function getTabStream(streamId) {
   });
 }
 
-/** @returns {Promise<{stream: MediaStream|null, error: {kind, detail}|null}>} */
+// Two attempts: with voice processing first, then plain { audio: true }
+// (the processing constraints can fail on some devices).
+const MIC_ATTEMPTS = [
+  { name: 'processed', constraints: { audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } } },
+  { name: 'plain', constraints: { audio: true } },
+];
+
+/**
+ * @returns {Promise<{stream: MediaStream|null, attempt: string|null,
+ *   error: {kind, detail, state, attempts: string[]}|null}>}
+ */
 async function getMicStream() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-    });
-    return { stream, error: null };
-  } catch (err) {
-    console.warn('Microphone not available:', err);
-    const kind = classifyMicError(err, await micPermissionState());
-    return { stream: null, error: { kind, detail: micErrorDetail(err) } };
+  const failures = [];
+  let lastErr = null;
+  for (const attempt of MIC_ATTEMPTS) {
+    const t0 = performance.now();
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(attempt.constraints);
+      return { stream, attempt: attempt.name, error: null };
+    } catch (err) {
+      lastErr = err;
+      failures.push(`${attempt.name}: ${micErrorDetail(err)} (${Math.round(performance.now() - t0)} ms)`);
+      console.warn(`Microphone attempt "${attempt.name}" failed:`, err);
+    }
   }
+  const state = await micPermissionState();
+  return {
+    stream: null,
+    attempt: null,
+    error: { kind: classifyMicError(lastErr, state), detail: micErrorDetail(lastErr), state, attempts: failures },
+  };
 }
 
 function sendToSw(message) {
@@ -100,9 +119,10 @@ async function startRecording({ streamId, includeMic, opfsName }) {
   let micError = null;
   let audioCtx = null;
   try {
-    if (includeMic) ({ stream: micStream, error: micError } = await getMicStream());
+    let micAttempt = null;
+    if (includeMic) ({ stream: micStream, attempt: micAttempt, error: micError } = await getMicStream());
     audioCtx = new AudioContext();
-    return { ...(await beginSession({ tabStream, micStream, audioCtx, opfsName })), micError };
+    return { ...(await beginSession({ tabStream, micStream, audioCtx, opfsName })), micError, micAttempt };
   } catch (err) {
     // Release the capture, or the next start fails with "active stream".
     for (const stream of [tabStream, micStream]) stream?.getTracks().forEach((t) => t.stop());

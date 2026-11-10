@@ -13,11 +13,22 @@ export const NOTICE_MAX_LENGTH = 500;
 export const CRASH_ERROR = 'The recording stopped unexpectedly. You can save the partial file.';
 
 // Recording quality. 2 Mbit/s video + 128 kbit/s audio is about 1 GB per hour.
-export const VIDEO_BITS_PER_SECOND = 2_000_000;
 export const AUDIO_BITS_PER_SECOND = 128_000;
-export const MAX_WIDTH = 1920;
-export const MAX_HEIGHT = 1080;
-export const MAX_FRAME_RATE = 30;
+
+// Video quality presets (setting "videoQuality" in chrome.storage.local, read
+// at Start). Numbers are provisional until measured; see README.
+export const VIDEO_QUALITY = Object.freeze({
+  standard: { maxWidth: 1920, maxHeight: 1080, maxFrameRate: 30, videoBitsPerSecond: 2_000_000 },
+  high: { maxWidth: 2560, maxHeight: 1440, maxFrameRate: 30, videoBitsPerSecond: 6_000_000 },
+  small: { maxWidth: 1280, maxHeight: 720, maxFrameRate: 30, videoBitsPerSecond: 1_000_000 },
+});
+export const DEFAULT_VIDEO_QUALITY = 'standard';
+// MediaStreamTrack.contentHint for the tab video ('' = browser default).
+export const VIDEO_CONTENT_HINT = 'detail';
+
+export function videoQuality(name) {
+  return VIDEO_QUALITY[name] || VIDEO_QUALITY[DEFAULT_VIDEO_QUALITY];
+}
 
 // MediaRecorder emits a chunk this often; each chunk goes to disk at once.
 export const TIMESLICE_MS = 2000;

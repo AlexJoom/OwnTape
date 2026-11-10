@@ -6,15 +6,13 @@
 
 import {
   AUDIO_BITS_PER_SECOND,
-  MAX_FRAME_RATE,
-  MAX_HEIGHT,
-  MAX_WIDTH,
   MIME_TYPES,
   PROGRESS_INTERVAL_MS,
   TARGET,
   INDEX_TIMEOUT_MS,
   TIMESLICE_MS,
-  VIDEO_BITS_PER_SECOND,
+  VIDEO_CONTENT_HINT,
+  videoQuality,
 } from './constants.js';
 import { fixWebmDuration } from './webm-duration.js';
 import { addWebmIndex } from './webm-cues.js';
@@ -61,16 +59,16 @@ function pickMimeType() {
   return MIME_TYPES.find((t) => MediaRecorder.isTypeSupported(t)) || '';
 }
 
-async function getTabStream(streamId) {
+async function getTabStream(streamId, quality) {
   return navigator.mediaDevices.getUserMedia({
     audio: { mandatory: { chromeMediaSource: 'tab', chromeMediaSourceId: streamId } },
     video: {
       mandatory: {
         chromeMediaSource: 'tab',
         chromeMediaSourceId: streamId,
-        maxWidth: MAX_WIDTH,
-        maxHeight: MAX_HEIGHT,
-        maxFrameRate: MAX_FRAME_RATE,
+        maxWidth: quality.maxWidth,
+        maxHeight: quality.maxHeight,
+        maxFrameRate: quality.maxFrameRate,
       },
     },
   });
@@ -113,10 +111,13 @@ function sendToSw(message) {
   return chrome.runtime.sendMessage({ target: TARGET.SW, ...message }).catch(() => {});
 }
 
-async function startRecording({ streamId, includeMic, opfsName }) {
+async function startRecording({ streamId, includeMic, opfsName, quality: qualityName, contentHint }) {
   if (session) throw new Error('A recording is already active');
 
-  const tabStream = await getTabStream(streamId);
+  const quality = videoQuality(qualityName);
+  const tabStream = await getTabStream(streamId, quality);
+  const hint = contentHint ?? VIDEO_CONTENT_HINT;
+  for (const track of tabStream.getVideoTracks()) if (hint) track.contentHint = hint;
   let micStream = null;
   let micError = null;
   let audioCtx = null;
@@ -124,7 +125,9 @@ async function startRecording({ streamId, includeMic, opfsName }) {
     let micAttempt = null;
     if (includeMic) ({ stream: micStream, attempt: micAttempt, error: micError } = await getMicStream());
     audioCtx = new AudioContext();
-    return { ...(await beginSession({ tabStream, micStream, audioCtx, opfsName })), micError, micAttempt };
+    const session = await beginSession({ tabStream, micStream, audioCtx, opfsName, quality });
+    const settings = tabStream.getVideoTracks()[0]?.getSettings() || {};
+    return { ...session, micError, micAttempt, video: { width: settings.width, height: settings.height, frameRate: settings.frameRate, hint } };
   } catch (err) {
     // Release the capture, or the next start fails with "active stream".
     for (const stream of [tabStream, micStream]) stream?.getTracks().forEach((t) => t.stop());
@@ -133,7 +136,7 @@ async function startRecording({ streamId, includeMic, opfsName }) {
   }
 }
 
-async function beginSession({ tabStream, micStream, audioCtx, opfsName }) {
+async function beginSession({ tabStream, micStream, audioCtx, opfsName, quality }) {
 
   // Tab capture mutes the tab for the user. Route the tab audio back to the
   // speakers, and mix tab + microphone into one track for the recording.
@@ -155,7 +158,7 @@ async function beginSession({ tabStream, micStream, audioCtx, opfsName }) {
   const mimeType = pickMimeType();
   const recorder = new MediaRecorder(recordStream, {
     mimeType,
-    videoBitsPerSecond: VIDEO_BITS_PER_SECOND,
+    videoBitsPerSecond: quality.videoBitsPerSecond,
     audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
   });
 

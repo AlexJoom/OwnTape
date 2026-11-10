@@ -113,7 +113,7 @@ async function sendToOffscreen(message) {
 
 // ---------- Commands ----------
 
-async function startRecording({ tabId, includeMic, notice }) {
+async function startRecording({ tabId, includeMic, notice, quality, contentHint }) {
   const rec = await getRec();
   if (rec.state !== STATE.IDLE) throw new Error(`Cannot start while ${rec.state}`);
 
@@ -133,8 +133,10 @@ async function startRecording({ tabId, includeMic, notice }) {
     const streamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: tabId });
     await ensureOffscreen();
     await updatePending(opfsName, { downloadName, meetingCode, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
-    const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName });
-    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, micAttempt: res.micAttempt || null, mimeType: res.mimeType });
+    const { settings = {} } = await chrome.storage.local.get('settings');
+    const videoQuality = quality || settings.videoQuality;
+    const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName, quality: videoQuality, contentHint });
+    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, micAttempt: res.micAttempt || null, mimeType: res.mimeType, video: res.video, videoQuality: videoQuality || null });
   } catch (err) {
     await updatePending(opfsName, null);
     await setRec(IDLE_STATE);

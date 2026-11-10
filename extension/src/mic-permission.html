@@ -62,9 +62,10 @@
       </div>
 
       <!-- ONE error panel. mic-permission.js fills it from MIC_TEXTS (mic-errors.js):
-           kind = blocked | dismissed | no-device | unreadable.
-           - #err-steps and #btn-settings: only for "blocked".
-             For "blocked", #btn-settings is the primary button and #btn-retry
+           kind = blocked | not-asked | dismissed | no-device | unreadable.
+           - #err-steps and #btn-settings: for "blocked" and "not-asked". #btn-settings opens
+             chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2F<id> (the extension's own page).
+             For these two kinds, #btn-settings is the primary button and #btn-retry
              becomes secondary (toggle btn--primary / btn--secondary on #btn-retry).
            - #err-os-note: for "unreadable" and "blocked".
            - #err-detail: technical line, for example "NotReadableError: Could not start audio source". -->
@@ -75,8 +76,8 @@
           <p id="err-text">Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again.</p>
           <ol class="how" id="err-steps">
             <li>Click <strong>Open microphone settings</strong>.</li>
-            <li>Under <strong>Not allowed to use your microphone</strong>, find <strong class="js-app-name">OwnTape</strong> and click it.</li>
-            <li>Set <strong>Microphone</strong> to <strong>Allow</strong>. Come back to this tab and click <strong>Try again</strong>.</li>
+            <li>Next to <strong>Microphone</strong>, select <strong>Allow</strong>.</li>
+            <li>Come back to this tab. <span class="js-app-name">OwnTape</span> tries again by itself. If nothing happens, click <strong>Try again</strong>.</li>
           </ol>
           <!-- One line per OS. JS: chrome.runtime.getPlatformInfo() → os ("mac" | "win" | "linux" | "cros");
                hide the other lines. Without JS, all lines show. -->

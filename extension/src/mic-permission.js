@@ -2,7 +2,6 @@
 // the first grant; the offscreen recorder then uses the same permission.
 import { PRODUCT_NAME } from './constants.js';
 import {
-  MIC_SETTINGS_URL,
   MIC_TEXTS,
   classifyMicError,
   extensionSiteSettingsUrl,
@@ -23,9 +22,8 @@ function showError(kind, err) {
   $('err-title').textContent = texts.title;
   $('err-text').textContent = texts.text;
   currentKind = kind;
-  const blocked = kind === 'blocked';
-  const needsSettings = blocked || kind === 'not-asked';
-  $('err-steps').hidden = !blocked;
+  const needsSettings = kind === 'blocked' || kind === 'not-asked';
+  $('err-steps').hidden = !needsSettings;
   $('btn-settings').hidden = !needsSettings;
   // When only the settings can help, they are the next step; otherwise "Try again".
   $('btn-retry').classList.toggle('btn--primary', !needsSettings);
@@ -57,8 +55,8 @@ $('btn-allow').addEventListener('click', requestMic);
 $('btn-retry').addEventListener('click', requestMic);
 $('btn-settings').addEventListener('click', () =>
   chrome.tabs.create({
-    // "not-asked": the site page of this extension; "blocked": the list, as the steps say.
-    url: currentKind === 'not-asked' ? extensionSiteSettingsUrl(chrome.runtime.id) : MIC_SETTINGS_URL,
+    // This extension's own site page: one "Microphone" dropdown.
+    url: extensionSiteSettingsUrl(chrome.runtime.id),
   }),
 );
 

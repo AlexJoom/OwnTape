@@ -11,8 +11,6 @@
 //   'no-device'  No microphone found.
 //   'unreadable' A microphone exists but cannot be read (busy, OS privacy, driver).
 
-export const MIC_SETTINGS_URL = 'chrome://settings/content/microphone';
-
 // A rejection faster than this means Chrome showed no prompt.
 export const NO_PROMPT_THRESHOLD_MS = 500;
 
@@ -68,8 +66,8 @@ export const MIC_TEXTS = {
     text: 'The question about the microphone closed before you answered. Click Try again and select Allow.',
   },
   'not-asked': {
-    title: 'Chrome does not ask for the microphone',
-    text: 'Chrome does not show the question for OwnTape now. This can happen after the question was closed several times. Set Microphone to Allow in the site settings of OwnTape, then come back to this page.',
+    title: 'Chrome stopped asking for the microphone',
+    text: 'The question was closed several times, so Chrome now blocks it automatically. Allow the microphone in the settings of OwnTape, then come back to this tab.',
   },
   'no-device': {
     title: 'No microphone found',

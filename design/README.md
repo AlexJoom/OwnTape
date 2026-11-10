@@ -44,7 +44,7 @@ Status: all 4 deliverables are ready. Store screenshots 1–4 have placeholders 
   - Recording: three blocks `[data-notice="pending" | "posted" | "failed"]`, all `hidden`. Show ONE. Show "posted" only after you verify the message in the chat. Show none if the toggle was off.
   - Buttons: `#btn-notice-repost` (Post the notice again), `#btn-notice-copy` (copy the text; then change its label to "Copied" for 2 s), `#btn-notice-retry`.
   - "failed" is a warning (`role="alert"`), not the error state. The recording continues.
-- Suggested file name: `meet-YYYY-MM-DD_HH-MM.webm` (local time).
+- File name (developer's format, adopted): `meet-<meeting-code>-YYYY-MM-DD-HHmm.webm`.
 - The product name (OwnTape) occurs only in `<title>` and `.js-app-name`. You can also fill it from `chrome.i18n.getMessage("appName")`.
 - Links: Help → repo `#readme`, Source → repo, Privacy → `PRIVACY.md` in the repo (the developer must create that file).
 - CSP: no inline scripts, no inline handlers, no `style=""` attributes. Inline SVG is used for the icons (it is not script).
@@ -61,6 +61,20 @@ chrome.action.setTitle({ title: 'OwnTape — recording' });
 Do not add a badge. At 16 px the badge covers the mark, and the red icon already shows the state.
 
 manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon-128.png }` and the same set in `action.default_icon`.
+
+### Recovery card ("A recording was not saved")
+- `#recovery` is the FIRST child of `<main>`, above the state sections. Show it with the idle states (not-meet, ready, saved, error).
+- One `<li>` per item: clone `<template id="recovery-item">`. `.mr-recovery__name` = "<meeting code> · <local date, time>" (for example "abc-defg-hij · 10 Nov, 14:03"); full file name in its `title`. `.mr-recovery__meta` = "23 min · 140 MB · kept on this computer".
+- Title: "A recording was not saved" or "N recordings were not saved".
+- `.mr-recovery__save` = secondary button (Start stays the only primary button). `.mr-recovery__delete` = 2 clicks, no `confirm()`: 1st click → class `is-confirming`, label "Delete for good?"; 2nd click within 4 s → delete; otherwise restore. Announce the result in `#sr-status`.
+- While the card is visible, CSS hides the "Tab to record" card and the switch hints (height stays under 600 px with up to 2 items; with 3 or more, the popup scrolls).
+- Visual spec: `states.html` variants 7e, 8, 8b.
+
+### Error texts (all in `states.html`, 7a–7f)
+- 7d "Allow your microphone first" (developer text, adopted).
+- 7e Crash: title "The recording stopped unexpectedly", text "The part that was recorded is safe. Save it with the button above.", button OK. Use this instead of the generic error when a recovery item exists.
+- 7f Generic: title "Something went wrong", text "OwnTape could not finish this action. Try again. If it happens again, report it on GitHub with the detail below.", button OK. Put the raw message in `#error-detail`, not in `#error-text`.
+- 7c: put the technical reason in `#error-detail` (small monospace line), not in brackets after the text.
 
 ## Design decisions
 

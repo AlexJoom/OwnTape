@@ -15,6 +15,31 @@ const section = (name) =>
   pick(new RegExp(`<section class="mr-state" data-state="${name}"[\\s\\S]*?<\\/section>`))
     .replace(' hidden>', '>');
 
+// Recovery card with n items (built from the <template>, as popup.js does).
+const recoveryTpl = pick(/<section class="mr-recovery"[\s\S]*?<\/section>/);
+const itemTpl = recoveryTpl.match(/<template id="recovery-item">([\s\S]*?)<\/template>/)[1];
+const recovery = (items, confirming = false) => {
+  const lis = items.map(([name, meta], i) => {
+    let li = itemTpl.replace(/(mr-recovery__name"[^>]*>)[^<]*/, `$1${name}`).replace(/(mr-recovery__meta">)[^<]*/, `$1${meta}`);
+    if (confirming && i === 0) li = li.replace('mr-recovery__delete" type="button">Delete', 'mr-recovery__delete is-confirming" type="button">Delete for good?');
+    return li;
+  }).join('');
+  return recoveryTpl.replace(' hidden>', '>').replace(/<template[\s\S]*?<\/template>/, '')
+    .replace(items.length > 1 ? 'A recording was not saved' : '\u0000', `${items.length} recordings were not saved`)
+    .replace('<ul class="mr-recovery__list" id="recovery-list"></ul>', `<ul class="mr-recovery__list" id="recovery-list">${lis}</ul>`);
+};
+const errorVariant = (title, text, primary, secondary, detail) => {
+  let h = section('error')
+    .replace(/(id="error-title">)[^<]*/, `$1${title}`)
+    .replace(/(id="error-text">)[^<]*/, `$1${text}`)
+    .replace(/(id="btn-error-primary" type="button">)[^<]*/, `$1${primary}`);
+  h = secondary
+    ? h.replace(/(id="btn-error-secondary" type="button">)[^<]*/, `$1${secondary}`)
+    : h.replace(/<button class="mr-btn mr-btn--secondary" id="btn-error-secondary"[^>]*>[^<]*<\/button>/, '');
+  if (detail) h = h.replace('<p class="mr-error-detail" id="error-detail" hidden></p>', `<p class="mr-error-detail" id="error-detail">${detail}</p>`);
+  return h;
+};
+
 // Variants that popup.js produces by changing text only.
 const variants = [
   { id: 'not-meet', label: '1 · Not on a Meet tab', html: section('not-meet') },
@@ -50,12 +75,31 @@ const variants = [
       .replace(/<button class="mr-btn mr-btn--secondary" id="btn-error-secondary"[^>]*>[^<]*<\/button>/, ''),
   },
   {
-    id: 'error-capture', label: '7c · Error: cannot capture the tab',
-    html: section('error')
-      .replace(/(id="error-title">)[^<]*/, '$1Cannot record this tab')
-      .replace(/(id="error-text">)[^<]*/, '$1Another extension or app possibly records this tab now. Stop it, reload the Meet tab, then try again.')
-      .replace(/(id="btn-error-primary" type="button">)[^<]*/, '$1Try again')
-      .replace(/<button class="mr-btn mr-btn--secondary" id="btn-error-secondary"[^>]*>[^<]*<\/button>/, ''),
+    id: 'error-capture', label: '7c · Error: cannot capture the tab (with technical detail)',
+    html: errorVariant('Cannot record this tab', 'Another extension or app possibly records this tab now. Stop it, reload the Meet tab, then try again.', 'Try again', null, 'Cannot capture a tab with an active stream.'),
+  },
+  {
+    id: 'error-mic-first', label: '7d · Microphone not allowed yet (first use)',
+    html: errorVariant('Allow your microphone first', 'To record your voice, allow the microphone one time. Or record only the call audio.', 'Allow microphone', 'Record without my microphone'),
+  },
+  {
+    id: 'error-crash', label: '7e · Recording stopped unexpectedly + recovery card',
+    pre: recovery([['abc-defg-hij · 10 Nov, 14:03', '23 min · 140 MB · kept on this computer']]),
+    html: errorVariant('The recording stopped unexpectedly', 'The part that was recorded is safe. Save it with the button above.', 'OK', null),
+  },
+  {
+    id: 'error-generic', label: '7f · Error: something went wrong (generic)',
+    html: errorVariant('Something went wrong', 'OwnTape could not finish this action. Try again. If it happens again, report it on GitHub with the detail below.', 'OK', null, 'Error: Offscreen document is not available.'),
+  },
+  {
+    id: 'recovery-ready', label: '8 · Ready + recovery card (target card hides to save space)',
+    pre: recovery([['abc-defg-hij · 10 Nov, 14:03', '23 min · 140 MB · kept on this computer']]),
+    html: section('ready'),
+  },
+  {
+    id: 'recovery-two', label: '8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click',
+    pre: recovery([['abc-defg-hij · 10 Nov, 14:03', '23 min · 140 MB · kept on this computer'], ['xyz-abcd-efg · 9 Nov, 09:30', '51 min · 305 MB · kept on this computer']], true),
+    html: section('not-meet'),
   },
 ];
 // Ids must be unique in one document: suffix them per instance.
@@ -66,7 +110,7 @@ const uniq = (html, suffix) => html
 const popup = (v, theme) => uniq(`
 <div class="mr-popup mr-frame" data-theme="${theme}">
   ${header}
-  <main>${v.html}</main>
+  <main>${v.pre || ''}${v.html}</main>
   ${footer}
 </div>`, `${v.id}-${theme}`);
 

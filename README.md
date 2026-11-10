@@ -101,11 +101,13 @@ extension/          the extension (load this folder unpacked)
   src/popup.*             popup UI (from design/popup)
   src/constants.js        product name, quality settings, file name
 design/             UI spec, icons, store assets (from the design work)
-tests/              unit tests (Node.js 20+)
+tests/              unit tests (Node.js 22+)
+scripts/package.mjs builds the store ZIP (no dependencies)
 ```
 
 ```sh
-npm test
+npm test          # unit tests
+npm run package   # store ZIP: dist/owntape-<version>.zip (extension/ only)
 ```
 
 The product name is in `extension/manifest.json` and `extension/src/constants.js` (and in the `<title>` of the HTML pages).

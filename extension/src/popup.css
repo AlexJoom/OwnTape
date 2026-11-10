@@ -441,8 +441,12 @@ body.mr-body { width: 340px; background: var(--mr-bg); }
 
 /* ---------- Warnings in the Recording state ---------- */
 .mr-state:has(.mr-notice-failed:not([hidden])) .mr-rec-hint { display: none; }
+/* Two warnings at the same time → smaller recording card (stays under 600 px). */
+.mr-state:has(.mr-notice-failed:not([hidden]) ~ .mr-notice-failed:not([hidden])) .mr-rec { padding: 10px 12px; gap: 4px; }
+.mr-state:has(.mr-notice-failed:not([hidden]) ~ .mr-notice-failed:not([hidden])) .mr-rec__timer { font-size: 28px; }
 .mr-notice-failed .mr-error-detail { margin-top: 6px; background: transparent; padding: 0; color: inherit; opacity: 1; }
 .mr-notice-failed .mr-error-detail:empty { display: none; }
+.mr-notice-failed:has(.mr-error-detail:empty) #btn-mic-copy { display: none; }
 
 /* ---------- Saving progress (native <progress>) ---------- */
 .mr-saving { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--mr-text-muted); }

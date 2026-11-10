@@ -18,20 +18,26 @@ function showPanel(name) {
 }
 
 function showError(kind, err) {
-  const texts = MIC_TEXTS[kind];
+  const texts = MIC_TEXTS[kind] || MIC_TEXTS.unreadable;
   $('err-title').textContent = texts.title;
   $('err-text').textContent = texts.text;
   currentKind = kind;
-  const needsSettings = kind === 'blocked' || kind === 'not-asked' || kind === 'refused';
-  // The shared steps say "select Allow"; for 'refused' the steps are in the text.
-  $('err-steps').hidden = !(kind === 'blocked' || kind === 'not-asked');
+  const allowSteps = kind === 'blocked' || kind === 'not-asked';
+  const refused = kind === 'refused';
+  const needsSettings = allowSteps || refused;
+  $('err-steps').hidden = !allowSteps;
+  // 'refused': reset + reload steps. Try again cannot help before the reload.
+  $('err-reset-note').hidden = !refused;
+  $('err-steps-reset').hidden = !refused;
+  $('btn-extensions').hidden = !refused;
+  $('btn-retry').hidden = refused;
   $('btn-settings').hidden = !needsSettings;
   // When only the settings can help, they are the next step; otherwise "Try again".
   $('btn-retry').classList.toggle('btn--primary', !needsSettings);
   $('btn-retry').classList.toggle('btn--secondary', needsSettings);
   $('err-os-note').hidden = kind !== 'unreadable' && kind !== 'blocked';
   $('err-detail').hidden = !err;
-  $('err-detail').textContent = micErrorDetail(err);
+  $('err-detail').textContent = typeof err === 'string' ? err : micErrorDetail(err);
   showPanel('error');
 }
 
@@ -63,12 +69,14 @@ $('btn-settings').addEventListener('click', () =>
 
 // When the user comes back from the settings, retry by itself if Chrome now allows it.
 async function recheckOnReturn() {
-  if (document.visibilityState !== 'visible' || !currentKind) return;
+  // Not for 'refused': the state is already 'granted' there; only a reload helps.
+  if (document.visibilityState !== 'visible' || !currentKind || currentKind === 'refused') return;
   if ((await micPermissionState()) === 'granted') requestMic();
 }
 document.addEventListener('visibilitychange', recheckOnReturn);
 window.addEventListener('focus', recheckOnReturn);
 $('btn-close').addEventListener('click', () => window.close());
+$('btn-extensions').addEventListener('click', () => chrome.tabs.create({ url: 'chrome://extensions/' }));
 
 for (const el of document.querySelectorAll('.js-app-name')) el.textContent = PRODUCT_NAME;
 
@@ -81,6 +89,14 @@ try {
   // keep all lines
 }
 
-// On load, show only what the permission state alone proves. "granted" here
-// means Chrome allows it; a device problem shows when the user presses the button.
-if ((await micPermissionState()) === 'denied') showError('blocked', null);
+// Opened from the popup ("How to fix") with the recorder's result:
+// ?kind=<kind>&detail=<technical line>. Show that at once, without a new request.
+const params = new URLSearchParams(location.search);
+const fromPopup = params.get('kind');
+if (fromPopup && MIC_TEXTS[fromPopup]) {
+  showError(fromPopup, params.get('detail') || null);
+} else if ((await micPermissionState()) === 'denied') {
+  // Otherwise show only what the permission state alone proves. A device
+  // problem shows when the user presses the button.
+  showError('blocked', null);
+}

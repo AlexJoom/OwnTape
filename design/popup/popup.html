@@ -202,6 +202,13 @@
         <div>
           <p><strong id="mic-warning-title">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 

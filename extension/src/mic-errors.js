@@ -73,8 +73,8 @@ export const MIC_TEXTS = {
     text: 'The question was closed several times, so Chrome now blocks it automatically. Allow the microphone in the settings of OwnTape, then come back to this tab.',
   },
   refused: {
-    title: 'Chrome refused the microphone for OwnTape',
-    text: 'Chrome says that the microphone is allowed, but it did not give it to OwnTape. Open the settings of OwnTape and click Reset permissions. Then reload OwnTape on the chrome://extensions page, come back here and allow the microphone again.',
+    title: 'Chrome did not give the microphone to OwnTape',
+    text: 'Chrome says that the microphone is allowed, but it did not give it to OwnTape. Reset the permission and reload OwnTape. Follow the steps below.',
   },
   'no-device': {
     title: 'No microphone found',

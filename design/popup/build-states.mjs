@@ -72,10 +72,11 @@ const variants = [
       .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
   },
   {
-    id: 'recording-two-warnings', label: '4e · Recording, microphone failed AND notice not posted (hint text hides)',
+    id: 'recording-two-warnings', label: '4e · Recording, microphone refused AND notice not posted (hint text hides)',
     html: section('recording').replace('data-notice="failed" role="alert" hidden', 'data-notice="failed" role="alert"')
       .replace('id="mic-warning" role="alert" hidden', 'id="mic-warning" role="alert"')
-      .replace(/(id="mic-warning-title">)[^<]*/, '$1No microphone found.')
+      .replace(/(id="mic-warning-title">)[^<]*/, '$1Chrome did not give the microphone to OwnTape.')
+      .replace(/(id="mic-warning-detail">)[^<]*/, '$1NotAllowedError: Permission denied (state: granted)')
       .replace('<span id="mic-chip-text">Mic on</span>', '<span id="mic-chip-text">Mic off</span>')
       .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
   },

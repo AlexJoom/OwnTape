@@ -12,7 +12,7 @@
 <header class="pv-head">
   <h1>OwnTape — popup states</h1>
   <p>Visual spec. Width 340&nbsp;px. Each state shows the light and the dark theme. Copy markup from <code>popup.html</code>, styles from <code>popup.css</code>.</p>
-  <nav aria-label="States"><ul><li><a href="#not-meet">1 · Not on a Meet tab</a></li><li><a href="#ready">2 · Ready (chat notice on)</a></li><li><a href="#ready-edit">2b · Ready, “Edit the message” open</a></li><li><a href="#ready-nonotice">2c · Ready, chat notice off (long reminder comes back)</a></li><li><a href="#starting">3 · Starting</a></li><li><a href="#recording">4 · Recording, notice posted</a></li><li><a href="#recording-pending">4a · Recording, notice being posted</a></li><li><a href="#recording-failed">4c · Recording, notice NOT posted (warning, recording continues)</a></li><li><a href="#recording-nomic">4b · Recording, microphone off, chat notice off</a></li><li><a href="#recording-micfail">4d · Recording, microphone failed (warning, recording continues)</a></li><li><a href="#recording-two-warnings">4e · Recording, microphone failed AND notice not posted (hint text hides)</a></li><li><a href="#saving">5 · Saving, percentage not known yet (moving bar)</a></li><li><a href="#saving-pct">5b · Saving, 45 %</a></li><li><a href="#saved">6 · Saved</a></li><li><a href="#error-mic">7a · Error: microphone blocked</a></li><li><a href="#error-tab-closed">7b · Error: Meet tab closed during recording</a></li><li><a href="#error-capture">7c · Error: cannot capture the tab (with technical detail)</a></li><li><a href="#error-mic-first">7d · Microphone not allowed yet (first use)</a></li><li><a href="#error-crash">7e · Recording stopped unexpectedly + recovery card</a></li><li><a href="#error-generic">7f · Error: something went wrong (generic)</a></li><li><a href="#recovery-ready">8 · Ready + recovery card (target card hides to save space)</a></li><li><a href="#recovery-two">8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click</a></li></ul></nav>
+  <nav aria-label="States"><ul><li><a href="#not-meet">1 · Not on a Meet tab</a></li><li><a href="#ready">2 · Ready (chat notice on)</a></li><li><a href="#ready-edit">2b · Ready, “Edit the message” open</a></li><li><a href="#ready-nonotice">2c · Ready, chat notice off (long reminder comes back)</a></li><li><a href="#starting">3 · Starting</a></li><li><a href="#recording">4 · Recording, notice posted</a></li><li><a href="#recording-pending">4a · Recording, notice being posted</a></li><li><a href="#recording-failed">4c · Recording, notice NOT posted (warning, recording continues)</a></li><li><a href="#recording-nomic">4b · Recording, microphone off, chat notice off</a></li><li><a href="#recording-micfail">4d · Recording, microphone failed (warning, recording continues)</a></li><li><a href="#recording-two-warnings">4e · Recording, microphone refused AND notice not posted (hint text hides)</a></li><li><a href="#saving">5 · Saving, percentage not known yet (moving bar)</a></li><li><a href="#saving-pct">5b · Saving, 45 %</a></li><li><a href="#saved">6 · Saved</a></li><li><a href="#error-mic">7a · Error: microphone blocked</a></li><li><a href="#error-tab-closed">7b · Error: Meet tab closed during recording</a></li><li><a href="#error-capture">7c · Error: cannot capture the tab (with technical detail)</a></li><li><a href="#error-mic-first">7d · Microphone not allowed yet (first use)</a></li><li><a href="#error-crash">7e · Recording stopped unexpectedly + recovery card</a></li><li><a href="#error-generic">7f · Error: something went wrong (generic)</a></li><li><a href="#recovery-ready">8 · Ready + recovery card (target card hides to save space)</a></li><li><a href="#recovery-two">8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click</a></li></ul></nav>
 </header>
 
 <section class="pv-row" id="not-meet" aria-labelledby="pv-not-meet">
@@ -651,6 +651,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-light"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-light" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -732,6 +739,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-dark"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-dark" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -819,6 +833,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-pending-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-pending-light"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-pending-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-pending-light" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -900,6 +921,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-pending-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-pending-dark"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-pending-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-pending-dark" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -987,6 +1015,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-failed-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-failed-light"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-failed-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-failed-light" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1068,6 +1103,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-failed-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-failed-dark"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-failed-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-failed-dark" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1155,6 +1197,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-nomic-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-nomic-light"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-nomic-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-nomic-light" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1236,6 +1285,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-nomic-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-nomic-dark"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-nomic-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-nomic-dark" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1323,6 +1379,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-micfail-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-micfail-light">NotReadableError: Could not start audio source</p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-micfail-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-micfail-light" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1404,6 +1467,13 @@
         <div>
           <p><strong id="mic-warning-title-recording-micfail-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
           <p class="mr-error-detail" id="mic-warning-detail-recording-micfail-dark">NotReadableError: Could not start audio source</p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-micfail-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-micfail-dark" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1426,7 +1496,7 @@
 </section>
 
 <section class="pv-row" id="recording-two-warnings" aria-labelledby="pv-recording-two-warnings">
-  <h2 class="pv-label" id="pv-recording-two-warnings">4e · Recording, microphone failed AND notice not posted (hint text hides)</h2>
+  <h2 class="pv-label" id="pv-recording-two-warnings">4e · Recording, microphone refused AND notice not posted (hint text hides)</h2>
   <div class="pv-pair">
     <figure><figcaption>Light</figcaption>
 <div class="mr-popup mr-frame" data-theme="light">
@@ -1489,8 +1559,15 @@
       <div class="mr-callout mr-notice-failed" id="mic-warning-recording-two-warnings-light" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
-          <p><strong id="mic-warning-title-recording-two-warnings-light">No microphone found.</strong> Your voice is not in the recording. The recording continues.</p>
-          <p class="mr-error-detail" id="mic-warning-detail-recording-two-warnings-light"></p>
+          <p><strong id="mic-warning-title-recording-two-warnings-light">Chrome did not give the microphone to OwnTape.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-two-warnings-light">NotAllowedError: Permission denied (state: granted)</p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-two-warnings-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-two-warnings-light" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 
@@ -1570,8 +1647,15 @@
       <div class="mr-callout mr-notice-failed" id="mic-warning-recording-two-warnings-dark" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
-          <p><strong id="mic-warning-title-recording-two-warnings-dark">No microphone found.</strong> Your voice is not in the recording. The recording continues.</p>
-          <p class="mr-error-detail" id="mic-warning-detail-recording-two-warnings-dark"></p>
+          <p><strong id="mic-warning-title-recording-two-warnings-dark">Chrome did not give the microphone to OwnTape.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-two-warnings-dark">NotAllowedError: Permission denied (state: granted)</p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-two-warnings-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-two-warnings-dark" type="button">Copy details</button>
+          </div>
         </div>
       </div>
 

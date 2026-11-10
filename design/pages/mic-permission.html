@@ -62,12 +62,14 @@
       </div>
 
       <!-- ONE error panel. mic-permission.js fills it from MIC_TEXTS (mic-errors.js):
-           kind = blocked | not-asked | dismissed | no-device | unreadable.
+           kind = blocked | not-asked | refused | dismissed | no-device | unreadable.
            - #err-steps and #btn-settings: for "blocked" and "not-asked". #btn-settings opens
              chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2F<id> (the extension's own page).
              For these two kinds, #btn-settings is the primary button and #btn-retry
              becomes secondary (toggle btn--primary / btn--secondary on #btn-retry).
            - #err-os-note: for "unreadable" and "blocked".
+           - "refused": #err-steps-reset + #err-reset-note instead of #err-steps; #btn-settings primary,
+             #btn-extensions secondary (chrome.tabs.create({url: 'chrome://extensions/'})), #btn-retry hidden.
            - #err-detail: technical line, for example "NotReadableError: Could not start audio source". -->
       <div class="status status--error" data-status="error" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
@@ -78,6 +80,13 @@
             <li>Click <strong>Open microphone settings</strong>.</li>
             <li>Next to <strong>Microphone</strong>, select <strong>Allow</strong>.</li>
             <li>Come back to this tab. <span class="js-app-name">OwnTape</span> tries again by itself. If nothing happens, click <strong>Try again</strong>.</li>
+          </ol>
+          <!-- Only for kind "refused". Hide #err-steps and #btn-retry; show #btn-extensions. -->
+          <p class="note" id="err-reset-note" hidden><strong>Do this when you do not record.</strong> The reload stops a recording that runs now.</p>
+          <ol class="how" id="err-steps-reset" hidden>
+            <li>Click <strong>Open microphone settings</strong>, then click <strong>Reset permissions</strong>.</li>
+            <li>Click <strong>Open the extensions page</strong>. Find <strong class="js-app-name">OwnTape</strong> and click its reload icon <span aria-hidden="true">(↻)</span>. This tab closes.</li>
+            <li>Click the <span class="js-app-name">OwnTape</span> icon in the toolbar and start again. When Chrome asks for the microphone, click <strong>Allow</strong>.</li>
           </ol>
           <!-- One line per OS. JS: chrome.runtime.getPlatformInfo() → os ("mac" | "win" | "linux" | "cros");
                hide the other lines. Without JS, all lines show. -->
@@ -90,6 +99,7 @@
           <div class="btn-row">
             <button class="btn btn--primary" id="btn-settings" type="button">Open microphone settings</button>
             <button class="btn btn--secondary" id="btn-retry" type="button">Try again</button>
+            <button class="btn btn--secondary" id="btn-extensions" type="button" hidden>Open the extensions page</button>
           </div>
           <p class="note">Or record without your voice: turn off <strong>Include my microphone</strong> in <span class="js-app-name">OwnTape</span>.</p>
         </div>

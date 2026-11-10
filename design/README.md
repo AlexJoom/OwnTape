@@ -77,13 +77,14 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 - 7c: put the technical reason in `#error-detail` (small monospace line), not in brackets after the text.
 
 ### Microphone problems (popup + permission page)
-- Popup, Recording state: `#mic-warning` (warning callout with crossed-mic icon, `role="alert"`). Title from `MIC_TEXTS[kind].title`, then "Your voice is not in the recording. The recording continues." Technical line in `#mic-warning-detail` (hidden when empty). Set the mic chip to "Mic off" too. Variants 4d, 4e.
+- Popup, Recording state: `#mic-warning` (warning callout with crossed-mic icon, `role="alert"`). Title from `MIC_TEXTS[kind].title`, then "Your voice is not in the recording. The recording continues." Technical line in `#mic-warning-detail` (hidden when empty). Set the mic chip to "Mic off" too. Buttons: `#btn-mic-fix` "How to fix" (opens mic-permission.html in a new tab; not for 'no-device') and `#btn-mic-copy` "Copy details" (hidden by CSS when the detail is empty). With 2 warnings, CSS makes the recording card smaller (583 px). Variants 4d, 4e.
 - When any warning shows in the Recording state, CSS hides the "You can close this window…" hint (`.mr-rec-hint`), so the popup stays under 600 px (4e = 507 px).
 - Permission page: one panel `[data-status="error"]`. For "blocked": `#btn-settings` is the primary button, `#btn-retry` becomes secondary. `#err-os-note` has one `.os-line[data-os]` per OS (mac, win, linux, cros). Show only the user's OS line (`chrome.runtime.getPlatformInfo().os`). A last line says how to record without the voice.
 - Texts (`MIC_TEXTS`):
   - blocked — "The microphone is blocked" / "Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again."
   - not-asked — "Chrome stopped asking for the microphone" / "The question was closed several times, so Chrome now blocks it automatically. Allow the microphone in the settings of OwnTape, then come back to this tab."
   - Steps (#err-steps, for blocked AND not-asked; both open the extension's own site-settings page): 1. Click Open microphone settings. 2. Next to Microphone, select Allow. 3. Come back to this tab. OwnTape tries again by itself. If nothing happens, click Try again.
+  - refused — "Chrome did not give the microphone to OwnTape" / "Chrome says that the microphone is allowed, but it did not give it to OwnTape. Reset the permission and reload OwnTape. Follow the steps below." Uses `#err-steps-reset`, `#err-reset-note`, `#btn-settings` (primary) and `#btn-extensions` (secondary); `#btn-retry` is hidden.
   - dismissed — "Chrome did not get an answer" / "The question about the microphone closed before you answered. Click Try again and select Allow."
   - no-device — "No microphone found" / "Connect a microphone or turn it on, then try again."
   - unreadable — "The microphone cannot be used" / "Another program possibly uses the microphone, or your operating system does not let Chrome use it. Close the other program or check the privacy settings below, then try again."

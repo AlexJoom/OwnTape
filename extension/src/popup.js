@@ -161,6 +161,8 @@ function renderRecording(rec, bytes) {
     $('mic-warning-title').textContent = `${MIC_TEXTS[kind].title}.`;
     $('mic-warning-detail').textContent = micDiagnosis(rec, false);
     $('mic-warning-detail').hidden = false;
+    // A missing device has no fix on the permission page.
+    $('btn-mic-fix').hidden = kind === 'no-device';
   }
   $('mic-chip').querySelector('svg').innerHTML = rec.micActive ? ICON_MIC_ON : ICON_MIC_OFF;
   $('size-chip-text').textContent = formatSize(bytes);
@@ -336,6 +338,12 @@ async function init() {
   $('btn-notice-retry').addEventListener('click', repost);
   $('btn-notice-copy').addEventListener('click', copyNotice);
   $('btn-mic-copy').addEventListener('click', copyMicDetails);
+  $('btn-mic-fix').addEventListener('click', () => {
+    // A new tab: the recording continues. The page says to do the reload after the call.
+    const e = status.rec.micError || {};
+    const query = new URLSearchParams({ kind: e.kind || 'unreadable', detail: e.detail || '' });
+    chrome.tabs.create({ url: chrome.runtime.getURL(`${MIC_PAGE}?${query}`) });
+  });
 
   $('btn-start').addEventListener('click', () => start(toggle.checked));
   $('btn-stop').addEventListener('click', () => run(() => send('stop')));

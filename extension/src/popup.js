@@ -58,7 +58,7 @@ const SR_TEXT = {
   settings: 'Settings.',
 };
 
-const QUALITY_LABEL = { small: 'Small', standard: 'Standard', high: 'High' };
+const QUALITY_LABEL = { standard: 'Standard', high: 'High' };
 let settingsOpen = false; // the Settings view is open (only when idle)
 
 function show(view) {

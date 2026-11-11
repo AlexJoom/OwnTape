@@ -20,9 +20,13 @@ export const AUDIO_BITS_PER_SECOND = 128_000;
 // Note: MediaStreamTrack.contentHint ('detail'/'text') was measured and has no
 // effect on MediaRecorder output, so it is not used.
 export const VIDEO_QUALITY = Object.freeze({
+  // Measured (5 min, HiDPI 1.5 window): 0.45 GB/h still code, 1.07 GB/h motion.
   standard: { maxWidth: 1920, maxHeight: 1080, maxFrameRate: 30, videoBitsPerSecond: 2_000_000 },
-  high: { maxWidth: 2560, maxHeight: 1440, maxFrameRate: 30, videoBitsPerSecond: 6_000_000 },
-  small: { maxWidth: 1280, maxHeight: 720, maxFrameRate: 30, videoBitsPerSecond: 1_000_000 },
+  // Measured: 0.52 GB/h still code, 1.95 GB/h motion. Sharper text only when the
+  // tab has more than 1920x1080 real pixels (HiDPI or large window).
+  high: { maxWidth: 2560, maxHeight: 1440, maxFrameRate: 30, videoBitsPerSecond: 4_000_000 },
+  // A 720p option was measured and dropped: code text was hard to read
+  // (ilI1, O0o) and it saved only 0.1-0.5 GB per hour.
 });
 export const DEFAULT_VIDEO_QUALITY = 'standard';
 

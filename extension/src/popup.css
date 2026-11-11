@@ -463,6 +463,55 @@ body.mr-body { width: 340px; background: var(--mr-bg); }
 @keyframes mr-meter-ind { 0% { background-position: -60% 0, 0 0; } 100% { background-position: 160% 0, 0 0; } }
 @media (prefers-reduced-motion: reduce) { .mr-meter:indeterminate { animation: none; background-position: 50% 0, 0 0; } }
 
+/* ---------- Icon button (header gear, back) ---------- */
+.mr-iconbtn {
+  display: inline-grid; place-items: center;
+  width: 32px; height: 32px; padding: 0; flex: none;
+  color: var(--mr-text-muted); background: transparent;
+  border: 0; border-radius: var(--mr-radius-sm); cursor: pointer;
+}
+.mr-iconbtn:hover { background: var(--mr-surface); color: var(--mr-text); }
+.mr-iconbtn svg { width: 18px; height: 18px; }
+.mr-header .mr-pill { margin-left: auto; }
+.mr-header .mr-iconbtn { margin-right: -6px; }
+
+/* ---------- Ready: settings summary ---------- */
+.mr-summary { margin: 0; font-size: 13px; color: var(--mr-text-muted); }
+.mr-summary strong { color: var(--mr-text); font-weight: 600; }
+.mr-link {
+  font: inherit; font-weight: 600; color: var(--mr-brand);
+  background: none; border: 0; padding: 2px 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.mr-link:hover { color: var(--mr-brand-hover); }
+
+/* ---------- Settings view ---------- */
+.mr-state[data-state="settings"] { gap: 12px; }
+.mr-viewhead { display: flex; align-items: center; gap: 4px; margin: -4px 0 0 -8px; }
+.mr-label { font-size: 13px; font-weight: 650; color: var(--mr-text); padding: 0; margin-bottom: 6px; }
+.mr-options { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; min-width: 0; }
+.mr-option {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+  padding: 7px 10px;
+  border: 1px solid var(--mr-border); border-radius: var(--mr-radius-sm);
+  background: var(--mr-bg); cursor: pointer;
+}
+.mr-option:hover { background: var(--mr-surface); }
+.mr-option:has(input:checked) { border-color: var(--mr-brand); background: var(--mr-brand-soft); }
+.mr-option:has(input:focus-visible) { outline: 2px solid var(--mr-focus); outline-offset: 2px; }
+.mr-option input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--mr-brand); }
+.mr-option input:focus-visible { outline: none; }
+.mr-option__text { display: grid; gap: 1px; }
+.mr-option__name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+.mr-option__tag { font-size: 11px; font-weight: 600; color: var(--mr-text-muted); border: 1px solid var(--mr-border); border-radius: 999px; padding: 0 6px; }
+.mr-option__desc { font-size: 12.5px; color: var(--mr-text-muted); line-height: 1.4; }
+.mr-option:has(input:checked) .mr-option__desc { color: var(--mr-brand-soft-text); }
+.mr-field { display: grid; gap: 6px; }
+.mr-field .mr-label { margin: 0; }
+.mr-field__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.mr-link--sm { font-size: 12.5px; }
+.mr-field .mr-textarea { min-height: 52px; }
+
 /* ---------- Footer ---------- */
 .mr-footer {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;

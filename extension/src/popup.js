@@ -2,7 +2,7 @@
 // sends commands to the service worker. It keeps no recording state itself.
 
 import { MIC_TEXTS, micPermissionState } from './mic-errors.js';
-import { CRASH_ERROR, NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
+import { CRASH_ERROR, DEFAULT_VIDEO_QUALITY, NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
 
 const $ = (id) => document.getElementById(id);
 const MIC_PAGE = 'src/mic-permission.html';
@@ -55,7 +55,11 @@ const SR_TEXT = {
   saving: 'Saving the recording.',
   saved: 'Recording saved.',
   error: 'Error.',
+  settings: 'Settings.',
 };
+
+const QUALITY_LABEL = { small: 'Small', standard: 'Standard', high: 'High' };
+let settingsOpen = false; // the Settings view is open (only when idle)
 
 function show(view) {
   for (const section of document.querySelectorAll('[data-state]')) {
@@ -130,7 +134,13 @@ function render() {
   const { rec, bytes, lastResult, lastError, recoverable, saveProgress } = status;
   clearInterval(timer);
 
-  if (rec.state === STATE.STARTING) show('starting');
+  // The gear is only for idle states; Settings cannot change a running recording.
+  const busy = rec.state !== STATE.IDLE || Boolean(status.saveProgress);
+  $('btn-open-settings').hidden = busy;
+  if (busy) settingsOpen = false;
+
+  if (settingsOpen) show('settings');
+  else if (rec.state === STATE.STARTING) show('starting');
   else if (rec.state === STATE.STOPPING || saveProgress) renderSaving(saveProgress);
   else if (rec.state === STATE.RECORDING) renderRecording(rec, bytes);
   else if (localError) showError(localError);
@@ -144,7 +154,12 @@ function render() {
   renderRecovery(rec.state === STATE.IDLE ? recoverable : []);
 }
 
+function selectedQuality() {
+  return document.querySelector('input[name="quality"]:checked')?.value || DEFAULT_VIDEO_QUALITY;
+}
+
 function renderReady() {
+  $('quality-summary').textContent = QUALITY_LABEL[selectedQuality()];
   $('target-name').textContent = activeTab.url.replace(/^https:\/\//, '').replace(/[?#].*$/, '');
   show('ready');
 }
@@ -154,6 +169,7 @@ function renderRecording(rec, bytes) {
   tick();
   timer = setInterval(tick, 1000);
   $('mic-chip-text').textContent = rec.micActive ? 'Mic on' : 'Mic off';
+  $('quality-chip-text').textContent = QUALITY_LABEL[rec.videoQuality || DEFAULT_VIDEO_QUALITY];
   const micFailed = Boolean(rec.includeMic && !rec.micActive);
   $('mic-warning').hidden = !micFailed;
   if (micFailed) {
@@ -342,10 +358,34 @@ async function init() {
   noticeField.value = settings.noticeText || NOTICE_DEFAULT_TEXT;
   toggle.addEventListener('change', () => saveSettings({ includeMic: toggle.checked }));
   noticeToggle.addEventListener('change', () => saveSettings({ noticeEnabled: noticeToggle.checked }));
+  const announceSaved = () => ($('sr-status').textContent = 'Saved');
   noticeField.addEventListener('input', () => saveSettings({ noticeText: noticeField.value }));
-  $('btn-notice-reset').addEventListener('click', () => {
+  noticeField.addEventListener('change', announceSaved);
+  $('btn-notice-reset').addEventListener('click', async () => {
     noticeField.value = NOTICE_DEFAULT_TEXT;
-    saveSettings({ noticeText: NOTICE_DEFAULT_TEXT });
+    await saveSettings({ noticeText: NOTICE_DEFAULT_TEXT });
+    announceSaved();
+  });
+
+  // Video quality (read by the service worker at Start).
+  const quality = settings.videoQuality in QUALITY_LABEL ? settings.videoQuality : DEFAULT_VIDEO_QUALITY;
+  const radio = document.querySelector(`input[name="quality"][value="${quality}"]`);
+  if (radio) radio.checked = true;
+  for (const input of document.querySelectorAll('input[name="quality"]')) {
+    input.addEventListener('change', async () => {
+      await saveSettings({ videoQuality: input.value });
+      announceSaved();
+    });
+  }
+  const openSettings = () => {
+    settingsOpen = true;
+    render();
+  };
+  $('btn-open-settings').addEventListener('click', openSettings);
+  $('btn-change-settings').addEventListener('click', openSettings);
+  $('btn-settings-back').addEventListener('click', () => {
+    settingsOpen = false;
+    render();
   });
   const repost = () => run(() => send('postNotice'));
   $('btn-notice-repost').addEventListener('click', repost);

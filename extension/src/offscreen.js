@@ -11,7 +11,6 @@ import {
   TARGET,
   INDEX_TIMEOUT_MS,
   TIMESLICE_MS,
-  VIDEO_CONTENT_HINT,
   captureSize,
   videoQuality,
 } from './constants.js';
@@ -112,14 +111,12 @@ function sendToSw(message) {
   return chrome.runtime.sendMessage({ target: TARGET.SW, ...message }).catch(() => {});
 }
 
-async function startRecording({ streamId, includeMic, opfsName, quality: qualityName, contentHint, tabPixels }) {
+async function startRecording({ streamId, includeMic, opfsName, quality: qualityName, tabPixels }) {
   if (session) throw new Error('A recording is already active');
 
   const quality = videoQuality(qualityName);
   const size = captureSize(quality, tabPixels);
   const tabStream = await getTabStream(streamId, quality, size);
-  const hint = contentHint ?? VIDEO_CONTENT_HINT;
-  for (const track of tabStream.getVideoTracks()) if (hint) track.contentHint = hint;
   let micStream = null;
   let micError = null;
   let audioCtx = null;
@@ -129,7 +126,7 @@ async function startRecording({ streamId, includeMic, opfsName, quality: quality
     audioCtx = new AudioContext();
     const session = await beginSession({ tabStream, micStream, audioCtx, opfsName, quality });
     const settings = tabStream.getVideoTracks()[0]?.getSettings() || {};
-    return { ...session, micError, micAttempt, video: { width: settings.width, height: settings.height, frameRate: settings.frameRate, hint, tabPixels: tabPixels || null } };
+    return { ...session, micError, micAttempt, video: { width: settings.width, height: settings.height, frameRate: settings.frameRate, tabPixels: tabPixels || null } };
   } catch (err) {
     // Release the capture, or the next start fails with "active stream".
     for (const stream of [tabStream, micStream]) stream?.getTracks().forEach((t) => t.stop());

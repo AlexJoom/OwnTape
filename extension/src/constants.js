@@ -16,15 +16,15 @@ export const CRASH_ERROR = 'The recording stopped unexpectedly. You can save the
 export const AUDIO_BITS_PER_SECOND = 128_000;
 
 // Video quality presets (setting "videoQuality" in chrome.storage.local, read
-// at Start). Numbers are provisional until measured; see README.
+// at Start). The capture is never larger than the tab (see captureSize).
+// Note: MediaStreamTrack.contentHint ('detail'/'text') was measured and has no
+// effect on MediaRecorder output, so it is not used.
 export const VIDEO_QUALITY = Object.freeze({
   standard: { maxWidth: 1920, maxHeight: 1080, maxFrameRate: 30, videoBitsPerSecond: 2_000_000 },
   high: { maxWidth: 2560, maxHeight: 1440, maxFrameRate: 30, videoBitsPerSecond: 6_000_000 },
   small: { maxWidth: 1280, maxHeight: 720, maxFrameRate: 30, videoBitsPerSecond: 1_000_000 },
 });
 export const DEFAULT_VIDEO_QUALITY = 'standard';
-// MediaStreamTrack.contentHint for the tab video ('' = browser default).
-export const VIDEO_CONTENT_HINT = 'detail';
 
 export function videoQuality(name) {
   return VIDEO_QUALITY[name] || VIDEO_QUALITY[DEFAULT_VIDEO_QUALITY];

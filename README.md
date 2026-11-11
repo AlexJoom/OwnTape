@@ -83,9 +83,9 @@ ffmpeg -i meet-abc-defg-hij-2026-11-10-1430.webm -c:v libx264 -crf 23 -c:a aac m
 
 - The file shows exactly what the Meet tab shows. If you share your own screen, the file shows what Meet shows in your tab, not your full screen.
 - Only one recording at a time.
-- After a crash, the saved part can show a length that is a few seconds too short in some players.
+- After a crash, the last fraction of a second (an incomplete block) is cut off; the rest is saved.
 - "Leave the call" detection and the chat notice depend on the Meet page. When Google changes it, these two features can stop working; the recording itself still works and stops when you close the tab.
-- The WebM file has a duration but no seek index (Cues). Players seek in it, but on very long files the first seek can be slower.
+- At **Stop and save**, OwnTape reads the file once to add a seek index (Cues) and the exact length; this takes about 1 second for a 1-hour file. If that step fails, the file is saved without the index (it still plays and seeks, a bit slower in some players).
 
 ## Development
 

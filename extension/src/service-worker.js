@@ -5,6 +5,8 @@
 
 import {
   CRASH_ERROR,
+  READY_LOOK,
+  actionLookFor,
   ICONS_IDLE,
   ICONS_RECORDING,
   PRODUCT_NAME,
@@ -66,6 +68,45 @@ async function updateIcon(state) {
   const active = state !== STATE.IDLE;
   await chrome.action.setIcon({ path: active ? ICONS_RECORDING : ICONS_IDLE });
   await chrome.action.setTitle({ title: active ? `${PRODUCT_NAME} — recording` : PRODUCT_NAME });
+  await refreshMeetTabs(state);
+}
+
+/**
+ * Per-tab toolbar look. Per-tab values override the global ones, and Chrome
+ * cannot clear a per-tab title or icon (only the badge, with text: null). So
+ * every tab that got per-tab values is kept in chrome.storage.session
+ * ("lookTabs") and is always set to the look of the current state: ready on a
+ * Meet call, recording while a recording runs, normal otherwise.
+ */
+async function applyTabLook(tabId, url, state) {
+  const look = actionLookFor(state, url);
+  try {
+    await chrome.action.setTitle({ tabId, title: look.title });
+    await chrome.action.setBadgeText({ tabId, text: look.badgeText || null });
+    if (look.badgeColor) await chrome.action.setBadgeBackgroundColor({ tabId, color: look.badgeColor });
+    // A per-tab icon only once a real "ready" icon exists (it cannot be cleared).
+    if (READY_LOOK.icons) await chrome.action.setIcon({ tabId, path: look.icons });
+  } catch {
+    return; // the tab closed in the meantime
+  }
+  const { lookTabs = [] } = await chrome.storage.session.get('lookTabs');
+  if (!lookTabs.includes(tabId)) await chrome.storage.session.set({ lookTabs: [...lookTabs, tabId] });
+}
+
+async function refreshMeetTabs(state) {
+  const recState = state ?? (await getRec()).state;
+  // Host access to meet.google.com lets us see these tabs' URLs (no "tabs" permission).
+  const meetTabs = await chrome.tabs.query({ url: 'https://meet.google.com/*' });
+  const { lookTabs = [] } = await chrome.storage.session.get('lookTabs');
+  const ids = new Set([...meetTabs.map((t) => t.id), ...lookTabs]);
+  const alive = [];
+  for (const id of ids) {
+    const tab = await chrome.tabs.get(id).catch(() => null);
+    if (!tab) continue;
+    alive.push(id);
+    await applyTabLook(id, tab.url, recState);
+  }
+  await chrome.storage.session.set({ lookTabs: alive });
 }
 
 /** What the popup shows after a recording ends: saved file or an error. */
@@ -399,6 +440,8 @@ chrome.downloads.onChanged.addListener(async (delta) => {
 });
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const { lookTabs = [] } = await chrome.storage.session.get('lookTabs');
+  if (lookTabs.includes(tabId)) await chrome.storage.session.set({ lookTabs: lookTabs.filter((id) => id !== tabId) });
   const rec = await getRec();
   if (rec.state === STATE.RECORDING && rec.tabId === tabId) await stopRecording().catch(() => {});
 });
@@ -412,8 +455,19 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (rec.meetingCode && meetingCodeFromUrl(tab?.url) !== rec.meetingCode) await stopRecording().catch(() => {});
 });
 
+// Ready look on Meet call tabs: update when a tab navigates. A tab that leaves
+// meet.google.com reports no URL to us, and gets the normal look.
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (!changeInfo.url && changeInfo.status !== 'complete') return;
+  const { lookTabs = [] } = await chrome.storage.session.get('lookTabs');
+  // Only Meet tabs and tabs that already have per-tab values need a look.
+  if (!meetingCodeFromUrl(tab.url) && !lookTabs.includes(tabId)) return;
+  await applyTabLook(tabId, tab.url, (await getRec()).state);
+});
+
 chrome.runtime.onStartup.addListener(() => reconcile());
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await reconcile();
+  await refreshMeetTabs();
   if (reason === 'install') await chrome.tabs.create({ url: chrome.runtime.getURL('src/welcome.html') });
 });

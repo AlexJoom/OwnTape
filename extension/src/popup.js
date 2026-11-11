@@ -2,6 +2,7 @@
 // sends commands to the service worker. It keeps no recording state itself.
 
 import { MIC_TEXTS, micPermissionState } from './mic-errors.js';
+import { renderDiscoverability } from './discover.js';
 import { CRASH_ERROR, DEFAULT_VIDEO_QUALITY, NOTICE_DEFAULT_TEXT, NOTICE_MAX_LENGTH, PRODUCT_NAME, STATE, TARGET, meetingCodeFromUrl } from './constants.js';
 
 const $ = (id) => document.getElementById(id);
@@ -151,7 +152,12 @@ function render() {
   else if (meetingCodeFromUrl(activeTab?.url)) renderReady();
   else show('not-meet');
 
+  const showRecovery = rec.state === STATE.IDLE && recoverable.length > 0;
   renderRecovery(rec.state === STATE.IDLE ? recoverable : []);
+  // Tips (pin hint) only in idle views, and not with the recovery card
+  // (height limit of 600 px).
+  const idleView = ['not-meet', 'ready', 'saved', 'error'].includes(shownView);
+  $('tips').hidden = !(idleView && !showRecovery);
 }
 
 function selectedQuality() {
@@ -410,6 +416,7 @@ async function init() {
   $('btn-show-folder').addEventListener('click', () => chrome.downloads.show(status.lastResult.downloadId));
   $('btn-record-again').addEventListener('click', recordAgain);
 
+  renderDiscoverability().catch(() => {});
   chrome.storage.onChanged.addListener(() => refresh().catch(() => {}));
   await refresh();
 }

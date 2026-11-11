@@ -337,6 +337,14 @@
         <textarea class="mr-textarea" id="notice-text" rows="2" maxlength="500" spellcheck="true">I am recording this call with OwnTape. Tell me if you do not agree.</textarea>
       </div>
     </section>
+    <!-- Discoverability tips (developer hooks, branch "discoverability").
+         JS shows #tips only in the idle views: not-meet, ready, saved, error.
+         CSS also hides it with the recovery card (600 px limit).
+         #pin-hint: only when chrome.action.getUserSettings().isOnToolbar is false.
+         (No keyboard shortcut: cancelled by the user.) -->
+    <div class="mr-tips" id="tips" hidden>
+      <p class="mr-tip" id="pin-hint" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3z"/></svg><span>Pin <span class="js-app-name">OwnTape</span>: click the puzzle piece in the toolbar, then the pin.</span></p>
+    </div>
   </main>
 
   <footer class="mr-footer">

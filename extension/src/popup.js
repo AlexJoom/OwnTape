@@ -154,7 +154,7 @@ function render() {
 
   const showRecovery = rec.state === STATE.IDLE && recoverable.length > 0;
   renderRecovery(rec.state === STATE.IDLE ? recoverable : []);
-  // Tips (shortcut, pin) only in idle views, and not with the recovery card
+  // Tips (pin hint) only in idle views, and not with the recovery card
   // (height limit of 600 px).
   const idleView = ['not-meet', 'ready', 'saved', 'error'].includes(shownView);
   $('tips').hidden = !(idleView && !showRecovery);

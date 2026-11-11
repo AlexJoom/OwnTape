@@ -19,7 +19,7 @@ The Chrome Web Store version is not published yet. To use it now, load it from t
 3. Click **Load unpacked** and select the `extension/` folder.
 4. Pin OwnTape in the toolbar (puzzle icon → pin).
 
-To record, open the Meet call and click the OwnTape icon, or press **Alt+Shift+R**. On a Meet call tab, the icon shows a small dot and the tooltip "OwnTape – click to record this call". You can change or set the shortcut at `chrome://extensions/shortcuts` (Chrome does not set it if another extension already uses the same keys).
+To record, open the Meet call and click the OwnTape icon. On a Meet call tab, the icon shows a small dot and the tooltip "OwnTape – click to record this call".
 
 Chrome 116 or later is necessary.
 

@@ -1,5 +1,4 @@
-// Welcome page: show the real keyboard shortcut, and the "pin the icon" step
-// only when the icon is not pinned yet.
+// Welcome page: show the "pin the icon" step only when the icon is not pinned yet.
 import { renderDiscoverability } from './discover.js';
 
 renderDiscoverability().catch(() => {});

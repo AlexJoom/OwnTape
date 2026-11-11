@@ -66,14 +66,15 @@ export const MIME_TYPES = [
   'video/webm',
 ];
 
-export const ICONS_IDLE = { 16: '/icons/icon-16.png', 32: '/icons/icon-32.png' };
-// Toolbar look on a Meet tab when OwnTape is ready to record it. Placeholder
-// until the designer delivers a "ready" icon: then set READY_LOOK.icons.
+// Toolbar states (design/icon/toolbar-states.png): a pale ring on other tabs,
+// the full indigo tile on a Meet call tab (READY_LOOK), red while recording.
+export const ICONS_IDLE = { 16: '/icons/icon-idle-16.png', 32: '/icons/icon-idle-32.png' };
+// Toolbar look on a Meet call tab: OwnTape is ready to record it.
 export const READY_LOOK = Object.freeze({
   title: `${PRODUCT_NAME} – click to record this call`,
-  badgeText: '•',
-  badgeColor: '#5f6368',
-  icons: null,
+  badgeText: '',
+  badgeColor: null,
+  icons: { 16: '/icons/icon-ready-16.png', 32: '/icons/icon-ready-32.png' },
 });
 
 export const ICONS_RECORDING = { 16: '/icons/icon-recording-16.png', 32: '/icons/icon-recording-32.png' };

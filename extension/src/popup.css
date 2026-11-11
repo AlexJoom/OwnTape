@@ -538,3 +538,8 @@ body.mr-body { width: 340px; background: var(--mr-bg); }
   .mr-popup *, .mr-popup *::before { animation: none !important; transition: none !important; }
   .mr-progress__bar { width: 100%; opacity: .6; }
 }
+
+/* ---------- Developer addition: discoverability tips (replace in the restyle) ---------- */
+.mr-tips { display: grid; gap: 4px; padding: 0 16px 10px; }
+.mr-tip { margin: 0; font-size: 12px; line-height: 1.4; color: var(--mr-text-muted); }
+.mr-tip kbd { font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 0 4px; border: 1px solid var(--mr-border); border-radius: 4px; }

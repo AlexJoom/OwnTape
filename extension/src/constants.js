@@ -67,6 +67,15 @@ export const MIME_TYPES = [
 ];
 
 export const ICONS_IDLE = { 16: '/icons/icon-16.png', 32: '/icons/icon-32.png' };
+// Toolbar look on a Meet tab when OwnTape is ready to record it. Placeholder
+// until the designer delivers a "ready" icon: then set READY_LOOK.icons.
+export const READY_LOOK = Object.freeze({
+  title: `${PRODUCT_NAME} – click to record this call`,
+  badgeText: '•',
+  badgeColor: '#5f6368',
+  icons: null,
+});
+
 export const ICONS_RECORDING = { 16: '/icons/icon-recording-16.png', 32: '/icons/icon-recording-32.png' };
 
 // Recording states. Stored in chrome.storage.session under the key "rec".
@@ -96,4 +105,20 @@ function pad(n) {
 export function buildDownloadName(meetingCode, date = new Date()) {
   const stamp = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}`;
   return `meet-${meetingCode || 'tab'}-${stamp}.webm`;
+}
+
+/**
+ * Toolbar look (title, badge, icon) for one tab. The recording look always
+ * wins; a Meet call tab gets the ready look; any other tab the normal look.
+ * @param {string} recState  STATE value
+ * @param {string|undefined} url  the tab's URL (undefined for non-Meet tabs)
+ */
+export function actionLookFor(recState, url) {
+  if (recState !== STATE.IDLE) {
+    return { title: `${PRODUCT_NAME} — recording`, badgeText: '', badgeColor: null, icons: ICONS_RECORDING };
+  }
+  if (meetingCodeFromUrl(url)) {
+    return { title: READY_LOOK.title, badgeText: READY_LOOK.badgeText, badgeColor: READY_LOOK.badgeColor, icons: READY_LOOK.icons || ICONS_IDLE };
+  }
+  return { title: PRODUCT_NAME, badgeText: '', badgeColor: null, icons: ICONS_IDLE };
 }

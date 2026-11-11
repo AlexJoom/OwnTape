@@ -339,6 +339,16 @@
     </section>
   </main>
 
+  <!-- Developer addition (needs a design; Material 3 restyle): discoverability.
+       popup.js shows them only in idle views (not-meet, ready, saved, error),
+       not when the recovery card shows. #pin-hint only when the icon is not
+       pinned; #shortcut-line with the real shortcut, or #shortcut-none. -->
+  <div class="mr-tips" id="tips" hidden>
+    <p class="mr-tip" id="pin-hint" hidden>Pin <span class="js-app-name">OwnTape</span> to find it fast: click the puzzle piece in the toolbar, then the pin.</p>
+    <p class="mr-tip" id="shortcut-line" hidden>Keyboard shortcut: <kbd id="shortcut-key"></kbd></p>
+    <p class="mr-tip" id="shortcut-none" hidden>No keyboard shortcut is set. <button class="mr-link" id="btn-shortcut-set" type="button">Set a shortcut</button></p>
+  </div>
+
   <footer class="mr-footer">
     <span>Saves to your Downloads folder</span>
     <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help" target="_blank" rel="noopener">Help</a>

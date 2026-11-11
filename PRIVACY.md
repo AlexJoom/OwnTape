@@ -41,6 +41,10 @@ Your settings ("Include my microphone", "Post a notice in the call chat", your n
 | `scripting` | Writes your chat notice into the recorded Meet tab, and reads the window size of that tab at the start (see above). |
 | Host access to `https://meet.google.com/*` | Reads the meeting code, runs the "end of the call" check, and lets the chat notice reach the Meet tab. No other website is accessed. |
 
+## "Copy details"
+
+When the microphone does not work, the popup offers **Copy details**. Only when you click it, OwnTape copies a short technical text to your clipboard: the OwnTape version, the error, the permission state, the video quality and capture size, the last frame rate, and your browser version (user agent). Nothing is sent anywhere; you decide whether to paste it into a report.
+
 ## Microphone
 
 OwnTape uses your microphone only while you record, and only if **Include my microphone** is on. The sound goes only into the video file on your computer.

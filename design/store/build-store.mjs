@@ -45,10 +45,10 @@ const ico = (n, size = 20, sw = 2) => `<svg width="${size}" height="${size}" vie
 const base = `
 ${popupCss}
 *{box-sizing:border-box} html,body{margin:0}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,"Noto Sans",sans-serif;color:#16181d;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,"Noto Sans",sans-serif;color:#1c1b21;-webkit-font-smoothing:antialiased}
 .brand{display:flex;align-items:center;gap:14px}
 .brand__name{font-weight:700;letter-spacing:-.02em;line-height:1}
-.brand__tag{color:#525a66;margin-top:6px}
+.brand__tag{color:#47464f;margin-top:6px}
 `;
 
 // ---------- Screenshot frame ----------
@@ -80,13 +80,13 @@ const shotHtml = (s) => {
   .copy .brand__tag{font-size:13px}
   .kicker{font:700 13px/1 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#4338ca;margin:0 0 16px}
   h1{font-size:40px;line-height:1.12;letter-spacing:-.025em;margin:0 0 20px}
-  .sub{font-size:19px;line-height:1.5;color:#525a66;margin:0}
+  .sub{font-size:19px;line-height:1.5;color:#47464f;margin:0}
   .stage{height:800px;display:flex;align-items:center;padding-right:48px}
   .real{width:100%;border-radius:14px;box-shadow:0 20px 50px rgb(20 20 60 / .18),0 0 0 1px rgb(0 0 0 / .08)}
   .ph{position:relative;width:832px;height:520px;border-radius:14px;background:#fff;box-shadow:0 20px 50px rgb(20 20 60 / .18),0 0 0 1px rgb(0 0 0 / .08);overflow:visible}
   .ph__bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid #e3e5ea;background:#f7f8fa;border-radius:14px 14px 0 0}
   .ph__bar>span{width:11px;height:11px;border-radius:50%;background:#d5d8de}
-  .ph__url{margin-left:12px;flex:1;height:26px;border-radius:13px;background:#eceef2;font-size:12px;color:#6b7280;display:flex;align-items:center;padding-left:14px}
+  .ph__url{margin-left:12px;flex:1;height:26px;border-radius:13px;background:#eae7ef;font-size:12px;color:#6b7280;display:flex;align-items:center;padding-left:14px}
   .ph__icon{width:28px;display:grid;place-items:center}
   .ph__body{position:absolute;inset:44px 0 0 0;border-radius:0 0 14px 14px;background:repeating-linear-gradient(135deg,#f3f4f7 0 14px,#eceef3 14px 28px);display:grid;place-items:center}
   .ph__label{font:700 15px/1.4 ui-monospace,Menlo,monospace;color:#8a90a0;text-align:center;letter-spacing:.08em;max-width:360px;margin-right:300px}
@@ -113,15 +113,15 @@ body{width:1280px;height:800px;overflow:hidden;background:#f1f2f6;display:grid;p
 h1{font-size:44px;letter-spacing:-.025em;margin:0}
 .flow{display:flex;align-items:center;gap:0}
 .node{width:220px;height:200px;background:#fff;border-radius:18px;box-shadow:0 10px 30px rgb(20 20 60 / .08),0 0 0 1px #e1e3e9;display:grid;place-items:center;align-content:center;gap:14px}
-.node__ic{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;background:#eef0ff;color:#4338ca}
+.node__ic{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;background:#e3dfff;color:#4338ca}
 .node b{font-size:19px}
-.node span{font-size:14px;color:#525a66;margin-top:-8px}
+.node span{font-size:14px;color:#47464f;margin-top:-8px}
 .arrow{width:90px;height:4px;background:#4338ca;position:relative;border-radius:2px}
 .arrow::after{content:"";position:absolute;right:-2px;top:-7px;border:9px solid transparent;border-left:13px solid #4338ca;border-right:0}
-.nope{display:flex;align-items:center;gap:28px;font-size:18px;color:#525a66}
+.nope{display:flex;align-items:center;gap:28px;font-size:18px;color:#47464f}
 .nope__item{display:flex;align-items:center;gap:10px}
 .x{position:relative;color:#9aa1ad}
-.x::after{content:"";position:absolute;left:-3px;right:-3px;top:50%;height:3px;background:#c81e1e;transform:rotate(-35deg);border-radius:2px}
+.x::after{content:"";position:absolute;left:-3px;right:-3px;top:50%;height:3px;background:#bc1317;transform:rotate(-35deg);border-radius:2px}
 .brand{position:absolute;left:48px;bottom:40px;text-align:left}
 .brand__name{font-size:18px} .brand__tag{font-size:12px}
 </style></head><body>
@@ -151,7 +151,7 @@ body{width:440px;height:280px;overflow:hidden;background:linear-gradient(160deg,
 .brand__tag{color:#c9cdf8;font-size:15px;margin-top:8px}
 .brand svg{border-radius:22%;box-shadow:0 0 0 2px rgb(255 255 255 / .28)}
 .pills{display:flex;gap:8px}
-.pills span{font-size:13px;font-weight:600;padding:5px 11px;border-radius:999px;background:rgb(255 255 255 / .1);color:#e6e8ff;border:1px solid rgb(255 255 255 / .16)}
+.pills span{font-size:13px;font-weight:600;padding:5px 11px;border-radius:8px;background:rgb(255 255 255 / .1);color:#e6e8ff;border:1px solid rgb(255 255 255 / .16)}
 </style></head><body>
 <div class="brand">${MARK(64)}<div><div class="brand__name">${NAME}</div><div class="brand__tag">${TAGLINE}</div></div></div>
 <div class="pills"><span>Free</span><span>Open source</span><span>100% local</span></div>
@@ -167,7 +167,7 @@ h1{font-size:52px;line-height:1.08;letter-spacing:-.03em;margin:0 0 22px;max-wid
 .sub{font-size:20px;color:#d4d7fb;margin:0 0 30px;max-width:560px;line-height:1.5}
 .brand svg{border-radius:22%;box-shadow:0 0 0 2px rgb(255 255 255 / .28)}
 .pills{display:flex;gap:10px}
-.pills span{display:inline-flex;align-items:center;gap:7px;font-size:15px;font-weight:600;padding:7px 14px;border-radius:999px;background:rgb(255 255 255 / .1);color:#e6e8ff;border:1px solid rgb(255 255 255 / .16)}
+.pills span{display:inline-flex;align-items:center;gap:7px;font-size:15px;font-weight:600;padding:7px 14px;border-radius:8px;background:rgb(255 255 255 / .1);color:#e6e8ff;border:1px solid rgb(255 255 255 / .16)}
 .shot{justify-self:end;border-radius:14px;overflow:hidden;box-shadow:0 30px 60px rgb(0 0 0 / .4),0 0 0 1px rgb(255 255 255 / .1);transform:scale(1.04) rotate(-1.5deg);transform-origin:center}
 .mr-rec__dot{animation:none}
 </style></head><body>

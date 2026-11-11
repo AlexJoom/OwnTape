@@ -43,7 +43,8 @@
       </div>
       <span class="step__num" aria-hidden="true">2</span>
       <h2>Click the icon</h2>
-      <p>Click the extension icon in the toolbar. Do not see it? Click the <strong>puzzle piece</strong> and <strong>pin</strong> it.</p>
+      <!-- #pin-hint: hide it when the icon is pinned (chrome.action.getUserSettings().isOnToolbar). -->
+      <p>Click the <span class="js-app-name">OwnTape</span> icon in the toolbar.<span id="pin-hint"> Do not see it? Click the <strong>puzzle piece</strong>, then <strong>pin</strong> it.</span></p>
     </li>
     <li class="step">
       <div class="step__art" aria-hidden="true">
@@ -54,6 +55,7 @@
       <p>Tell the participants that you record, then press <strong>Start recording</strong>. Press <strong>Stop</strong> to save the file.</p>
     </li>
   </ol>
+
 
   <div class="card">
     <h2>Optional: include your own voice</h2>

@@ -1,0 +1,126 @@
+<!doctype html>
+<!--
+  OwnTape — microphone permission page (opened from the popup:
+  "Allow microphone", or on first use of the mic toggle).
+  - mic-permission.js: on #btn-allow click → navigator.mediaDevices.getUserMedia({audio:true}),
+    stop the tracks at once, then show ONE status panel:
+      [data-status="waiting"] while Chrome shows its prompt
+      [data-status="granted"] on success
+      [data-status="error"]   on any error (see the comment on the panel)
+    Also check navigator.permissions.query({name:'microphone'}) on load:
+    "granted" → show granted panel directly; "denied" → show denied panel.
+  - #btn-close → window.close().
+  - No inline scripts / handlers. Name only in <title> and .js-app-name.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Allow microphone – OwnTape</title>
+  <link rel="stylesheet" href="pages.css">
+  <script src="mic-permission.js" type="module"></script>
+</head>
+<body>
+<main class="page">
+  <div class="brand">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><rect width="16" height="16" rx="3.6" fill="#4338ca"/><circle cx="8" cy="8" r="4.6" fill="none" stroke="#fff" stroke-width="1.3"/><circle cx="8" cy="8" r="2.2" fill="#fff"/></svg>
+    <div>
+      <p class="brand__name js-app-name">OwnTape</p>
+      <p class="brand__tag">Local recorder for Google Meet™</p>
+    </div>
+  </div>
+
+  <h1>Allow your microphone</h1>
+  <p class="lead">The Meet tab gives the voices of the other participants. To record <strong>your own voice</strong> too, the extension needs your microphone.</p>
+
+  <div class="card">
+    <h2>One click, then Chrome asks you</h2>
+    <p>Click the button. Chrome shows a small window at the top: <strong>“Use your microphone?”</strong>. Click <strong>Allow</strong>. You do this one time only.</p>
+    <div class="btn-row">
+      <button class="btn btn--primary" id="btn-allow" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        Allow microphone
+      </button>
+    </div>
+
+    <div aria-live="polite" id="status-region">
+      <div class="status status--info" data-status="waiting" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        <div>
+          <h2>Look at the top of the window</h2>
+          <p>Chrome asks for permission now. Click <strong>Allow</strong>.</p>
+        </div>
+      </div>
+
+      <div class="status status--ok" data-status="granted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <div>
+          <h2>Microphone allowed</h2>
+          <p>Close this tab, go back to your Meet call, and click <strong>Start recording</strong>.</p>
+          <div class="btn-row"><button class="btn btn--secondary" id="btn-close" type="button">Close this tab</button></div>
+        </div>
+      </div>
+
+      <!-- ONE error panel. mic-permission.js fills it from MIC_TEXTS (mic-errors.js):
+           kind = blocked | not-asked | refused | dismissed | no-device | unreadable.
+           - #err-steps and #btn-settings: for "blocked" and "not-asked". #btn-settings opens
+             chrome://settings/content/siteDetails?site=chrome-extension%3A%2F%2F<id> (the extension's own page).
+             For these two kinds, #btn-settings is the primary button and #btn-retry
+             becomes secondary (toggle btn--primary / btn--secondary on #btn-retry).
+           - #err-os-note: for "unreadable" and "blocked".
+           - "refused": #err-steps-reset + #err-reset-note instead of #err-steps; #btn-settings primary,
+             #btn-extensions secondary (chrome.tabs.create({url: 'chrome://extensions/'})), #btn-retry hidden.
+           - #err-detail: technical line, for example "NotReadableError: Could not start audio source". -->
+      <div class="status status--error" data-status="error" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <h2 id="err-title">The microphone is blocked</h2>
+          <p id="err-text">Chrome blocks the microphone for OwnTape. Allow it in the Chrome settings, then try again.</p>
+          <ol class="how" id="err-steps">
+            <li>Click <strong>Open microphone settings</strong>.</li>
+            <li>Next to <strong>Microphone</strong>, select <strong>Allow</strong>.</li>
+            <li>Come back to this tab. <span class="js-app-name">OwnTape</span> tries again by itself. If nothing happens, click <strong>Try again</strong>.</li>
+          </ol>
+          <!-- Only for kind "refused". Hide #err-steps and #btn-retry; show #btn-extensions. -->
+          <p class="note" id="err-reset-note" hidden><strong>Do this when you do not record.</strong> The reload stops a recording that runs now.</p>
+          <ol class="how" id="err-steps-reset" hidden>
+            <li>Click <strong>Open microphone settings</strong>, then click <strong>Reset permissions</strong>.</li>
+            <li>Click <strong>Open the extensions page</strong>. Find <strong class="js-app-name">OwnTape</strong> and click its reload icon <span aria-hidden="true">(↻)</span>. This tab closes.</li>
+            <li>Click the <span class="js-app-name">OwnTape</span> icon in the toolbar, then click <strong>Allow microphone</strong>. When Chrome asks, click <strong>Allow</strong>.</li>
+          </ol>
+          <!-- One line per OS. JS: chrome.runtime.getPlatformInfo() → os ("mac" | "win" | "linux" | "cros");
+               hide the other lines. Without JS, all lines show. -->
+          <p class="note" id="err-os-note">Also check that your operating system lets Chrome use the microphone.
+            <span class="os-line" data-os="mac">macOS: System Settings › Privacy &amp; Security › Microphone.</span>
+            <span class="os-line" data-os="win">Windows: Settings › Privacy &amp; security › Microphone.</span>
+            <span class="os-line" data-os="linux">Linux: in your system sound settings (for example Settings › Sound › Input), select the correct input device and make sure that it is not muted.</span>
+            <span class="os-line" data-os="cros">ChromeOS: Settings › Privacy and security › Privacy controls › Microphone access.</span></p>
+          <p class="detail" id="err-detail" hidden></p>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="btn-settings" type="button">Open microphone settings</button>
+            <button class="btn btn--secondary" id="btn-retry" type="button">Try again</button>
+            <button class="btn btn--secondary" id="btn-extensions" type="button" hidden>Open the extensions page</button>
+          </div>
+          <p class="note">Or record without your voice: turn off <strong>Include my microphone</strong> in <span class="js-app-name">OwnTape</span>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What happens with your microphone</h2>
+    <ul class="facts">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>It is used <strong>only while you record</strong>, and only if “Include my microphone” is on.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>The sound goes <strong>only into the video file on your computer</strong>. Nothing is sent to a server.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>You can record without it. Then the file has the call audio, but not your voice.</span></li>
+    </ul>
+  </div>
+
+  <footer class="footer">
+    <span>Free and open source (MIT)</span>
+    <a href="https://github.com/AlexJoom/OwnTape" id="link-source">Source code</a>
+    <a href="https://github.com/AlexJoom/OwnTape/blob/main/PRIVACY.md" id="link-privacy">Privacy</a>
+  </footer>
+</main>
+</body>
+</html>

@@ -1,29 +1,36 @@
 # Design — OwnTape
 
-Status: all 4 deliverables are ready. Store screenshots 1–4 have placeholders until real captures exist.
+Status: all deliverables are ready. Since 2026-11-11 the UI uses **Material 3** (approved for 1.0.0; record of the proposal: `proposals/m3/`). Store screenshots 1–4 have placeholders until real captures exist.
 
 ## Files
 
 | Path | What |
 |---|---|
 | `popup/popup.html` | Production popup template. All 7 states as `<section data-state="…" hidden>`. Copy it to the extension. |
-| `popup/popup.css` | Popup styles + light/dark tokens. Copy it to the extension. |
+| `popup/popup.css` | Popup styles: Material 3 tokens (`--md-*`, light/dark) + components. Copy it to the extension. |
 | `popup/states.html` | Visual spec: every state (and the variants) in light and dark. Open it in Chrome. Generated; do not edit. |
 | `popup/build-states.mjs` | Regenerates `states.html` from `popup.html`: `node design/popup/build-states.mjs` |
 | `popup/preview.css` | Gallery-only styles. Do not ship. |
 | `icon/icon.svg`, `icon/icon-recording.svg` | Master SVGs (>= 32 px). |
 | `icon/icon-16.svg`, `icon/icon-recording-16.svg` | Pixel-snapped SVGs for 16 px. |
-| `icon/png/icon-{16,32,48,128}.png` | Idle icon exports. |
+| `icon/png/icon-{16,32,48,128}.png` | Brand icon (manifest `icons`: store, extensions page). |
+| `icon/icon-idle.svg`, `icon/icon-idle-16.svg`, `icon/png/icon-idle-{16,32,48,128}.png` | Toolbar, not a Meet tab: muted ring + dot, no tile. |
+| `icon/png/icon-ready-{16,32,48,128}.png` | Toolbar, Meet call tab: the brand icon (same pixels as `icon-*.png`). |
+| `icon/toolbar-states.png` (+ `.html`) | Preview of the 3 toolbar states on light and dark toolbars. |
 | `icon/png/icon-recording-{16,32,48,128}.png` | Recording icon exports (toolbar). |
 | `pages/mic-permission.html` | Microphone permission page. Status panels `[data-status=waiting|granted|denied]`, all `hidden`; JS shows one. Notes in the file header. |
 | `pages/welcome.html` | First-run page (3 steps + optional mic + facts). Open on `onInstalled` (reason "install"). |
-| `pages/pages.css` | Styles for both pages (same tokens as the popup, light/dark). |
+| `pages/pages.css` | Styles for both pages (same M3 tokens as the popup, light/dark). |
 | `store/png/screenshot-{1..5}.png` | 1280×800 store screenshots. 1–4: placeholder stage; 5 (data-flow diagram) is final. |
 | `store/png/promo-small-440x280.png`, `store/png/marquee-1400x560.png` | Promo images (final, no Meet UI in them). |
 | `store/build-store.mjs` | Regenerates all store PNGs. Name/tagline: constants `NAME`, `TAGLINE` at the top. |
 | `store/shots/` | Put real captures here as `shot-1.png` … `shot-4.png` (16:10, ≥ 1600×1000). The script then uses them instead of the placeholder. |
 | `brand/` | Wordmark, lockup (primary logo) and the tape-reel proposal. See `brand/README.md`. |
-| `icon/build-icons.mjs` | Regenerates all SVGs and PNGs (needs `google-chrome`): `node design/icon/build-icons.mjs` |
+| `icon/build-icons.mjs` | Regenerates all SVGs and PNGs, incl. idle/ready and the preview (needs `google-chrome`): `node design/icon/build-icons.mjs` |
+| `tools/measure.mjs` | Prints the height of every popup state: `node design/tools/measure.mjs design/popup/states.html` (limit 600 px). |
+| `tools/shoot.mjs` | PNG per popup state: `node design/tools/shoot.mjs design/popup/states.html <outdir> ready,settings` |
+| `tools/gen-scheme.mjs` | Prints the M3 tonal palettes from the seed `#4338CA` (dev tool; instructions in the file). |
+| `proposals/m3/` | The approved Material 3 proposal (comparison images, method, brand-risk notes). Record only; the final files are the ones above. |
 
 ## Notes for the developer
 
@@ -49,18 +56,19 @@ Status: all 4 deliverables are ready. Store screenshots 1–4 have placeholders 
 - Links: Help → repo `#readme`, Source → repo, Privacy → `PRIVACY.md` in the repo (the developer must create that file).
 - CSP: no inline scripts, no inline handlers, no `style=""` attributes. Inline SVG is used for the icons (it is not script).
 - Motion: the red dot pulses, the spinner turns. Both stop with `prefers-reduced-motion`.
+- **Pin hint (`#tips`)**: one low card at the end of `<main>`, above the footer. JS removes `hidden` from `#tips` only in the idle views (not-meet, ready, saved, error) and from `#pin-hint` only when `(await chrome.action.getUserSettings()).isOnToolbar === false`. CSS hides the card when no tip shows and when the recovery card shows (600 px limit). No keyboard shortcut (cancelled by the user). Variants 2d, 2e, 6b.
 
-### Toolbar icon
-```js
-// idle
-chrome.action.setIcon({ path: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png' } });
-// recording
-chrome.action.setIcon({ path: { 16: 'icons/icon-recording-16.png', 32: 'icons/icon-recording-32.png' } });
-chrome.action.setTitle({ title: 'OwnTape — recording' });
-```
-Do not add a badge. At 16 px the badge covers the mark, and the red icon already shows the state.
+### Toolbar icon (three states)
+| State | When | Files |
+|---|---|---|
+| idle | not a Meet call tab | `icon-idle-{16,32}.png` — muted ring + dot, no tile |
+| ready | Meet call tab, nothing records | `icon-ready-{16,32}.png` — brand indigo tile |
+| recording | while it records (wins over the others) | `icon-recording-{16,32}.png` — red tile, solid dot |
 
-manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon-128.png }` and the same set in `action.default_icon`.
+- The three differ by shape too (no tile / tile + ring / tile + solid disc), for colour-blind users. The idle colour `#7F86B8` has ≥ 3:1 on light and dark Chrome toolbars.
+- manifest: `action.default_icon` = the `icon-idle-*` set; `icons` (store, extensions page) = the brand `icon-{16,32,48,128}.png`.
+- Ready tooltip: "OwnTape – click to record this call". Recording: `setTitle({ title: 'OwnTape — recording' })`.
+- No badge. At 16 px a badge covers the mark, and the icons already show the state.
 
 ### Recovery card ("A recording was not saved")
 - `#recovery` is the FIRST child of `<main>`, above the state sections. Show it with the idle states (not-meet, ready, saved, error).
@@ -77,7 +85,7 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 - 7c: put the technical reason in `#error-detail` (small monospace line), not in brackets after the text.
 
 ### Microphone problems (popup + permission page)
-- Popup, Recording state: `#mic-warning` (warning callout with crossed-mic icon, `role="alert"`). Title from `MIC_TEXTS[kind].title`, then "Your voice is not in the recording. The recording continues." Technical line in `#mic-warning-detail` (hidden when empty). Set the mic chip to "Mic off" too. Buttons: `#btn-mic-fix` "How to fix" (opens mic-permission.html in a new tab; not for 'no-device') and `#btn-mic-copy` "Copy details" (hidden by CSS when the detail is empty). With 2 warnings, CSS makes the recording card smaller (583 px). Variants 4d, 4e.
+- Popup, Recording state: `#mic-warning` (warning callout with crossed-mic icon, `role="alert"`). Title from `MIC_TEXTS[kind].title`, then "Your voice is not in the recording. The recording continues." Technical line in `#mic-warning-detail` (hidden when empty). Set the mic chip to "Mic off" too. Buttons: `#btn-mic-fix` "How to fix" (opens mic-permission.html in a new tab; not for 'no-device') and `#btn-mic-copy` "Copy details" (hidden by CSS when the detail is empty). With 2 warnings, CSS makes the recording card smaller (584 px). Variants 4d, 4e.
 - When any warning shows in the Recording state, CSS hides the "You can close this window…" hint (`.mr-rec-hint`), so the popup stays under 600 px (4e = 507 px).
 - Permission page: one panel `[data-status="error"]`. For "blocked": `#btn-settings` is the primary button, `#btn-retry` becomes secondary. `#err-os-note` has one `.os-line[data-os]` per OS (mac, win, linux, cros). Show only the user's OS line (`chrome.runtime.getPlatformInfo().os`). A last line says how to record without the voice.
 - Texts (`MIC_TEXTS`):
@@ -92,7 +100,7 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 
 ### Slow picture warning
 - Popup, Recording state: `#video-warning` (info callout, indigo, monitor icon, `role="status"`, no buttons). Text: "**The picture updates slowly.** Keep the Meet window visible and the computer awake." Show it when the recorder gets fewer than ~10 frames per second for 30 s (screen locked or asleep, window covered). Hide it again when the frame rate is normal. It is information, not an error: the recording continues.
-- All three recording warnings have the class `.mr-warn`. CSS counts them: 1 → the hint text hides; 2 → smaller recording card; 3 → the recording card is one row (status and timer) and the chips hide. Heights: 4f 486 px, 4e 592 px, 4g 589 px. Variants 4f, 4g.
+- All three recording warnings have the class `.mr-warn`. CSS counts them: 1 → the hint text hides; 2 → smaller recording card; 3 → the recording card is one row (status and timer) and the chips hide. Heights: 4f 478 px, 4e 584 px, 4g 552 px. Variants 4f, 4g.
 
 ### Saving progress
 - Native `<progress id="saving-progress" class="mr-meter" max="100">`. No `value` attribute = moving bar (percentage not known yet). When known: `progress.value = 45` and `#saving-pct` = "45 %". Variants 5, 5b.
@@ -105,13 +113,17 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 - Size texts (measured, 5-minute runs, still → much motion): Standard "Up to 1080p · up to about 1 GB per hour" (0.45–1.07 GB/h); High, two lines: "Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens)." and "Uses more processor power · up to about 2 GB per hour" (0.52–1.95 GB/h). High is sharper only when the tab has more than 1920×1080 real pixels (HiDPI screen or very large window); on a normal 1080p screen it gives the same picture as Standard.
 - Tip (info callout): "For a sharp shared screen: pin the presentation in Meet and make the window large. The recording shows what the tab shows."
 - Recording state: new chip `#quality-chip` / `#quality-chip-text` ("Standard" | "High") between the mic chip and the size chip.
-- Heights: Settings 584 px. Ready 536 px.
+- Heights: Settings 565 px. Ready 516 px.
 - Visual spec: `states.html` variants 2, 4, 9, 9b.
 
 ## Design decisions
 
+- **Design system: Material 3**, written as our own CSS (no library: `@material/web` is in maintenance mode since June 2024, and the extension has no dependencies). Colour roles from the seed `#4338CA` (`tools/gen-scheme.mjs`; light primary = the seed, tone 35), M3 type scale in the system font, shape scale 4/8/12/16 px, tonal surfaces, state layers (hover 8 %, pressed 12 %), focus indicator 3 px.
+- **Own identity inside M3:** indigo (not Google blue), system font (no Roboto / Google Sans, no web font), **square** button shape (M3 Expressive; Meet uses pills), our own SVG icons (no Material Symbols), no FAB.
+- **Red is a signal, not a background:** the recording card is a neutral surface with a red dot and a red "RECORDING" label; the Stop button is red (tone 40 light, tone 44 dark — not the M3 pink). Errors and warnings use amber. "Delete" in the recovery card is neutral until the second click.
+
 - **Tone:** calm and clear. Indigo for the brand and normal actions; red only for "recording" and "stop". No dark patterns, no alarm language.
-- **Brand colour:** indigo `#4338CA` (dark theme: `#A5B0FF`). It is not a Google colour and not near the Meet palette.
+- **Brand colour:** indigo `#4338CA` (dark theme primary: `#C3C0FF`). It is not a Google colour and not near the Meet palette.
 - **Icon:** a "record" symbol (ring + dot) on a rounded tile. No camera, no Google shapes or colours. It does not depend on the name.
 - **Recording icon:** red tile + one big solid dot. The shape changes too, not only the colour (colour-blind users).
 - **Privacy is visible:** header pill "100% local", footer "Saves to your Downloads folder".
@@ -121,22 +133,27 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 
 ## Accessibility (WCAG 2.2 AA)
 
-Checked contrast ratios (text ≥ 4.5:1, UI parts ≥ 3:1):
+Checked contrast ratios (text ≥ 4.5:1, UI parts ≥ 3:1), M3 tokens:
 
 | Pair | Light | Dark |
 |---|---|---|
-| Text / background | 17.8 | 15.4 |
-| Muted text / background | 7.0 | 7.7 |
-| Muted text / surface-2 | 6.0 | 6.0 |
-| Button text / brand | 7.9 | 8.8 |
-| Button text / stop red | 5.7 | 6.7 |
-| Callout text (warning) | 7.5 | 10.4 |
-| Recording label / red soft bg | 8.2 | 10.6 |
-| Success icon / green soft bg | 4.6 | 7.3 |
-| Switch border / background (non-text) | 3.4 | 4.8 |
+| on-surface / surface | 16.3 | 14.4 |
+| on-surface-variant / surface | 8.9 | 10.9 |
+| on-surface-variant / surface-container-high | 7.6 | 8.5 |
+| on-primary / primary (filled button) | 7.9 | 7.7 |
+| primary / surface (links, outlined buttons) | 7.5 | 10.9 |
+| on-primary-container / primary-container (selected option) | 7.2 | 7.2 |
+| white / rec (Stop button) | 6.5 | 5.6 |
+| rec label / surface-container-high (recording card) | 5.3 | 8.5 |
+| rec dot / surface-container-high (non-text) | 5.3 | 4.5 |
+| on-warn-container / warn-container (warnings, errors) | 7.3 | 7.3 |
+| on-ok-container / ok-container | 8.3 | 7.3 |
+| ok icon / surface-container | 5.5 | 9.6 |
+| outline / surface-container-highest (switch off, non-text) | 3.5 | 3.9 |
 
-- Keyboard: all controls are native `<button>`, `<a>`, `<input>`. Visible focus ring (2 px, offset 2 px) on all of them.
-- Target size: buttons ≥ 40 px high, switch 40 × 24 px (≥ 24 px, criterion 2.5.8).
+- Keyboard: all controls are native `<button>`, `<a>`, `<input>`. Visible focus ring (3 px, offset 2 px) on all of them.
+- Target size: buttons ≥ 40 px high (small 32 px), switch 52 × 32 px, icon buttons 40 × 40 px, radio 20 px (criterion 2.5.8).
+- Heights (limit 600 px): highest states are 584 (two warnings), 580 (Ready, notice off + pin hint), 570 (recovery, two items), 565 (Settings).
 - Each state section has a heading (`aria-labelledby`).
 
 ## Answered (Orchestrator, 2026-11-10)

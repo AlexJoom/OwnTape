@@ -6,7 +6,13 @@
 // rounded tile. No camera shape, no Google colours.
 // Recording variant: red tile + one big solid dot (no ring), so the
 // change is visible by shape too, not only by colour.
-import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
+//
+// Toolbar states (Material 3 release):
+//   idle  (not a Meet tab)  = icon-idle-*:  muted ring + dot in IDLE colour, NO tile
+//   ready (Meet call tab)   = icon-ready-*: the brand icon (copy of icon-*)
+//   rec   (recording)       = icon-recording-*
+// The three differ by shape too: no tile / tile + ring / tile + solid disc.
+import { writeFileSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -86,3 +92,39 @@ for (const variant of ['idle', 'rec']) {
   }
 }
 rmSync(tmp, { recursive: true, force: true });
+
+// ---------- Toolbar idle + ready icons ----------
+// IDLE colour: >= 3:1 on light (#ffffff, #f1f3f4) and dark (#35363a, #3c3c3c, #202124) toolbars.
+const IDLE = '#7f86b8';
+const idle = (size) => {
+  const g = size === 16   // 16 px: 2 px ring (outer 2..14), 4 px dot → crisp
+    ? `<circle cx="8" cy="8" r="5" fill="none" stroke="${IDLE}" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="${IDLE}"/>`
+    : `<circle cx="8" cy="8" r="5.6" fill="none" stroke="${IDLE}" stroke-width="1.7"/><circle cx="8" cy="8" r="2.5" fill="${IDLE}"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg"${size ? ` width="${size}" height="${size}"` : ''} viewBox="0 0 16 16">${g}</svg>\n`;
+};
+writeFileSync(join(here, 'icon-idle.svg'), idle(0));
+writeFileSync(join(here, 'icon-idle-16.svg'), idle(16).replace(' width="16" height="16"', ''));
+mkdirSync(tmp, { recursive: true });
+for (const size of [16, 32, 48, 128]) {
+  const name = `icon-idle-${size}.png`;
+  writeFileSync(join(tmp, name + '.svg'), idle(size));
+  writeFileSync(join(tmp, name + '.html'), `<!doctype html><style>html,body{margin:0;background:transparent}img{display:block}</style><img src="${name}.svg" width="${size}" height="${size}">`);
+  execFileSync('google-chrome', ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
+    '--default-background-color=00000000', `--window-size=${size},${size}`, `--screenshot=${join(pngDir, name)}`, 'file://' + join(tmp, name + '.html')], { stdio: 'ignore' });
+  copyFileSync(join(pngDir, `icon-${size}.png`), join(pngDir, `icon-ready-${size}.png`));
+  console.log('png/' + name, 'png/icon-ready-' + size + '.png');
+}
+rmSync(tmp, { recursive: true, force: true });
+
+// Preview: the three states on light and dark toolbars (toolbar-states.png).
+const bars = [['Light toolbar', '#ffffff', '#1f1f1f'], ['Dark toolbar', '#35363a', '#e8eaed']];
+const states = [['idle', 'Not a Meet tab'], ['ready', 'Meet tab — ready'], ['recording', 'Recording']];
+writeFileSync(join(here, 'toolbar-states.html'), `<!doctype html><meta charset="utf-8"><title>Toolbar States</title><style>
+body{margin:0;padding:20px;font:13px/1.4 system-ui,sans-serif;background:#d9d9de;display:grid;gap:14px}
+.bar{display:flex;gap:28px;align-items:center;padding:12px 18px;border-radius:10px}
+.cell{display:grid;justify-items:center;gap:6px}.row{display:flex;gap:10px;align-items:center}
+img.x1{width:16px;height:16px;image-rendering:pixelated}img.x2{width:32px;height:32px}</style>
+${bars.map(([n, bg, fg]) => `<div class="bar" style="background:${bg};color:${fg}"><b style="width:100px">${n}</b>${states.map(([st, l]) => `<div class="cell"><div class="row"><img class="x1" src="png/icon-${st}-16.png" alt=""><img class="x2" src="png/icon-${st}-32.png" alt=""></div>${l}</div>`).join('')}</div>`).join('')}`);
+execFileSync('google-chrome', ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=2', '--window-size=620,190',
+  `--screenshot=${join(here, 'toolbar-states.png')}`, 'file://' + join(here, 'toolbar-states.html')], { stdio: 'ignore' });
+console.log('toolbar-states.png');

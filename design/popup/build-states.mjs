@@ -11,6 +11,8 @@ const src = readFileSync(join(here, 'popup.html'), 'utf8');
 const pick = (re) => { const m = src.match(re); if (!m) throw new Error('not found: ' + re); return m[0]; };
 const header = pick(/<header class="mr-header">[\s\S]*?<\/header>/);
 const footer = pick(/<footer class="mr-footer">[\s\S]*?<\/footer>/);
+const tipsTpl = pick(/<div class="mr-tips"[\s\S]*?<\/div>/).replace(' id="tips" hidden>', ' id="tips">');
+const tips = (...ids) => ids.reduce((h, id) => h.replace(`id="${id}" hidden>`, `id="${id}">`), tipsTpl);
 const section = (name) =>
   pick(new RegExp(`<section class="mr-state" data-state="${name}"[\\s\\S]*?<\\/section>`))
     .replace(' hidden>', '>');
@@ -48,6 +50,8 @@ const variants = [
     id: 'ready-nonotice', label: '2c · Ready, chat notice off (long reminder comes back)',
     html: section('ready').replace('id="notice-toggle" aria-describedby="notice-hint" checked>', 'id="notice-toggle" aria-describedby="notice-hint">'),
   },
+  { id: 'ready-pin', label: '2d · Ready + pin hint (icon not pinned)', html: section('ready'), post: tips('pin-hint') },
+  { id: 'ready-tips-max', label: '2e · Ready, notice off + pin hint (highest idle view)', html: section('ready').replace('id="notice-toggle" aria-describedby="notice-hint" checked>', 'id="notice-toggle" aria-describedby="notice-hint">'), post: tips('pin-hint') },
   { id: 'starting', label: '3 · Starting', html: section('starting') },
   { id: 'recording', label: '4 · Recording, notice posted', html: section('recording').replace('data-notice="posted" hidden', 'data-notice="posted"') },
   { id: 'recording-pending', label: '4a · Recording, notice being posted', html: section('recording').replace('data-notice="pending" hidden', 'data-notice="pending"') },
@@ -103,6 +107,7 @@ const variants = [
       .replace('max="100" aria-labelledby', 'max="100" value="45" aria-labelledby'),
   },
   { id: 'saved', label: '6 · Saved', html: section('saved') },
+  { id: 'saved-tips', label: '6b · Saved + pin hint', html: section('saved'), post: tips('pin-hint') },
   { id: 'error-mic', label: '7a · Error: microphone blocked', html: section('error') },
   {
     id: 'error-tab-closed', label: '7b · Error: Meet tab closed during recording',
@@ -149,7 +154,7 @@ const uniq = (html, suffix) => html
 const popup = (v, theme) => uniq(`
 <div class="mr-popup mr-frame" data-theme="${theme}">
   ${header}
-  <main>${v.pre || ''}${v.html}</main>
+  <main>${v.pre || ''}${v.html}${v.post || ''}</main>
   ${footer}
 </div>`, `${v.id}-${theme}`);
 

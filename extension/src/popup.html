@@ -124,7 +124,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary">Standard</strong> · <button class="mr-link" id="btn-change-settings" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder">
@@ -189,7 +189,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -202,13 +202,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <!-- Placeholder until the designer's markup: the recorder gets fewer than
-           10 frames per second for 30 s. Informative; the recording continues. -->
-      <div class="mr-callout" id="video-warning" role="status" hidden>
-        <p>The picture updates slowly. Keep the Meet window visible and the computer awake.</p>
-      </div>
-
-      <div class="mr-callout mr-notice-failed" id="mic-warning" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -221,6 +215,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -293,9 +296,9 @@
          returns to the previous state. Save each change at once in
          chrome.storage.local (no Save button); announce "Saved" in #sr-status.
          The view is not available during a recording, so changes always apply to the next one.
-         Size texts (.js-size-*): fill with the measured numbers.
-         Quality: radio group name="quality", values small | standard | high.
-         Hide the "small" option (data-option="small") if it is not offered. -->
+         Size texts (.js-size-*): measured values (5-minute runs, still → much motion):
+         Standard 0.45–1.07 GB/h, High 0.52–1.95 GB/h.
+         Quality: radio group name="quality", values standard | high. -->
     <section class="mr-state" data-state="settings" aria-labelledby="t-settings" hidden>
       <div class="mr-viewhead">
         <button class="mr-iconbtn" id="btn-settings-back" type="button" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -304,25 +307,19 @@
 
       <fieldset class="mr-options">
         <legend class="mr-label">Video quality</legend>
-        <label class="mr-option" data-option="small">
-          <input type="radio" name="quality" value="small">
-          <span class="mr-option__text">
-            <span class="mr-option__name">Small</span>
-            <span class="mr-option__desc">720p, for long calls · <span class="js-size-small">about 0.5 GB per hour</span></span>
-          </span>
-        </label>
         <label class="mr-option" data-option="standard">
           <input type="radio" name="quality" value="standard" checked>
           <span class="mr-option__text">
             <span class="mr-option__name">Standard <span class="mr-option__tag">Default</span></span>
-            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to 1 GB per hour</span></span>
+            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to about 1 GB per hour</span></span>
           </span>
         </label>
         <label class="mr-option" data-option="high">
           <input type="radio" name="quality" value="high">
           <span class="mr-option__text">
             <span class="mr-option__name">High</span>
-            <span class="mr-option__desc">Sharp text, for shared code · <span class="js-size-high">about 2 GB per hour</span></span>
+            <span class="mr-option__desc">Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens).</span>
+            <span class="mr-option__desc">Uses more processor power · <span class="js-size-high">up to about 2 GB per hour</span></span>
           </span>
         </label>
       </fieldset>

@@ -58,7 +58,7 @@ OwnTape makes **no network requests**. There is no server, no analytics and no a
 | `downloads` | Saves the finished file to your Downloads folder. |
 | `storage` | Keeps your settings and the recording state in the browser. |
 | `activeTab` | Access to the tab where you opened the popup. |
-| `scripting` | Writes the chat notice into the recorded Meet tab. |
+| `scripting` | Writes the chat notice into the recorded Meet tab, and reads the tab's window size and pixel ratio at the start (to record at the real size). |
 | `https://meet.google.com/*` | Reads the meeting code for the file name, detects when you leave the call, and lets the chat notice reach the Meet tab. No other site. |
 
 Chrome shows the install warning "Read and change all your data on all websites". The `tabCapture` permission causes this warning (Chrome uses it for every extension that can capture a tab). OwnTape captures only the tab where you click **Start recording**.
@@ -73,7 +73,16 @@ Chrome shows the install warning "Read and change all your data on all websites"
 ffmpeg -i meet-abc-defg-hij-2026-11-10-1430.webm -c:v libx264 -crf 23 -c:a aac meet.mp4
 ```
 
-**How big are the files?** About 1 GB per hour at the default quality (2 Mbit/s video, 128 kbit/s audio, up to 1920×1080 at 30 fps).
+**How big are the files?** It depends on the quality (Settings, gear icon in the popup) and on how much moves in the call. Measured with 5-minute recordings:
+
+| Quality | Video | Still content (shared code) | Much motion |
+|---|---|---|---|
+| Standard (default) | up to 1920×1080, 30 fps, 2 Mbit/s | about 0.45 GB per hour | about 1.1 GB per hour |
+| High | up to 2560×1440, 30 fps, 4 Mbit/s | about 0.5 GB per hour | about 2 GB per hour |
+
+OwnTape records at the real pixel size of the Meet tab and never makes it larger. So **High is sharper only when the Meet window is larger than 1920×1080 pixels** (a large or high-resolution screen). On a normal 1080p screen, Standard and High give the same picture. High also uses more processor power.
+
+**How do I make shared code readable?** Choose **High** on a large or high-resolution screen, pin the presentation in Meet, and make the Meet window large. The recording can never be sharper than what the Meet tab shows: Meet decides the resolution of a shared screen from the tile size and the network.
 
 **Does it work in Edge or Brave?** It uses only standard Chrome extension APIs, so it probably works in Chromium-based browsers. Only Chrome is tested.
 
@@ -83,6 +92,8 @@ ffmpeg -i meet-abc-defg-hij-2026-11-10-1430.webm -c:v libx264 -crf 23 -c:a aac m
 
 - The file shows exactly what the Meet tab shows. If you share your own screen, the file shows what Meet shows in your tab, not your full screen.
 - Only one recording at a time.
+- Keep the computer awake and unlocked while you record. A locked or sleeping screen can make Chrome draw the tab only a few times per second. OwnTape shows "The picture updates slowly" when it gets fewer than 10 frames per second for 30 seconds.
+- The capture size is fixed at the start. If you make the Meet window larger during the recording, the picture is not sharper.
 - After a crash, the last fraction of a second (an incomplete block) is cut off; the rest is saved.
 - "Leave the call" detection and the chat notice depend on the Meet page. When Google changes it, these two features can stop working; the recording itself still works and stops when you close the tab.
 - At **Stop and save**, OwnTape reads the file once to add a seek index (Cues) and the exact length; this takes about 1 second for a 1-hour file. If that step fails, the file is saved without the index (it still plays and seeks, a bit slower in some players).

@@ -1,6 +1,6 @@
 # OwnTape privacy policy
 
-Last updated: 2026-11-10
+Last updated: 2026-11-11
 
 OwnTape does not collect, sell or transmit any personal data. It has no server, no user accounts, no analytics and no third-party code. The extension makes no network requests.
 
@@ -23,10 +23,11 @@ To check that the notice really appeared, OwnTape compares the text of the chat 
 - **Chat notice:** only the check described above, and only when you start a recording or ask to post the notice again.
 - **End of the call:** while a Meet page is open, a small script checks every 2 seconds whether the "Leave call" button is present. When the button disappears during a recording, OwnTape stops and saves the recording. The script reads nothing else and does not change the page.
 - **Meeting code:** OwnTape reads the address of the Meet tab to find the meeting code for the file name.
+- **Window size:** when you click **Start recording**, OwnTape reads two numbers from the Meet tab: the size of the window and its pixel ratio. It uses them to record at the real size of the tab, not larger. If it cannot read them, it uses the maximum size of the selected quality.
 
 ## Settings
 
-Your settings ("Include my microphone", "Post a notice in the call chat", and your notice text) are saved in the extension's local storage in your browser (`chrome.storage.local`). They never leave your computer.
+Your settings ("Include my microphone", "Post a notice in the call chat", your notice text, and the video quality) are saved in the extension's local storage in your browser (`chrome.storage.local`). They never leave your computer.
 
 ## Permissions
 
@@ -37,7 +38,7 @@ Your settings ("Include my microphone", "Post a notice in the call chat", and yo
 | `downloads` | Saves the finished recording to your Downloads folder. |
 | `storage` | Keeps your settings and the recording state in your browser. |
 | `activeTab` | Gives access to the tab where you opened the popup. |
-| `scripting` | Writes your chat notice into the recorded Meet tab. |
+| `scripting` | Writes your chat notice into the recorded Meet tab, and reads the window size of that tab at the start (see above). |
 | Host access to `https://meet.google.com/*` | Reads the meeting code, runs the "end of the call" check, and lets the chat notice reach the Meet tab. No other website is accessed. |
 
 ## Microphone

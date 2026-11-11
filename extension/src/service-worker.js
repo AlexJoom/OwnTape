@@ -318,9 +318,18 @@ async function onFailed({ opfsName, error }) {
   await setLastError(`Could not save the recording: ${error}`);
 }
 
-async function onProgress({ opfsName, bytes, durationMs }) {
+async function onProgress({ opfsName, bytes, durationMs, fps, videoSlow }) {
   const pending = await getPending();
   if (pending[opfsName]) await updatePending(opfsName, { bytes, durationMs });
+  // Write the live state only when the warning flag changes, plus the last fps
+  // (for "Copy details"), to keep storage writes low.
+  const rec = await getRec();
+  if (rec.opfsName !== opfsName || rec.state !== STATE.RECORDING) return;
+  if (Boolean(rec.videoSlow) !== Boolean(videoSlow) || rec.fps === undefined) {
+    await setRec({ ...rec, videoSlow: Boolean(videoSlow), fps });
+  } else {
+    await chrome.storage.session.set({ lastFps: fps });
+  }
 }
 
 // ---------- Listeners (registered at top level) ----------

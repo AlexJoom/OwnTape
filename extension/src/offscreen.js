@@ -8,6 +8,8 @@ import {
   AUDIO_BITS_PER_SECOND,
   MIME_TYPES,
   PROGRESS_INTERVAL_MS,
+  SLOW_VIDEO_FPS,
+  SLOW_VIDEO_MS,
   TARGET,
   INDEX_TIMEOUT_MS,
   TIMESLICE_MS,
@@ -202,12 +204,31 @@ async function beginSession({ tabStream, micStream, audioCtx, opfsName, quality 
 
   recorder.start(TIMESLICE_MS);
   s.startedAt = performance.now();
+  // Frame-rate self-check with the track's own counters (no frame copies).
+  // If the browser has no counters, there is no check and no warning.
+  const videoTrack = tabStream.getVideoTracks()[0];
+  const frameCount = () => videoTrack?.stats?.deliveredFrames ?? null;
+  let lastFrames = frameCount();
+  let lastTime = performance.now();
+  let slowSince = null;
   s.progressTimer = setInterval(() => {
+    const now = performance.now();
+    const frames = frameCount();
+    let fps = null;
+    if (frames !== null && lastFrames !== null) {
+      fps = Math.round(((frames - lastFrames) * 1000) / (now - lastTime) * 10) / 10;
+      if (fps < SLOW_VIDEO_FPS) slowSince ??= now;
+      else slowSince = null;
+    }
+    lastFrames = frames;
+    lastTime = now;
     sendToSw({
       type: 'progress',
       opfsName,
       bytes: s.bytes,
-      durationMs: Math.round(performance.now() - s.startedAt),
+      durationMs: Math.round(now - s.startedAt),
+      fps,
+      videoSlow: slowSince !== null && now - slowSince >= SLOW_VIDEO_MS,
     });
   }, PROGRESS_INTERVAL_MS);
 

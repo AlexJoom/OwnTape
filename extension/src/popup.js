@@ -170,6 +170,7 @@ function renderRecording(rec, bytes) {
   timer = setInterval(tick, 1000);
   $('mic-chip-text').textContent = rec.micActive ? 'Mic on' : 'Mic off';
   $('quality-chip-text').textContent = QUALITY_LABEL[rec.videoQuality || DEFAULT_VIDEO_QUALITY];
+  $('video-warning').hidden = !rec.videoSlow;
   const micFailed = Boolean(rec.includeMic && !rec.micActive);
   $('mic-warning').hidden = !micFailed;
   if (micFailed) {
@@ -307,6 +308,10 @@ function micDiagnosis(rec, full) {
     `kind: ${e?.kind || 'unknown'}`,
     `permission state (recorder): ${e?.state || 'unknown'}`,
     ...(e?.attempts || []).map((a) => `attempt ${a}`),
+    `video quality: ${rec.videoQuality || DEFAULT_VIDEO_QUALITY}`,
+    `capture size: ${rec.video ? `${rec.video.width}x${rec.video.height}` : 'unknown'}` +
+      ` (tab ${rec.video?.tabPixels ? `${rec.video.tabPixels.width}x${rec.video.tabPixels.height}` : 'unknown'})`,
+    `frames per second (last check): ${status.lastFps ?? rec.fps ?? 'unknown'}`,
     `browser: ${navigator.userAgent}`,
   ].join('\n');
 }
@@ -314,6 +319,7 @@ function micDiagnosis(rec, full) {
 async function copyMicDetails() {
   const button = $('btn-mic-copy');
   try {
+    status.lastFps = (await chrome.storage.session.get('lastFps')).lastFps;
     await navigator.clipboard.writeText(micDiagnosis(status.rec, true));
     button.textContent = 'Copied';
     setTimeout(() => (button.textContent = 'Copy details'), 2000);

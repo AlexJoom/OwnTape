@@ -52,6 +52,9 @@ export function captureSize(quality, tabPixels) {
 export const TIMESLICE_MS = 2000;
 // The offscreen document reports progress this often (persisted for crash recovery).
 export const PROGRESS_INTERVAL_MS = 3000;
+// Frame-rate self-check: warn when fewer frames than this arrive for SLOW_VIDEO_MS.
+export const SLOW_VIDEO_FPS = 10;
+export const SLOW_VIDEO_MS = 30_000;
 // At "Stop and save", the file is read once to add a seek index. After this
 // time the index is skipped and the file is saved with the duration only.
 export const INDEX_TIMEOUT_MS = 120_000;

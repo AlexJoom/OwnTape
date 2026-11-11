@@ -202,6 +202,12 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <!-- Placeholder until the designer's markup: the recorder gets fewer than
+           10 frames per second for 30 s. Informative; the recording continues. -->
+      <div class="mr-callout" id="video-warning" role="status" hidden>
+        <p>The picture updates slowly. Keep the Meet window visible and the computer awake.</p>
+      </div>
+
       <div class="mr-callout mr-notice-failed" id="mic-warning" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>

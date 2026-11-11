@@ -3,7 +3,7 @@
   "name": "OwnTape – Local Recorder for Google Meet™",
   "short_name": "OwnTape",
   "version": "0.1.0",
-  "description": "Record a Google Meet™ call to a video file on your computer. Free, open source, no account. Nothing leaves your computer.",
+  "description": "Record Google Meet™ calls to a video file on your computer. Free and open source. No account, no bot, no upload.",
   "homepage_url": "https://github.com/AlexJoom/OwnTape",
   "minimum_chrome_version": "116",
   "icons": {

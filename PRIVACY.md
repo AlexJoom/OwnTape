@@ -27,7 +27,9 @@ To check that the notice really appeared, OwnTape compares the text of the chat 
 
 ## Settings
 
-Your settings ("Include my microphone", "Post a notice in the call chat", your notice text, and the video quality) are saved in the extension's local storage in your browser (`chrome.storage.local`). They never leave your computer.
+Your settings ("Include my microphone", "Post a notice in the call chat", your notice text, and the video quality: Standard or High) are saved in the extension's local storage in your browser (`chrome.storage.local`). They never leave your computer.
+
+The video quality decides the largest picture size. At the start of a recording, OwnTape reads only the window size and the pixel ratio of the Meet tab (see "What OwnTape reads in the Meet page") and records at that size, never larger. These two numbers are not stored.
 
 ## Permissions
 

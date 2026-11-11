@@ -131,11 +131,12 @@ async function startRecording({ tabId, includeMic, notice, quality, contentHint 
   try {
     // The popup was opened by the user on this tab, which grants the capture.
     const streamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: tabId });
+    const tabPixels = await readTabPixels(tabId);
     await ensureOffscreen();
     await updatePending(opfsName, { downloadName, meetingCode, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
     const { settings = {} } = await chrome.storage.local.get('settings');
     const videoQuality = quality || settings.videoQuality;
-    const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName, quality: videoQuality, contentHint });
+    const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName, quality: videoQuality, contentHint, tabPixels });
     await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, micAttempt: res.micAttempt || null, mimeType: res.mimeType, video: res.video, videoQuality: videoQuality || null });
   } catch (err) {
     await updatePending(opfsName, null);
@@ -172,6 +173,27 @@ async function postNotice() {
   const latest = await getRec();
   if (latest.opfsName !== rec.opfsName || latest.state !== STATE.RECORDING) return;
   await setRec({ ...latest, notice: result.ok ? 'posted' : 'failed', noticeStep: String(result.step) });
+}
+
+/**
+ * The tab's size in real pixels (window size × devicePixelRatio). Reads only
+ * these two numbers. Null when the page cannot be scripted (then the preset
+ * maximum is used).
+ */
+async function readTabPixels(tabId) {
+  try {
+    const [injection] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => ({
+        width: Math.round(window.innerWidth * window.devicePixelRatio),
+        height: Math.round(window.innerHeight * window.devicePixelRatio),
+      }),
+    });
+    const r = injection?.result;
+    return r && r.width > 0 && r.height > 0 ? r : null;
+  } catch {
+    return null;
+  }
 }
 
 async function stopRecording() {

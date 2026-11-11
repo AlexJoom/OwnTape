@@ -12,6 +12,7 @@ import {
   INDEX_TIMEOUT_MS,
   TIMESLICE_MS,
   VIDEO_CONTENT_HINT,
+  captureSize,
   videoQuality,
 } from './constants.js';
 import { fixWebmDuration } from './webm-duration.js';
@@ -59,15 +60,15 @@ function pickMimeType() {
   return MIME_TYPES.find((t) => MediaRecorder.isTypeSupported(t)) || '';
 }
 
-async function getTabStream(streamId, quality) {
+async function getTabStream(streamId, quality, size) {
   return navigator.mediaDevices.getUserMedia({
     audio: { mandatory: { chromeMediaSource: 'tab', chromeMediaSourceId: streamId } },
     video: {
       mandatory: {
         chromeMediaSource: 'tab',
         chromeMediaSourceId: streamId,
-        maxWidth: quality.maxWidth,
-        maxHeight: quality.maxHeight,
+        maxWidth: size.width,
+        maxHeight: size.height,
         maxFrameRate: quality.maxFrameRate,
       },
     },
@@ -111,11 +112,12 @@ function sendToSw(message) {
   return chrome.runtime.sendMessage({ target: TARGET.SW, ...message }).catch(() => {});
 }
 
-async function startRecording({ streamId, includeMic, opfsName, quality: qualityName, contentHint }) {
+async function startRecording({ streamId, includeMic, opfsName, quality: qualityName, contentHint, tabPixels }) {
   if (session) throw new Error('A recording is already active');
 
   const quality = videoQuality(qualityName);
-  const tabStream = await getTabStream(streamId, quality);
+  const size = captureSize(quality, tabPixels);
+  const tabStream = await getTabStream(streamId, quality, size);
   const hint = contentHint ?? VIDEO_CONTENT_HINT;
   for (const track of tabStream.getVideoTracks()) if (hint) track.contentHint = hint;
   let micStream = null;
@@ -127,7 +129,7 @@ async function startRecording({ streamId, includeMic, opfsName, quality: quality
     audioCtx = new AudioContext();
     const session = await beginSession({ tabStream, micStream, audioCtx, opfsName, quality });
     const settings = tabStream.getVideoTracks()[0]?.getSettings() || {};
-    return { ...session, micError, micAttempt, video: { width: settings.width, height: settings.height, frameRate: settings.frameRate, hint } };
+    return { ...session, micError, micAttempt, video: { width: settings.width, height: settings.height, frameRate: settings.frameRate, hint, tabPixels: tabPixels || null } };
   } catch (err) {
     // Release the capture, or the next start fails with "active stream".
     for (const stream of [tabStream, micStream]) stream?.getTracks().forEach((t) => t.stop());

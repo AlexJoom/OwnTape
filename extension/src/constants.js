@@ -30,6 +30,20 @@ export function videoQuality(name) {
   return VIDEO_QUALITY[name] || VIDEO_QUALITY[DEFAULT_VIDEO_QUALITY];
 }
 
+/**
+ * Capture size: the tab's real pixel size, made smaller (same aspect ratio)
+ * to fit the preset, never larger. Tab capture scales the tab into exactly
+ * the size that we ask for, so asking for more than the tab has only
+ * upscales. Without the tab size, the preset maximum is used.
+ * @param {{width:number,height:number}|null} tabPixels
+ */
+export function captureSize(quality, tabPixels) {
+  const even = (n) => Math.max(2, Math.floor(n / 2) * 2);
+  if (!tabPixels?.width || !tabPixels?.height) return { width: quality.maxWidth, height: quality.maxHeight };
+  const scale = Math.min(1, quality.maxWidth / tabPixels.width, quality.maxHeight / tabPixels.height);
+  return { width: even(tabPixels.width * scale), height: even(tabPixels.height * scale) };
+}
+
 // MediaRecorder emits a chunk this often; each chunk goes to disk at once.
 export const TIMESLICE_MS = 2000;
 // The offscreen document reports progress this often (persisted for crash recovery).

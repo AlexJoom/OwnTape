@@ -23,6 +23,9 @@ export const MAX_FRAME_RATE = 30;
 export const TIMESLICE_MS = 2000;
 // The offscreen document reports progress this often (persisted for crash recovery).
 export const PROGRESS_INTERVAL_MS = 3000;
+// At "Stop and save", the file is read once to add a seek index. After this
+// time the index is skipped and the file is saved with the duration only.
+export const INDEX_TIMEOUT_MS = 120_000;
 
 // Preferred container/codec order. The first one that the browser supports wins.
 export const MIME_TYPES = [

@@ -29,6 +29,7 @@ const STARTING_TIMEOUT_MS = 30_000;
 //                           durationMs, bytes, reason } | null }
 // chrome.storage.local    { settings: { includeMic } }
 // chrome.storage.session  { lastError: string|null }
+// chrome.storage.session  { saveProgress: { opfsName, percent } } while a file is finalised
 
 const IDLE_STATE = Object.freeze({ state: STATE.IDLE });
 
@@ -231,6 +232,9 @@ async function reconcile() {
       await setLastError(CRASH_ERROR);
     }
   }
+  const { saveProgress } = await chrome.storage.session.get('saveProgress');
+  if (saveProgress && !(await hasOffscreen())) await chrome.storage.session.remove('saveProgress');
+
   // Records left in "recording"/"saving" state with no live session are from a crash.
   const now = await getRec();
   const pending = await getPending();
@@ -248,15 +252,20 @@ async function getStatus() {
   await reconcile();
   const rec = await getRec();
   const pending = await getPending();
-  const { lastError = null, lastResult = null } = await chrome.storage.session.get(['lastError', 'lastResult']);
+  const { lastError = null, lastResult = null, saveProgress = null } = await chrome.storage.session.get([
+    'lastError',
+    'lastResult',
+    'saveProgress',
+  ]);
   const recoverable = Object.values(pending).filter((p) => p.status === 'interrupted' || p.status === 'saved-failed');
   const live = rec.opfsName ? pending[rec.opfsName] : null;
-  return { rec, bytes: live?.bytes || 0, recoverable, lastError, lastResult };
+  return { rec, bytes: live?.bytes || 0, recoverable, lastError, lastResult, saveProgress };
 }
 
 // ---------- Messages from the offscreen document ----------
 
 async function onFinished({ opfsName, url, durationMs, reason }) {
+  await chrome.storage.session.remove('saveProgress');
   const pending = await getPending();
   const item = pending[opfsName];
   const downloadName = item?.downloadName || buildDownloadName(null);
@@ -278,6 +287,7 @@ async function onFinished({ opfsName, url, durationMs, reason }) {
 }
 
 async function onFailed({ opfsName, error }) {
+  await chrome.storage.session.remove('saveProgress');
   const rec = await getRec();
   if (rec.opfsName === opfsName) await setRec(IDLE_STATE);
   await updatePending(opfsName, { status: 'saved-failed' });
@@ -310,6 +320,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     finished: () => onFinished(msg),
     failed: () => onFailed(msg),
     progress: () => onProgress(msg),
+    saveProgress: () => chrome.storage.session.set({ saveProgress: { opfsName: msg.opfsName, percent: msg.percent } }),
     // From the Meet content script
     meetCallEnded: async () => {
       const rec = await getRec();

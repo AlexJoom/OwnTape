@@ -12,10 +12,12 @@ import {
   MIME_TYPES,
   PROGRESS_INTERVAL_MS,
   TARGET,
+  INDEX_TIMEOUT_MS,
   TIMESLICE_MS,
   VIDEO_BITS_PER_SECOND,
 } from './constants.js';
 import { fixWebmDuration } from './webm-duration.js';
+import { addWebmIndex } from './webm-cues.js';
 import { classifyMicError, micErrorDetail, micPermissionState } from './mic-errors.js';
 
 let session = null; // the active recording, see startRecording()
@@ -238,29 +240,56 @@ async function doFinish(s, reason) {
   }
 
   try {
-    const url = await buildDownloadUrl(s.opfsName, durationMs);
-    await sendToSw({ type: 'finished', opfsName: s.opfsName, url, durationMs, reason });
+    const built = await buildDownloadUrl(s.opfsName, durationMs);
+    await sendToSw({ type: 'finished', opfsName: s.opfsName, ...built, reason });
   } catch (err) {
     await sendToSw({ type: 'failed', opfsName: s.opfsName, error: String(err?.message || err) });
   }
 }
 
+/**
+ * Builds the final file and its object URL. First tries the full index
+ * (exact duration + Cues). Any problem falls back to the duration-only fix,
+ * so the index can never lose or block a recording.
+ * @returns {Promise<{url: string, durationMs: number, indexed: boolean}>}
+ */
 async function buildDownloadUrl(opfsName, durationMs) {
   const root = await navigator.storage.getDirectory();
   const file = await (await root.getFileHandle(opfsName)).getFile();
   if (file.size === 0) throw new Error('The recording is empty');
-  const fixed = await fixWebmDuration(file, durationMs);
+
+  let output;
+  let finalDuration = durationMs;
+  let indexed = false;
+  let lastSent = -1;
+  const onProgress = (fraction) => {
+    const percent = Math.floor(fraction * 100);
+    if (percent === lastSent) return;
+    lastSent = percent;
+    sendToSw({ type: 'saveProgress', opfsName, percent });
+  };
+  onProgress(0);
+  try {
+    const result = await addWebmIndex(file, { onProgress, timeoutMs: INDEX_TIMEOUT_MS });
+    output = result.blob;
+    finalDuration = Math.round(result.durationMs);
+    indexed = true;
+  } catch (err) {
+    console.warn('Index not added; saving with the duration only:', err);
+    output = await fixWebmDuration(file, durationMs);
+  }
+
   const old = blobUrls.get(opfsName);
   if (old) URL.revokeObjectURL(old);
-  const url = URL.createObjectURL(fixed);
+  const url = URL.createObjectURL(output);
   blobUrls.set(opfsName, url);
-  return url;
+  return { url, durationMs: finalDuration, indexed };
 }
 
 async function recover({ opfsName, durationMs }) {
   try {
-    const url = await buildDownloadUrl(opfsName, durationMs);
-    await sendToSw({ type: 'finished', opfsName, url, durationMs, reason: 'recovered' });
+    const built = await buildDownloadUrl(opfsName, durationMs);
+    await sendToSw({ type: 'finished', opfsName, ...built, reason: 'recovered' });
   } catch (err) {
     await sendToSw({ type: 'failed', opfsName, error: String(err?.message || err) });
   }

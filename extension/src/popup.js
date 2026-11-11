@@ -127,11 +127,11 @@ const ERRORS = {
 };
 
 function render() {
-  const { rec, bytes, lastResult, lastError, recoverable } = status;
+  const { rec, bytes, lastResult, lastError, recoverable, saveProgress } = status;
   clearInterval(timer);
 
   if (rec.state === STATE.STARTING) show('starting');
-  else if (rec.state === STATE.STOPPING) show('saving');
+  else if (rec.state === STATE.STOPPING || saveProgress) renderSaving(saveProgress);
   else if (rec.state === STATE.RECORDING) renderRecording(rec, bytes);
   else if (localError) showError(localError);
   else if (lastResult?.kind === 'saved' && lastResult.reason === 'tab-ended') showError(ERRORS.tabClosed(lastResult));
@@ -172,6 +172,20 @@ function renderRecording(rec, bytes) {
   const otherTab = activeTab && rec.tabId !== activeTab.id;
   $('btn-stop').title = otherTab ? 'Stops the recording in the other tab' : '';
   show('recording');
+}
+
+function renderSaving(progress) {
+  // The file is read once to add the seek index. Without a known value the
+  // <progress> element shows a moving bar.
+  const bar = $('saving-progress');
+  if (progress) {
+    bar.value = progress.percent;
+    $('saving-pct').textContent = `${progress.percent} %`;
+  } else {
+    bar.removeAttribute('value');
+    $('saving-pct').textContent = '';
+  }
+  show('saving');
 }
 
 function renderSaved(result) {

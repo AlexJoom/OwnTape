@@ -13,16 +13,48 @@ export const NOTICE_MAX_LENGTH = 500;
 export const CRASH_ERROR = 'The recording stopped unexpectedly. You can save the partial file.';
 
 // Recording quality. 2 Mbit/s video + 128 kbit/s audio is about 1 GB per hour.
-export const VIDEO_BITS_PER_SECOND = 2_000_000;
 export const AUDIO_BITS_PER_SECOND = 128_000;
-export const MAX_WIDTH = 1920;
-export const MAX_HEIGHT = 1080;
-export const MAX_FRAME_RATE = 30;
+
+// Video quality presets (setting "videoQuality" in chrome.storage.local, read
+// at Start). The capture is never larger than the tab (see captureSize).
+// Note: MediaStreamTrack.contentHint ('detail'/'text') was measured and has no
+// effect on MediaRecorder output, so it is not used.
+export const VIDEO_QUALITY = Object.freeze({
+  // Measured (5 min, HiDPI 1.5 window): 0.45 GB/h still code, 1.07 GB/h motion.
+  standard: { maxWidth: 1920, maxHeight: 1080, maxFrameRate: 30, videoBitsPerSecond: 2_000_000 },
+  // Measured: 0.52 GB/h still code, 1.95 GB/h motion. Sharper text only when the
+  // tab has more than 1920x1080 real pixels (HiDPI or large window).
+  high: { maxWidth: 2560, maxHeight: 1440, maxFrameRate: 30, videoBitsPerSecond: 4_000_000 },
+  // A 720p option was measured and dropped: code text was hard to read
+  // (ilI1, O0o) and it saved only 0.1-0.5 GB per hour.
+});
+export const DEFAULT_VIDEO_QUALITY = 'standard';
+
+export function videoQuality(name) {
+  return VIDEO_QUALITY[name] || VIDEO_QUALITY[DEFAULT_VIDEO_QUALITY];
+}
+
+/**
+ * Capture size: the tab's real pixel size, made smaller (same aspect ratio)
+ * to fit the preset, never larger. Tab capture scales the tab into exactly
+ * the size that we ask for, so asking for more than the tab has only
+ * upscales. Without the tab size, the preset maximum is used.
+ * @param {{width:number,height:number}|null} tabPixels
+ */
+export function captureSize(quality, tabPixels) {
+  const even = (n) => Math.max(2, Math.floor(n / 2) * 2);
+  if (!tabPixels?.width || !tabPixels?.height) return { width: quality.maxWidth, height: quality.maxHeight };
+  const scale = Math.min(1, quality.maxWidth / tabPixels.width, quality.maxHeight / tabPixels.height);
+  return { width: even(tabPixels.width * scale), height: even(tabPixels.height * scale) };
+}
 
 // MediaRecorder emits a chunk this often; each chunk goes to disk at once.
 export const TIMESLICE_MS = 2000;
 // The offscreen document reports progress this often (persisted for crash recovery).
 export const PROGRESS_INTERVAL_MS = 3000;
+// Frame-rate self-check: warn when fewer frames than this arrive for SLOW_VIDEO_MS.
+export const SLOW_VIDEO_FPS = 10;
+export const SLOW_VIDEO_MS = 30_000;
 // At "Stop and save", the file is read once to add a seek index. After this
 // time the index is skipped and the file is saved with the duration only.
 export const INDEX_TIMEOUT_MS = 120_000;

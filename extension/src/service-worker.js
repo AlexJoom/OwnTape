@@ -113,7 +113,7 @@ async function sendToOffscreen(message) {
 
 // ---------- Commands ----------
 
-async function startRecording({ tabId, includeMic, notice }) {
+async function startRecording({ tabId, includeMic, notice, quality }) {
   const rec = await getRec();
   if (rec.state !== STATE.IDLE) throw new Error(`Cannot start while ${rec.state}`);
 
@@ -131,10 +131,13 @@ async function startRecording({ tabId, includeMic, notice }) {
   try {
     // The popup was opened by the user on this tab, which grants the capture.
     const streamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: tabId });
+    const tabPixels = await readTabPixels(tabId);
     await ensureOffscreen();
     await updatePending(opfsName, { downloadName, meetingCode, startedAt, durationMs: 0, bytes: 0, status: 'recording' });
-    const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName });
-    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, micAttempt: res.micAttempt || null, mimeType: res.mimeType });
+    const { settings = {} } = await chrome.storage.local.get('settings');
+    const videoQuality = quality || settings.videoQuality;
+    const res = await sendToOffscreen({ type: 'start', streamId, includeMic, opfsName, quality: videoQuality, tabPixels });
+    await setRec({ state: STATE.RECORDING, ...base, micActive: res.micActive, micError: res.micError || null, micAttempt: res.micAttempt || null, mimeType: res.mimeType, video: res.video, videoQuality: videoQuality || null });
   } catch (err) {
     await updatePending(opfsName, null);
     await setRec(IDLE_STATE);
@@ -170,6 +173,27 @@ async function postNotice() {
   const latest = await getRec();
   if (latest.opfsName !== rec.opfsName || latest.state !== STATE.RECORDING) return;
   await setRec({ ...latest, notice: result.ok ? 'posted' : 'failed', noticeStep: String(result.step) });
+}
+
+/**
+ * The tab's size in real pixels (window size × devicePixelRatio). Reads only
+ * these two numbers. Null when the page cannot be scripted (then the preset
+ * maximum is used).
+ */
+async function readTabPixels(tabId) {
+  try {
+    const [injection] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => ({
+        width: Math.round(window.innerWidth * window.devicePixelRatio),
+        height: Math.round(window.innerHeight * window.devicePixelRatio),
+      }),
+    });
+    const r = injection?.result;
+    return r && r.width > 0 && r.height > 0 ? r : null;
+  } catch {
+    return null;
+  }
 }
 
 async function stopRecording() {
@@ -294,9 +318,18 @@ async function onFailed({ opfsName, error }) {
   await setLastError(`Could not save the recording: ${error}`);
 }
 
-async function onProgress({ opfsName, bytes, durationMs }) {
+async function onProgress({ opfsName, bytes, durationMs, fps, videoSlow }) {
   const pending = await getPending();
   if (pending[opfsName]) await updatePending(opfsName, { bytes, durationMs });
+  // Write the live state only when the warning flag changes, plus the last fps
+  // (for "Copy details"), to keep storage writes low.
+  const rec = await getRec();
+  if (rec.opfsName !== opfsName || rec.state !== STATE.RECORDING) return;
+  if (Boolean(rec.videoSlow) !== Boolean(videoSlow) || rec.fps === undefined) {
+    await setRec({ ...rec, videoSlow: Boolean(videoSlow), fps });
+  } else {
+    await chrome.storage.session.set({ lastFps: fps });
+  }
 }
 
 // ---------- Listeners (registered at top level) ----------

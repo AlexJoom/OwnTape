@@ -6,15 +6,15 @@
 
 import {
   AUDIO_BITS_PER_SECOND,
-  MAX_FRAME_RATE,
-  MAX_HEIGHT,
-  MAX_WIDTH,
   MIME_TYPES,
   PROGRESS_INTERVAL_MS,
+  SLOW_VIDEO_FPS,
+  SLOW_VIDEO_MS,
   TARGET,
   INDEX_TIMEOUT_MS,
   TIMESLICE_MS,
-  VIDEO_BITS_PER_SECOND,
+  captureSize,
+  videoQuality,
 } from './constants.js';
 import { fixWebmDuration } from './webm-duration.js';
 import { addWebmIndex } from './webm-cues.js';
@@ -61,16 +61,16 @@ function pickMimeType() {
   return MIME_TYPES.find((t) => MediaRecorder.isTypeSupported(t)) || '';
 }
 
-async function getTabStream(streamId) {
+async function getTabStream(streamId, quality, size) {
   return navigator.mediaDevices.getUserMedia({
     audio: { mandatory: { chromeMediaSource: 'tab', chromeMediaSourceId: streamId } },
     video: {
       mandatory: {
         chromeMediaSource: 'tab',
         chromeMediaSourceId: streamId,
-        maxWidth: MAX_WIDTH,
-        maxHeight: MAX_HEIGHT,
-        maxFrameRate: MAX_FRAME_RATE,
+        maxWidth: size.width,
+        maxHeight: size.height,
+        maxFrameRate: quality.maxFrameRate,
       },
     },
   });
@@ -113,10 +113,12 @@ function sendToSw(message) {
   return chrome.runtime.sendMessage({ target: TARGET.SW, ...message }).catch(() => {});
 }
 
-async function startRecording({ streamId, includeMic, opfsName }) {
+async function startRecording({ streamId, includeMic, opfsName, quality: qualityName, tabPixels }) {
   if (session) throw new Error('A recording is already active');
 
-  const tabStream = await getTabStream(streamId);
+  const quality = videoQuality(qualityName);
+  const size = captureSize(quality, tabPixels);
+  const tabStream = await getTabStream(streamId, quality, size);
   let micStream = null;
   let micError = null;
   let audioCtx = null;
@@ -124,7 +126,9 @@ async function startRecording({ streamId, includeMic, opfsName }) {
     let micAttempt = null;
     if (includeMic) ({ stream: micStream, attempt: micAttempt, error: micError } = await getMicStream());
     audioCtx = new AudioContext();
-    return { ...(await beginSession({ tabStream, micStream, audioCtx, opfsName })), micError, micAttempt };
+    const session = await beginSession({ tabStream, micStream, audioCtx, opfsName, quality });
+    const settings = tabStream.getVideoTracks()[0]?.getSettings() || {};
+    return { ...session, micError, micAttempt, video: { width: settings.width, height: settings.height, frameRate: settings.frameRate, tabPixels: tabPixels || null } };
   } catch (err) {
     // Release the capture, or the next start fails with "active stream".
     for (const stream of [tabStream, micStream]) stream?.getTracks().forEach((t) => t.stop());
@@ -133,7 +137,7 @@ async function startRecording({ streamId, includeMic, opfsName }) {
   }
 }
 
-async function beginSession({ tabStream, micStream, audioCtx, opfsName }) {
+async function beginSession({ tabStream, micStream, audioCtx, opfsName, quality }) {
 
   // Tab capture mutes the tab for the user. Route the tab audio back to the
   // speakers, and mix tab + microphone into one track for the recording.
@@ -155,7 +159,7 @@ async function beginSession({ tabStream, micStream, audioCtx, opfsName }) {
   const mimeType = pickMimeType();
   const recorder = new MediaRecorder(recordStream, {
     mimeType,
-    videoBitsPerSecond: VIDEO_BITS_PER_SECOND,
+    videoBitsPerSecond: quality.videoBitsPerSecond,
     audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
   });
 
@@ -200,12 +204,31 @@ async function beginSession({ tabStream, micStream, audioCtx, opfsName }) {
 
   recorder.start(TIMESLICE_MS);
   s.startedAt = performance.now();
+  // Frame-rate self-check with the track's own counters (no frame copies).
+  // If the browser has no counters, there is no check and no warning.
+  const videoTrack = tabStream.getVideoTracks()[0];
+  const frameCount = () => videoTrack?.stats?.deliveredFrames ?? null;
+  let lastFrames = frameCount();
+  let lastTime = performance.now();
+  let slowSince = null;
   s.progressTimer = setInterval(() => {
+    const now = performance.now();
+    const frames = frameCount();
+    let fps = null;
+    if (frames !== null && lastFrames !== null) {
+      fps = Math.round(((frames - lastFrames) * 1000) / (now - lastTime) * 10) / 10;
+      if (fps < SLOW_VIDEO_FPS) slowSince ??= now;
+      else slowSince = null;
+    }
+    lastFrames = frames;
+    lastTime = now;
     sendToSw({
       type: 'progress',
       opfsName,
       bytes: s.bytes,
-      durationMs: Math.round(performance.now() - s.startedAt),
+      durationMs: Math.round(now - s.startedAt),
+      fps,
+      videoSlow: slowSince !== null && now - slowSince >= SLOW_VIDEO_MS,
     });
   }, PROGRESS_INTERVAL_MS);
 

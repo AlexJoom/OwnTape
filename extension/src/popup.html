@@ -34,6 +34,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
       100% local
     </span>
+    <!-- Opens the Settings view. Hide it in starting / recording / saving. -->
+    <button class="mr-iconbtn" id="btn-open-settings" type="button" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
   </header>
 
   <!-- Screen-reader announcements for state changes. popup.js writes a
@@ -108,8 +112,8 @@
         <input class="mr-switch" type="checkbox" role="switch" id="mic-toggle" aria-describedby="mic-hint" checked>
       </div>
 
-      <!-- Consent aid. CSS (:has) hides the editor and switches the reminder
-           text when the toggle is off, so no JS is needed for that. -->
+      <!-- Consent aid. CSS (:has) switches the reminder text when the toggle
+           is off. The message text is edited in the Settings view. -->
       <div class="mr-notice">
         <div class="mr-switch-row">
           <div class="mr-switch-row__text">
@@ -118,13 +122,10 @@
           </div>
           <input class="mr-switch js-notice-toggle" type="checkbox" role="switch" id="notice-toggle" aria-describedby="notice-hint" checked>
         </div>
-        <details class="mr-disclosure" id="notice-details">
-          <summary>Edit the message</summary>
-          <label class="mr-visually-hidden" for="notice-text">Message for the call chat</label>
-          <textarea class="mr-textarea" id="notice-text" rows="3" maxlength="500" spellcheck="true">I am recording this call with OwnTape. Tell me if you do not agree.</textarea>
-          <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-reset" type="button">Reset to the default text</button>
-        </details>
       </div>
+
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
+      <p class="mr-summary">Video quality: <strong id="quality-summary">Standard</strong> · <button class="mr-link" id="btn-change-settings" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>
@@ -166,6 +167,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
             <span id="mic-chip-text">Mic on</span>
           </li>
+          <li class="mr-chip" id="quality-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+            <span id="quality-chip-text">Standard</span>
+          </li>
           <li class="mr-chip">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
             <span id="size-chip-text">86 MB</span>
@@ -184,7 +189,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -197,7 +202,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -210,6 +215,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -274,6 +288,53 @@
       <div class="mr-actions">
         <button class="mr-btn mr-btn--primary" id="btn-error-primary" type="button">Allow microphone</button>
         <button class="mr-btn mr-btn--secondary" id="btn-error-secondary" type="button">Record without my microphone</button>
+      </div>
+    </section>
+
+    <!-- 9. SETTINGS (a view, not a recording state) ======================
+         Open from #btn-open-settings or #btn-change-settings; #btn-settings-back
+         returns to the previous state. Save each change at once in
+         chrome.storage.local (no Save button); announce "Saved" in #sr-status.
+         The view is not available during a recording, so changes always apply to the next one.
+         Size texts (.js-size-*): measured values (5-minute runs, still → much motion):
+         Standard 0.45–1.07 GB/h, High 0.52–1.95 GB/h.
+         Quality: radio group name="quality", values standard | high. -->
+    <section class="mr-state" data-state="settings" aria-labelledby="t-settings" hidden>
+      <div class="mr-viewhead">
+        <button class="mr-iconbtn" id="btn-settings-back" type="button" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <h2 class="mr-title" id="t-settings">Settings</h2>
+      </div>
+
+      <fieldset class="mr-options">
+        <legend class="mr-label">Video quality</legend>
+        <label class="mr-option" data-option="standard">
+          <input type="radio" name="quality" value="standard" checked>
+          <span class="mr-option__text">
+            <span class="mr-option__name">Standard <span class="mr-option__tag">Default</span></span>
+            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to about 1 GB per hour</span></span>
+          </span>
+        </label>
+        <label class="mr-option" data-option="high">
+          <input type="radio" name="quality" value="high">
+          <span class="mr-option__text">
+            <span class="mr-option__name">High</span>
+            <span class="mr-option__desc">Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens).</span>
+            <span class="mr-option__desc">Uses more processor power · <span class="js-size-high">up to about 2 GB per hour</span></span>
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="mr-callout mr-callout--info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+        <p><strong>For a sharp shared screen:</strong> pin the presentation in Meet and make the window large. The recording shows what the tab shows.</p>
+      </div>
+
+      <div class="mr-field">
+        <div class="mr-field__head">
+          <label class="mr-label" for="notice-text">Message in the call chat</label>
+          <button class="mr-link mr-link--sm" id="btn-notice-reset" type="button">Reset</button>
+        </div>
+        <textarea class="mr-textarea" id="notice-text" rows="2" maxlength="500" spellcheck="true">I am recording this call with OwnTape. Tell me if you do not agree.</textarea>
       </div>
     </section>
   </main>

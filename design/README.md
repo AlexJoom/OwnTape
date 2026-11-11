@@ -90,6 +90,10 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
   - unreadable — "The microphone cannot be used" / "Another program possibly uses the microphone, or your operating system does not let Chrome use it. Close the other program or check the privacy settings below, then try again."
   - The "Or record only the call audio" part moves out of the texts. The page has its own line for it, and the popup error has the "Record without my microphone" button.
 
+### Slow picture warning
+- Popup, Recording state: `#video-warning` (info callout, indigo, monitor icon, `role="status"`, no buttons). Text: "**The picture updates slowly.** Keep the Meet window visible and the computer awake." Show it when the recorder gets fewer than ~10 frames per second for 30 s (screen locked or asleep, window covered). Hide it again when the frame rate is normal. It is information, not an error: the recording continues.
+- All three recording warnings have the class `.mr-warn`. CSS counts them: 1 → the hint text hides; 2 → smaller recording card; 3 → the recording card is one row (status and timer) and the chips hide. Heights: 4f 486 px, 4e 592 px, 4g 589 px. Variants 4f, 4g.
+
 ### Saving progress
 - Native `<progress id="saving-progress" class="mr-meter" max="100">`. No `value` attribute = moving bar (percentage not known yet). When known: `progress.value = 45` and `#saving-pct` = "45 %". Variants 5, 5b.
 
@@ -97,11 +101,11 @@ manifest: `"icons": { "16": …icon-16.png, "32": …, "48": …, "128": …icon
 - Decision: one **Settings view inside the popup** (`section[data-state="settings"]`) for rarely changed things: video quality and the chat message text. The message editor moved out of the Ready state.
 - Open it with the header gear `#btn-open-settings` or with `#btn-change-settings` ("Change") in the Ready summary line. `#btn-settings-back` returns to the previous state. Hide the gear in starting / recording / saving: the quality cannot change during a recording.
 - Ready shows one summary line: "Video quality: <strong id="quality-summary">Standard</strong> · Change".
-- Quality: radio group `name="quality"`, values `small | standard | high`, default `standard`, stored in `chrome.storage.local`. Save at once on change (no Save button); announce "Saved" in `#sr-status`. Hide `label[data-option="small"]` if Small is not offered.
-- Size texts: `.js-size-small`, `.js-size-standard`, `.js-size-high`. Fill them with the measured numbers (placeholders now: about 0.5 / up to 1 / about 2 GB per hour).
+- Quality: radio group `name="quality"`, values `standard | high`, default `standard`, stored in `chrome.storage.local`. Save at once on change (no Save button); announce "Saved" in `#sr-status`. Small (720p) is dropped: code text was hard to read and it saved only 0.1–0.5 GB per hour.
+- Size texts (measured, 5-minute runs, still → much motion): Standard "Up to 1080p · up to about 1 GB per hour" (0.45–1.07 GB/h); High, two lines: "Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens)." and "Uses more processor power · up to about 2 GB per hour" (0.52–1.95 GB/h). High is sharper only when the tab has more than 1920×1080 real pixels (HiDPI screen or very large window); on a normal 1080p screen it gives the same picture as Standard.
 - Tip (info callout): "For a sharp shared screen: pin the presentation in Meet and make the window large. The recording shows what the tab shows."
-- Recording state: new chip `#quality-chip` / `#quality-chip-text` ("Small" | "Standard" | "High") between the mic chip and the size chip.
-- Heights: Settings 591 px (3 options), 531 px (2 options). Ready 536 px.
+- Recording state: new chip `#quality-chip` / `#quality-chip-text` ("Standard" | "High") between the mic chip and the size chip.
+- Heights: Settings 584 px. Ready 536 px.
 - Visual spec: `states.html` variants 2, 4, 9, 9b.
 
 ## Design decisions

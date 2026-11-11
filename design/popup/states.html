@@ -12,7 +12,7 @@
 <header class="pv-head">
   <h1>OwnTape — popup states</h1>
   <p>Visual spec. Width 340&nbsp;px. Each state shows the light and the dark theme. Copy markup from <code>popup.html</code>, styles from <code>popup.css</code>.</p>
-  <nav aria-label="States"><ul><li><a href="#not-meet">1 · Not on a Meet tab</a></li><li><a href="#ready">2 · Ready (chat notice on)</a></li><li><a href="#ready-nonotice">2c · Ready, chat notice off (long reminder comes back)</a></li><li><a href="#starting">3 · Starting</a></li><li><a href="#recording">4 · Recording, notice posted</a></li><li><a href="#recording-pending">4a · Recording, notice being posted</a></li><li><a href="#recording-failed">4c · Recording, notice NOT posted (warning, recording continues)</a></li><li><a href="#recording-nomic">4b · Recording, microphone off, chat notice off</a></li><li><a href="#recording-micfail">4d · Recording, microphone failed (warning, recording continues)</a></li><li><a href="#recording-two-warnings">4e · Recording, microphone refused AND notice not posted (hint text hides)</a></li><li><a href="#settings">9 · Settings view (from the gear or “Change”)</a></li><li><a href="#settings-two">9b · Settings view, only 2 quality options, High selected</a></li><li><a href="#saving">5 · Saving, percentage not known yet (moving bar)</a></li><li><a href="#saving-pct">5b · Saving, 45 %</a></li><li><a href="#saved">6 · Saved</a></li><li><a href="#error-mic">7a · Error: microphone blocked</a></li><li><a href="#error-tab-closed">7b · Error: Meet tab closed during recording</a></li><li><a href="#error-capture">7c · Error: cannot capture the tab (with technical detail)</a></li><li><a href="#error-mic-first">7d · Microphone not allowed yet (first use)</a></li><li><a href="#error-crash">7e · Recording stopped unexpectedly + recovery card</a></li><li><a href="#error-generic">7f · Error: something went wrong (generic)</a></li><li><a href="#recovery-ready">8 · Ready + recovery card (target card hides to save space)</a></li><li><a href="#recovery-two">8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click</a></li></ul></nav>
+  <nav aria-label="States"><ul><li><a href="#not-meet">1 · Not on a Meet tab</a></li><li><a href="#ready">2 · Ready (chat notice on)</a></li><li><a href="#ready-nonotice">2c · Ready, chat notice off (long reminder comes back)</a></li><li><a href="#starting">3 · Starting</a></li><li><a href="#recording">4 · Recording, notice posted</a></li><li><a href="#recording-pending">4a · Recording, notice being posted</a></li><li><a href="#recording-failed">4c · Recording, notice NOT posted (warning, recording continues)</a></li><li><a href="#recording-nomic">4b · Recording, microphone off, chat notice off</a></li><li><a href="#recording-micfail">4d · Recording, microphone failed (warning, recording continues)</a></li><li><a href="#recording-two-warnings">4e · Recording, microphone refused AND notice not posted (hint text hides)</a></li><li><a href="#recording-slow">4f · Recording, picture updates slowly (info, recording continues)</a></li><li><a href="#recording-three-warnings">4g · Recording, all three: notice not posted, microphone refused, picture slow</a></li><li><a href="#settings">9 · Settings view (from the gear or “Change”)</a></li><li><a href="#settings-two">9b · Settings view, High selected</a></li><li><a href="#saving">5 · Saving, percentage not known yet (moving bar)</a></li><li><a href="#saving-pct">5b · Saving, 45 %</a></li><li><a href="#saved">6 · Saved</a></li><li><a href="#error-mic">7a · Error: microphone blocked</a></li><li><a href="#error-tab-closed">7b · Error: Meet tab closed during recording</a></li><li><a href="#error-capture">7c · Error: cannot capture the tab (with technical detail)</a></li><li><a href="#error-mic-first">7d · Microphone not allowed yet (first use)</a></li><li><a href="#error-crash">7e · Recording stopped unexpectedly + recovery card</a></li><li><a href="#error-generic">7f · Error: something went wrong (generic)</a></li><li><a href="#recovery-ready">8 · Ready + recovery card (target card hides to save space)</a></li><li><a href="#recovery-two">8b · Not on a Meet tab + 2 unsaved recordings, “Delete” waits for a 2nd click</a></li></ul></nav>
 </header>
 
 <section class="pv-row" id="not-meet" aria-labelledby="pv-not-meet">
@@ -149,7 +149,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary-ready-light">Standard</strong> · <button class="mr-link" id="btn-change-settings-ready-light" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder-ready-light">
@@ -219,7 +219,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary-ready-dark">Standard</strong> · <button class="mr-link" id="btn-change-settings-ready-dark" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder-ready-dark">
@@ -295,7 +295,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary-ready-nonotice-light">Standard</strong> · <button class="mr-link" id="btn-change-settings-ready-nonotice-light" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder-ready-nonotice-light">
@@ -365,7 +365,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary-ready-nonotice-dark">Standard</strong> · <button class="mr-link" id="btn-change-settings-ready-nonotice-dark" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder-ready-nonotice-dark">
@@ -517,7 +517,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-light" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -530,7 +530,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-light" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-light" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -543,6 +543,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-light" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-light" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -613,7 +622,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-dark" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -626,7 +635,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-dark" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-dark" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -639,6 +648,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-dark" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-dark" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -715,7 +733,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-pending-light" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -728,7 +746,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-pending-light" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-pending-light" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-pending-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -741,6 +759,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-pending-light" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-pending-light" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -811,7 +838,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-pending-dark" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -824,7 +851,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-pending-dark" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-pending-dark" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-pending-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -837,6 +864,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-pending-dark" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-pending-dark" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -913,7 +949,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-failed-light" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -926,7 +962,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-failed-light" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-failed-light" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-failed-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -939,6 +975,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-failed-light" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-failed-light" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1009,7 +1054,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-failed-dark" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1022,7 +1067,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-failed-dark" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-failed-dark" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-failed-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1035,6 +1080,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-failed-dark" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-failed-dark" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1111,7 +1165,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-nomic-light" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1124,7 +1178,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-nomic-light" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-nomic-light" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-nomic-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1137,6 +1191,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-nomic-light" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-nomic-light" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1207,7 +1270,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-nomic-dark" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1220,7 +1283,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-nomic-dark" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-nomic-dark" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-nomic-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1233,6 +1296,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-nomic-dark" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-nomic-dark" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1309,7 +1381,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-micfail-light" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1322,7 +1394,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-micfail-light" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-micfail-light" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-micfail-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1335,6 +1407,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-micfail-light" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-micfail-light" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1405,7 +1486,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-micfail-dark" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert" hidden>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1418,7 +1499,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-micfail-dark" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-micfail-dark" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-micfail-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1431,6 +1512,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-micfail-dark" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-micfail-dark" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1507,7 +1597,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-two-warnings-light" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1520,7 +1610,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-two-warnings-light" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-two-warnings-light" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-two-warnings-light">Chrome did not give the microphone to OwnTape.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1533,6 +1623,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-two-warnings-light" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-two-warnings-light" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1603,7 +1702,7 @@
         <span>Notice posted in the chat</span>
         <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-two-warnings-dark" type="button">Post the notice again</button>
       </div>
-      <div class="mr-callout mr-notice-failed" data-notice="failed" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
         <div>
           <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
@@ -1616,7 +1715,7 @@
 
       <!-- Microphone failed at the start; the recording continues without the
            user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
-      <div class="mr-callout mr-notice-failed" id="mic-warning-recording-two-warnings-dark" role="alert">
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-two-warnings-dark" role="alert">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
         <div>
           <p><strong id="mic-warning-title-recording-two-warnings-dark">Chrome did not give the microphone to OwnTape.</strong> Your voice is not in the recording. The recording continues.</p>
@@ -1629,6 +1728,15 @@
             <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-two-warnings-dark" type="button">Copy details</button>
           </div>
         </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-two-warnings-dark" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
       </div>
 
       <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
@@ -1644,6 +1752,438 @@
   <footer class="mr-footer">
     <span>Saves to your Downloads folder</span>
     <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-two-warnings-dark" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+  </div>
+</section>
+
+<section class="pv-row" id="recording-slow" aria-labelledby="pv-recording-slow">
+  <h2 class="pv-label" id="pv-recording-slow">4f · Recording, picture updates slowly (info, recording continues)</h2>
+  <div class="pv-pair">
+    <figure><figcaption>Light</figcaption>
+<div class="mr-popup mr-frame" data-theme="light">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+    <!-- Opens the Settings view. Hide it in starting / recording / saving. -->
+    <button class="mr-iconbtn" id="btn-open-settings-recording-slow-light" type="button" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-slow-light">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-slow-light">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-slow-light" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-slow-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <span id="mic-chip-text-recording-slow-light">Mic on</span>
+          </li>
+          <li class="mr-chip" id="quality-chip-recording-slow-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+            <span id="quality-chip-text-recording-slow-light">Standard</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-slow-light">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-slow-light" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-slow-light" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-slow-light" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-slow-light" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-slow-light">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-slow-light"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-slow-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-slow-light" type="button">Copy details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-slow-light" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-slow-light" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-slow-light" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+    <figure><figcaption>Dark</figcaption>
+<div class="mr-popup mr-frame" data-theme="dark">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+    <!-- Opens the Settings view. Hide it in starting / recording / saving. -->
+    <button class="mr-iconbtn" id="btn-open-settings-recording-slow-dark" type="button" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-slow-dark">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-slow-dark">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-slow-dark" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-slow-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <span id="mic-chip-text-recording-slow-dark">Mic on</span>
+          </li>
+          <li class="mr-chip" id="quality-chip-recording-slow-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+            <span id="quality-chip-text-recording-slow-dark">Standard</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-slow-dark">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-slow-dark" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-slow-dark" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-slow-dark" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-slow-dark" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-slow-dark">The microphone cannot be used.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-slow-dark"></p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-slow-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-slow-dark" type="button">Copy details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-slow-dark" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-slow-dark" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-slow-dark" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+  </div>
+</section>
+
+<section class="pv-row" id="recording-three-warnings" aria-labelledby="pv-recording-three-warnings">
+  <h2 class="pv-label" id="pv-recording-three-warnings">4g · Recording, all three: notice not posted, microphone refused, picture slow</h2>
+  <div class="pv-pair">
+    <figure><figcaption>Light</figcaption>
+<div class="mr-popup mr-frame" data-theme="light">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+    <!-- Opens the Settings view. Hide it in starting / recording / saving. -->
+    <button class="mr-iconbtn" id="btn-open-settings-recording-three-warnings-light" type="button" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-three-warnings-light">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-three-warnings-light">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-three-warnings-light" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-three-warnings-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <span id="mic-chip-text-recording-three-warnings-light">Mic off</span>
+          </li>
+          <li class="mr-chip" id="quality-chip-recording-three-warnings-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+            <span id="quality-chip-text-recording-three-warnings-light">Standard</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-three-warnings-light">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-three-warnings-light" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-three-warnings-light" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-three-warnings-light" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-three-warnings-light" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-three-warnings-light">Chrome did not give the microphone to OwnTape.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-three-warnings-light">NotAllowedError: Permission denied (state: granted)</p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-three-warnings-light" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-three-warnings-light" type="button">Copy details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-three-warnings-light" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-three-warnings-light" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-three-warnings-light" target="_blank" rel="noopener">Help</a>
+  </footer>
+</div></figure>
+    <figure><figcaption>Dark</figcaption>
+<div class="mr-popup mr-frame" data-theme="dark">
+  <header class="mr-header">
+    <svg class="mr-header__logo" viewBox="0 0 16 16" aria-hidden="true">
+      <rect width="16" height="16" rx="4" fill="#4338ca"/>
+      <circle cx="8" cy="8" r="4.75" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="2.25" fill="#fff"/>
+    </svg>
+    <h1 class="mr-header__name js-app-name">OwnTape</h1>
+    <span class="mr-pill" title="Nothing leaves your computer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      100% local
+    </span>
+    <!-- Opens the Settings view. Hide it in starting / recording / saving. -->
+    <button class="mr-iconbtn" id="btn-open-settings-recording-three-warnings-dark" type="button" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+  <main><section class="mr-state" data-state="recording" aria-labelledby="t-recording-recording-three-warnings-dark">
+      <div class="mr-rec">
+        <h2 class="mr-rec__status" id="t-recording-recording-three-warnings-dark">
+          <span class="mr-rec__dot" aria-hidden="true"></span>
+          Recording
+        </h2>
+        <!-- role=timer is not announced every second (aria-live off). -->
+        <div class="mr-rec__timer" id="timer-recording-three-warnings-dark" role="timer" aria-label="Elapsed time">00:12:34</div>
+        <ul class="mr-meta">
+          <li class="mr-chip" id="mic-chip-recording-three-warnings-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <span id="mic-chip-text-recording-three-warnings-dark">Mic off</span>
+          </li>
+          <li class="mr-chip" id="quality-chip-recording-three-warnings-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+            <span id="quality-chip-text-recording-three-warnings-dark">Standard</span>
+          </li>
+          <li class="mr-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>
+            <span id="size-chip-text-recording-three-warnings-dark">86 MB</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Consent aid status. JS removes `hidden` from ONE block; all stay hidden if the toggle was off.
+           "posted" only after the message is verified in the chat. -->
+      <div class="mr-notice-status" data-notice="pending" hidden>
+        <span class="mr-spinner mr-spinner--sm" aria-hidden="true"></span>
+        <span>Posting the notice in the chat…</span>
+      </div>
+      <div class="mr-notice-status mr-notice-status--ok" data-notice="posted" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span>Notice posted in the chat</span>
+        <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-repost-recording-three-warnings-dark" type="button">Post the notice again</button>
+      </div>
+      <div class="mr-callout mr-notice-failed mr-warn" data-notice="failed" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <div>
+          <p><strong>The notice was not posted.</strong> Tell the participants yourself. The recording continues.</p>
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-notice-copy-recording-three-warnings-dark" type="button">Copy the text</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-notice-retry-recording-three-warnings-dark" type="button">Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microphone failed at the start; the recording continues without the
+           user's voice. Title from MIC_TEXTS[kind].title. Also set the mic chip to "Mic off". -->
+      <div class="mr-callout mr-notice-failed mr-warn" id="mic-warning-recording-three-warnings-dark" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/></svg>
+        <div>
+          <p><strong id="mic-warning-title-recording-three-warnings-dark">Chrome did not give the microphone to OwnTape.</strong> Your voice is not in the recording. The recording continues.</p>
+          <p class="mr-error-detail" id="mic-warning-detail-recording-three-warnings-dark">NotAllowedError: Permission denied (state: granted)</p>
+          <!-- #btn-mic-fix opens mic-permission.html in a new tab (the page tells the user to fix it
+               after the recording). #btn-mic-copy copies the technical line; label "Copied" for 2 s.
+               Hide #btn-mic-copy when #mic-warning-detail is empty. -->
+          <div class="mr-inline-actions">
+            <button class="mr-btn mr-btn--secondary mr-btn--sm" id="btn-mic-fix-recording-three-warnings-dark" type="button">How to fix</button>
+            <button class="mr-btn mr-btn--ghost mr-btn--sm" id="btn-mic-copy-recording-three-warnings-dark" type="button">Copy details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slow picture: fewer than ~10 frames per second for 30 s (screen locked or asleep,
+           window covered). Informative, not an error: calm info style, role="status", no buttons.
+           Remove `hidden` when it starts; add it again when the frame rate is normal for some seconds.
+           Can show together with the two warnings above (all three: 589 px). -->
+      <div class="mr-callout mr-callout--info mr-warn" id="video-warning-recording-three-warnings-dark" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M12 7.5V10l1.6 1.2"/></svg>
+        <p><strong>The picture updates slowly.</strong> Keep the Meet window visible and the computer awake.</p>
+      </div>
+
+      <!-- Hidden by CSS when a warning shows (keeps the popup under 600 px). -->
+      <p class="mr-text mr-rec-hint">You can close this window. The recording continues until you click <strong>Stop</strong> or close the Meet tab.</p>
+
+      <div class="mr-actions">
+        <button class="mr-btn mr-btn--stop mr-btn--lg" id="btn-stop-recording-three-warnings-dark" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          Stop and save
+        </button>
+      </div>
+    </section></main>
+  <footer class="mr-footer">
+    <span>Saves to your Downloads folder</span>
+    <a href="https://github.com/AlexJoom/OwnTape#readme" id="link-help-recording-three-warnings-dark" target="_blank" rel="noopener">Help</a>
   </footer>
 </div></figure>
   </div>
@@ -1678,25 +2218,19 @@
 
       <fieldset class="mr-options">
         <legend class="mr-label">Video quality</legend>
-        <label class="mr-option" data-option="small">
-          <input type="radio" name="quality-settings-light" value="small">
-          <span class="mr-option__text">
-            <span class="mr-option__name">Small</span>
-            <span class="mr-option__desc">720p, for long calls · <span class="js-size-small">about 0.5 GB per hour</span></span>
-          </span>
-        </label>
         <label class="mr-option" data-option="standard">
           <input type="radio" name="quality-settings-light" value="standard" checked>
           <span class="mr-option__text">
             <span class="mr-option__name">Standard <span class="mr-option__tag">Default</span></span>
-            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to 1 GB per hour</span></span>
+            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to about 1 GB per hour</span></span>
           </span>
         </label>
         <label class="mr-option" data-option="high">
           <input type="radio" name="quality-settings-light" value="high">
           <span class="mr-option__text">
             <span class="mr-option__name">High</span>
-            <span class="mr-option__desc">Sharp text, for shared code · <span class="js-size-high">about 2 GB per hour</span></span>
+            <span class="mr-option__desc">Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens).</span>
+            <span class="mr-option__desc">Uses more processor power · <span class="js-size-high">up to about 2 GB per hour</span></span>
           </span>
         </label>
       </fieldset>
@@ -1745,25 +2279,19 @@
 
       <fieldset class="mr-options">
         <legend class="mr-label">Video quality</legend>
-        <label class="mr-option" data-option="small">
-          <input type="radio" name="quality-settings-dark" value="small">
-          <span class="mr-option__text">
-            <span class="mr-option__name">Small</span>
-            <span class="mr-option__desc">720p, for long calls · <span class="js-size-small">about 0.5 GB per hour</span></span>
-          </span>
-        </label>
         <label class="mr-option" data-option="standard">
           <input type="radio" name="quality-settings-dark" value="standard" checked>
           <span class="mr-option__text">
             <span class="mr-option__name">Standard <span class="mr-option__tag">Default</span></span>
-            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to 1 GB per hour</span></span>
+            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to about 1 GB per hour</span></span>
           </span>
         </label>
         <label class="mr-option" data-option="high">
           <input type="radio" name="quality-settings-dark" value="high">
           <span class="mr-option__text">
             <span class="mr-option__name">High</span>
-            <span class="mr-option__desc">Sharp text, for shared code · <span class="js-size-high">about 2 GB per hour</span></span>
+            <span class="mr-option__desc">Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens).</span>
+            <span class="mr-option__desc">Uses more processor power · <span class="js-size-high">up to about 2 GB per hour</span></span>
           </span>
         </label>
       </fieldset>
@@ -1790,7 +2318,7 @@
 </section>
 
 <section class="pv-row" id="settings-two" aria-labelledby="pv-settings-two">
-  <h2 class="pv-label" id="pv-settings-two">9b · Settings view, only 2 quality options, High selected</h2>
+  <h2 class="pv-label" id="pv-settings-two">9b · Settings view, High selected</h2>
   <div class="pv-pair">
     <figure><figcaption>Light</figcaption>
 <div class="mr-popup mr-frame" data-theme="light">
@@ -1818,25 +2346,19 @@
 
       <fieldset class="mr-options">
         <legend class="mr-label">Video quality</legend>
-        <label class="mr-option" data-option="small" hidden>
-          <input type="radio" name="quality-settings-two-light" value="small">
-          <span class="mr-option__text">
-            <span class="mr-option__name">Small</span>
-            <span class="mr-option__desc">720p, for long calls · <span class="js-size-small">about 0.5 GB per hour</span></span>
-          </span>
-        </label>
         <label class="mr-option" data-option="standard">
           <input type="radio" name="quality-settings-two-light" value="standard">
           <span class="mr-option__text">
             <span class="mr-option__name">Standard <span class="mr-option__tag">Default</span></span>
-            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to 1 GB per hour</span></span>
+            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to about 1 GB per hour</span></span>
           </span>
         </label>
         <label class="mr-option" data-option="high">
           <input type="radio" name="quality-settings-two-light" value="high" checked>
           <span class="mr-option__text">
             <span class="mr-option__name">High</span>
-            <span class="mr-option__desc">Sharp text, for shared code · <span class="js-size-high">about 2 GB per hour</span></span>
+            <span class="mr-option__desc">Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens).</span>
+            <span class="mr-option__desc">Uses more processor power · <span class="js-size-high">up to about 2 GB per hour</span></span>
           </span>
         </label>
       </fieldset>
@@ -1885,25 +2407,19 @@
 
       <fieldset class="mr-options">
         <legend class="mr-label">Video quality</legend>
-        <label class="mr-option" data-option="small" hidden>
-          <input type="radio" name="quality-settings-two-dark" value="small">
-          <span class="mr-option__text">
-            <span class="mr-option__name">Small</span>
-            <span class="mr-option__desc">720p, for long calls · <span class="js-size-small">about 0.5 GB per hour</span></span>
-          </span>
-        </label>
         <label class="mr-option" data-option="standard">
           <input type="radio" name="quality-settings-two-dark" value="standard">
           <span class="mr-option__text">
             <span class="mr-option__name">Standard <span class="mr-option__tag">Default</span></span>
-            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to 1 GB per hour</span></span>
+            <span class="mr-option__desc">Up to 1080p · <span class="js-size-standard">up to about 1 GB per hour</span></span>
           </span>
         </label>
         <label class="mr-option" data-option="high">
           <input type="radio" name="quality-settings-two-dark" value="high" checked>
           <span class="mr-option__text">
             <span class="mr-option__name">High</span>
-            <span class="mr-option__desc">Sharp text, for shared code · <span class="js-size-high">about 2 GB per hour</span></span>
+            <span class="mr-option__desc">Sharper only if the Meet window is larger than 1920×1080 pixels (large or HiDPI screens).</span>
+            <span class="mr-option__desc">Uses more processor power · <span class="js-size-high">up to about 2 GB per hour</span></span>
           </span>
         </label>
       </fieldset>
@@ -2770,7 +3286,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary-recovery-ready-light">Standard</strong> · <button class="mr-link" id="btn-change-settings-recovery-ready-light" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder-recovery-ready-light">
@@ -2859,7 +3375,7 @@
         </div>
       </div>
 
-      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High" | "Small". -->
+      <!-- Summary of the Settings view. #quality-summary = "Standard" | "High". -->
       <p class="mr-summary">Video quality: <strong id="quality-summary-recovery-ready-dark">Standard</strong> · <button class="mr-link" id="btn-change-settings-recovery-ready-dark" type="button">Change</button></p>
 
       <div class="mr-callout" id="consent-reminder-recovery-ready-dark">

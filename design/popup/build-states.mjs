@@ -76,10 +76,24 @@ const variants = [
       .replace('<span id="mic-chip-text">Mic on</span>', '<span id="mic-chip-text">Mic off</span>')
       .replace('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M3 3l18 18"/>'),
   },
+  {
+    id: 'recording-slow', label: '4f · Recording, picture updates slowly (info, recording continues)',
+    html: section('recording').replace('data-notice="posted" hidden', 'data-notice="posted"')
+      .replace('id="video-warning" role="status" hidden', 'id="video-warning" role="status"'),
+  },
+  {
+    id: 'recording-three-warnings', label: '4g · Recording, all three: notice not posted, microphone refused, picture slow',
+    html: section('recording').replace('data-notice="failed" role="alert" hidden', 'data-notice="failed" role="alert"')
+      .replace('id="mic-warning" role="alert" hidden', 'id="mic-warning" role="alert"')
+      .replace(/(id="mic-warning-title">)[^<]*/, '$1Chrome did not give the microphone to OwnTape.')
+      .replace(/(id="mic-warning-detail">)[^<]*/, '$1NotAllowedError: Permission denied (state: granted)')
+      .replace('<span id="mic-chip-text">Mic on</span>', '<span id="mic-chip-text">Mic off</span>')
+      .replace('id="video-warning" role="status" hidden', 'id="video-warning" role="status"'),
+  },
   { id: 'settings', label: '9 · Settings view (from the gear or “Change”)', html: section('settings') },
   {
-    id: 'settings-two', label: '9b · Settings view, only 2 quality options, High selected',
-    html: section('settings').replace('<label class="mr-option" data-option="small">', '<label class="mr-option" data-option="small" hidden>')
+    id: 'settings-two', label: '9b · Settings view, High selected',
+    html: section('settings')
       .replace('value="standard" checked>', 'value="standard">').replace('value="high">', 'value="high" checked>'),
   },
   { id: 'saving', label: '5 · Saving, percentage not known yet (moving bar)', html: section('saving') },
